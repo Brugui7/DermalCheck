@@ -1,6 +1,5 @@
-package com.brugui.dermalcheck;
+package com.brugui.dermalcheck.ui;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -9,16 +8,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.brugui.dermalcheck.ui.NewRequestActivity;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.brugui.dermalcheck.R;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link RequestsFragment#newInstance} factory method to
+ * Use the {@link AccountFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class RequestsFragment extends Fragment {
-    private FloatingActionButton fabNewRequest;
+public class AccountFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -29,7 +26,7 @@ public class RequestsFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public RequestsFragment() {
+    public AccountFragment() {
         // Required empty public constructor
     }
 
@@ -39,11 +36,11 @@ public class RequestsFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment RequestsFragment.
+     * @return A new instance of fragment AccountFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static RequestsFragment newInstance(String param1, String param2) {
-        RequestsFragment fragment = new RequestsFragment();
+    public static AccountFragment newInstance(String param1, String param2) {
+        AccountFragment fragment = new AccountFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -64,20 +61,8 @@ public class RequestsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_requests, container, false);
-        fabNewRequest = view.findViewById(R.id.fabNewRequest);
-        fabNewRequest.setOnClickListener(listenerFabNewRequest);
-        return  view;
+        return inflater.inflate(R.layout.fragment_account, container, false);
     }
 
 
-    // ########## Listeners ##########
-    private final View.OnClickListener listenerFabNewRequest = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            Intent intent = new Intent(getActivity(), NewRequestActivity.class);
-            //¿Pasar parámetros?
-            startActivity(intent);
-        }
-    };
 }

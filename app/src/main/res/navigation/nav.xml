@@ -7,12 +7,12 @@
 
     <fragment
         android:id="@+id/requestsFragment"
-        android:name="com.brugui.dermalcheck.RequestsFragment"
+        android:name="com.brugui.dermalcheck.ui.RequestsFragment"
         android:label="Mis Consultas"
         tools:layout="@layout/fragment_requests" />
     <fragment
         android:id="@+id/accountFragment"
-        android:name="com.brugui.dermalcheck.AccountFragment"
+        android:name="com.brugui.dermalcheck.ui.AccountFragment"
         android:label="Mi Perfil"
         tools:layout="@layout/fragment_account" />
 </navigation>
