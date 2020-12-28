@@ -7,12 +7,26 @@
     android:background="@color/secondary"
     tools:context=".ui.NewRequestActivity">
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabAddImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="32dp"
+        android:backgroundTint="@color/main_dark"
+        android:clickable="true"
+        app:tint="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/add_a_photo"
+        android:focusable="true" />
+
     <TextView
         android:id="@+id/textView4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="@string/image"
+        android:text="@string/images"
         android:textAlignment="center"
         android:textColor="@color/main"
         android:textSize="24sp"
@@ -21,7 +35,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
+    <!--<ImageView
         android:id="@+id/ivPreview"
         android:layout_width="100dp"
         android:layout_height="100dp"
@@ -30,33 +44,42 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView4"
-        app:srcCompat="@drawable/add_a_photo" />
+        app:srcCompat="@drawable/add_a_photo" />-->
+
+    <ImageSwitcher
+        android:id="@+id/imgsPreview"
+        android:layout_width="0dp"
+        android:layout_height="299dp"
+        app:layout_constraintEnd_toStartOf="@+id/ibtnNext"
+        app:layout_constraintStart_toEndOf="@+id/ibtnPrevious"
+        app:layout_constraintTop_toBottomOf="@+id/textView4">
+
+    </ImageSwitcher>
 
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="32dp"
         android:layout_marginBottom="32dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ivPreview">
+        app:layout_constraintTop_toBottomOf="@+id/imgsPreview">
 
         <TextView
-            android:textColor="@color/main"
             android:id="@+id/textView3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/additional_data"
             android:textAlignment="center"
+            android:textColor="@color/main"
             android:textSize="24sp"
             android:textStyle="bold" />
 
         <com.google.android.material.textfield.TextInputLayout
-            android:padding="8dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:padding="8dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
@@ -66,24 +89,25 @@
                 android:maxLength="1" />
 
             <CheckBox
-                android:paddingTop="8dp"
-
                 android:id="@+id/checkBox2"
+
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:paddingTop="8dp"
                 android:text="@string/personal_atecedents"
                 android:textAllCaps="false" />
 
             <CheckBox
-                android:paddingTop="8dp"
                 android:id="@+id/checkBox3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:checked="false"
+                android:paddingTop="8dp"
                 android:text="@string/familiar_antecedents" />
         </com.google.android.material.textfield.TextInputLayout>
+
     </LinearLayout>
 
     <Button
@@ -96,4 +120,20 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageButton
+        android:id="@+id/ibtnPrevious"
+        android:layout_width="wrap_content"
+        android:layout_height="300dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView4"
+        app:srcCompat="@drawable/ic_left" />
+
+    <ImageButton
+        android:id="@+id/ibtnNext"
+        android:layout_width="wrap_content"
+        android:layout_height="300dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView4"
+        app:srcCompat="@drawable/ic_right" />
 </androidx.constraintlayout.widget.ConstraintLayout>
