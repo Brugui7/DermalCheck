@@ -9,38 +9,55 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
 import android.widget.ViewSwitcher;
 
 import com.brugui.dermalcheck.R;
+import com.brugui.dermalcheck.data.model.LoggedInUser;
+import com.brugui.dermalcheck.data.model.Request;
+import com.brugui.dermalcheck.data.model.Status;
 import com.brugui.dermalcheck.ui.components.ImageDetailActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.Timestamp;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+
+import static com.brugui.dermalcheck.ui.RequestDetailActivity.REQUEST;
 
 public class NewRequestActivity extends AppCompatActivity {
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
     private ImageSwitcher imageSwitcher;
-    private FloatingActionButton fabAddImage;
     private ArrayList<Uri> images;
-    private ImageButton ibtnPrevious, ibtnNext;
-    private Button btnAnalyze;
     private int imageSwitcherPosition;
+    private Request newRequest;
+    private EditText etPhototype;
+    private LoggedInUser userLogged;
+    private CheckBox chPersonalAntecedents, chFamiliarAntecedents;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_request);
         imageSwitcher = findViewById(R.id.imgsPreview);
-        fabAddImage = findViewById(R.id.fabAddImage);
-        fabAddImage.setOnClickListener(listenerFabAddImage);
-        ibtnNext = findViewById(R.id.ibtnNext);
-        ibtnPrevious = findViewById(R.id.ibtnPrevious);
-        btnAnalyze = findViewById(R.id.btnAnalyze);
+        FloatingActionButton fabAddImage = findViewById(R.id.fabAddImage);
+        ImageButton ibtnNext = findViewById(R.id.ibtnNext);
+        ImageButton ibtnPrevious = findViewById(R.id.ibtnPrevious);
+        Button btnAnalyze = findViewById(R.id.btnAnalyze);
+        chFamiliarAntecedents = findViewById(R.id.chFamiliarAntecedents);
+        chPersonalAntecedents = findViewById(R.id.chPersonalAntecedents);
+        etPhototype = findViewById(R.id.etPhototype);
+        FirebaseUser userTmp = FirebaseAuth.getInstance().getCurrentUser();
+        userLogged = new LoggedInUser(userTmp.getUid(), userTmp.getDisplayName());
 
+        fabAddImage.setOnClickListener(listenerFabAddImage);
         images = new ArrayList<>();
         imageSwitcher.setFactory(() -> new ImageView(getApplicationContext()));
         ibtnPrevious.setOnClickListener(listenerIbtnPrevious);
@@ -109,7 +126,19 @@ public class NewRequestActivity extends AppCompatActivity {
     };
 
     private final View.OnClickListener listenerBtnAnalyze = view -> {
-      //TODO
+      newRequest = new Request(0,
+              chFamiliarAntecedents.isChecked(),
+              chPersonalAntecedents.isChecked(),
+              Integer.valueOf(etPhototype.getText().toString()),
+              null, //TODO
+              userLogged,
+              new Status("Pendiente"),
+              Calendar.getInstance().getTime()
+      );
+
+      Intent intent = new Intent(NewRequestActivity.this, RequestDetailActivity.class);
+      intent.putExtra(REQUEST, newRequest);
+      startActivity(intent);
     };
 
 }

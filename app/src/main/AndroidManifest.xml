@@ -15,7 +15,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.DermalCheck">
-        <activity android:name=".ui.components.aaaActivity"></activity>
+        <activity android:name=".ui.RequestDetailActivity"></activity>
+        <activity android:name=".ui.components.aaaActivity" />
         <activity android:name=".ui.components.ImageDetailActivity" />
         <activity android:name=".ui.NewRequestActivity" />
         <activity android:name=".ui.MainActivity">

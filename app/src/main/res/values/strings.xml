@@ -21,4 +21,5 @@
     <string name="analyze_image">Analizar imagen</string>
     <string name="image">Imagen</string>
     <string name="images">Imágenes</string>
+    <string name="cancel">Cancelar</string>
 </resources>

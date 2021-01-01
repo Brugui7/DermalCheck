@@ -82,31 +82,33 @@
             android:padding="8dp">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etPhototype"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/phototype"
                 android:inputType="number"
                 android:maxLength="1" />
 
-            <CheckBox
-                android:id="@+id/checkBox2"
-
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:paddingTop="8dp"
-                android:text="@string/personal_atecedents"
-                android:textAllCaps="false" />
-
-            <CheckBox
-                android:id="@+id/checkBox3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:checked="false"
-                android:paddingTop="8dp"
-                android:text="@string/familiar_antecedents" />
         </com.google.android.material.textfield.TextInputLayout>
+
+        <CheckBox
+            android:id="@+id/chPersonalAntecedents"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingTop="8dp"
+            android:text="@string/personal_atecedents"
+            android:textAllCaps="false" />
+
+        <CheckBox
+            android:id="@+id/chFamiliarAntecedents"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:checked="false"
+            android:paddingTop="8dp"
+            android:text="@string/familiar_antecedents" />
 
     </LinearLayout>
 

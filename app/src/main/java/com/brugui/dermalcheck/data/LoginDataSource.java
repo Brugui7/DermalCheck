@@ -10,8 +10,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Class that handles authentication w/ login credentials and retrieves user information.
@@ -26,23 +29,28 @@ public class LoginDataSource {
         try {
             auth = FirebaseAuth.getInstance();
             auth.signInWithEmailAndPassword(username, password)
-                    .addOnCompleteListener((OnCompleteListener<AuthResult>) task -> {
-                        if (task.isSuccessful()){
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
                             FirebaseUser user = auth.getCurrentUser();
                             result = new Result.Success<>(new LoggedInUser(user.getUid(), user.getDisplayName()));
+                            Map<String, Object> map = new HashMap<String, Object>();
+                            map.put("email", user.getEmail());
+                            FirebaseFirestore.getInstance()
+                                    .collection("users")
+                                    .document(user.getUid())
+                                    .set(map);
                         } else {
                             Log.d(TAG, "Login error " + task.getException().getMessage(), task.getException());
                             result = new Result.Error(new IOException("Error logging in", task.getException()));
                         }
                     });
-            return  result;
+            return result;
 
         } catch (Exception e) {
             Log.d(TAG, e.getMessage(), e);
             return new Result.Error(new IOException("Error", e));
         }
     }
-
 
 
     public void logout() {
