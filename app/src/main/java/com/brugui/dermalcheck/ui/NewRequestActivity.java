@@ -46,6 +46,7 @@ public class NewRequestActivity extends AppCompatActivity {
         ibtnPrevious.setOnClickListener(listenerIbtnPrevious);
         ibtnNext.setOnClickListener(listenerIbtnNext);
         btnAnalyze.setOnClickListener(listenerBtnAnalyze);
+        imageSwitcher.setOnClickListener(listenerImgSwitcher);
     }
 
     private void dispatchTakePictureIntent() {
@@ -71,7 +72,7 @@ public class NewRequestActivity extends AppCompatActivity {
                     images.add(data.getClipData().getItemAt(i).getUri());
                 }
             } else {
-                //single imgs
+                //single img
                 images.add(data.getData());
             }
             imageSwitcher.setImageURI(images.get(0));
@@ -82,24 +83,33 @@ public class NewRequestActivity extends AppCompatActivity {
 
     //########## LISTENERS ##########
 
-    private View.OnClickListener listenerFabAddImage = view -> {
+    private final View.OnClickListener listenerFabAddImage = view -> {
       dispatchTakePictureIntent();
     };
 
-    private View.OnClickListener listenerIbtnPrevious = view -> {
+    private final View.OnClickListener listenerIbtnPrevious = view -> {
         if (imageSwitcherPosition > 0) {
-            imageSwitcher.setImageURI(images.get(imageSwitcherPosition--));
+            imageSwitcher.setImageURI(images.get(--imageSwitcherPosition));
         }
     };
 
-    private View.OnClickListener listenerIbtnNext = view -> {
+    private final View.OnClickListener listenerIbtnNext = view -> {
         if (imageSwitcherPosition < images.size() - 1) {
-            imageSwitcher.setImageURI(images.get(imageSwitcherPosition++));
+            imageSwitcher.setImageURI(images.get(++imageSwitcherPosition));
         }
     };
 
-    private View.OnClickListener listenerBtnAnalyze = view -> {
-      startActivity(new Intent(NewRequestActivity.this, ImageDetailActivity.class));
+    private final View.OnClickListener listenerImgSwitcher = view -> {
+        if (images.size() == 0) {
+            return;
+        }
+        Intent intent = new Intent(NewRequestActivity.this, ImageDetailActivity.class);
+        intent.putExtra(ImageDetailActivity.IMAGE_URI, images.get(imageSwitcherPosition));
+        startActivity(intent);
+    };
+
+    private final View.OnClickListener listenerBtnAnalyze = view -> {
+      //TODO
     };
 
 }

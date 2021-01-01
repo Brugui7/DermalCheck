@@ -3,6 +3,7 @@ package com.brugui.dermalcheck.ui.components;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.widget.ImageView;
 
@@ -17,13 +18,21 @@ import kotlin.jvm.internal.Intrinsics;
 
 public class ImageDetailActivity extends AppCompatActivity {
 
+    public static final String IMAGE_URI = "IMAGE_URI";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_detail);
         ImageView imageView = findViewById(R.id.ivImage);
         ConstraintLayout clContainer = findViewById(R.id.clContainer);
-        Loupe loupe = Loupe.Companion.create(imageView, clContainer,  (Function1)(new Function1() {
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            Uri uri = bundle.getParcelable(IMAGE_URI);
+            imageView.setImageURI(uri);
+        }
+
+        Loupe loupe = Loupe.Companion.create(imageView, clContainer, new Function1() {
 
             public Object invoke(Object var1) {
                 this.invoke((Loupe)var1);
@@ -32,7 +41,7 @@ public class ImageDetailActivity extends AppCompatActivity {
 
             public final void invoke(@NotNull Loupe $this$create) {
                 Intrinsics.checkNotNullParameter($this$create, "$receiver");
-                $this$create.setOnViewTranslateListener((Loupe.OnViewTranslateListener)(new Loupe.OnViewTranslateListener() {
+                $this$create.setOnViewTranslateListener(new Loupe.OnViewTranslateListener() {
                     public void onStart(@NotNull ImageView view) {
                         Intrinsics.checkNotNullParameter(view, "view");
                     }
@@ -49,29 +58,8 @@ public class ImageDetailActivity extends AppCompatActivity {
                         Intrinsics.checkNotNullParameter(view, "view");
                         ImageDetailActivity.this.finish();
                     }
-                }));
+                });
             }
-        }));
-        /*val loupe = Loupe.create(imageView, container) { // imageView is your ImageView
-            onViewTranslateListener = object : Loupe.OnViewTranslateListener {
-
-                override fun onStart(view: ImageView) {
-                    // called when the view starts moving
-                }
-
-                override fun onViewTranslate(view: ImageView, amount: Float) {
-                    // called whenever the view position changed
-                }
-
-                override fun onRestore(view: ImageView) {
-                    // called when the view drag gesture ended
-                }
-
-                override fun onDismiss(view: ImageView) {
-                    // called when the view drag gesture ended
-                    finish()
-                }
-            }
-        }*/
+        });
     }
 }
