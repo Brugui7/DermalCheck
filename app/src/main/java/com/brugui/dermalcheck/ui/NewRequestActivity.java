@@ -8,12 +8,14 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
 import android.widget.ViewSwitcher;
 
 import com.brugui.dermalcheck.R;
+import com.brugui.dermalcheck.ui.components.ImageDetailActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -25,6 +27,7 @@ public class NewRequestActivity extends AppCompatActivity {
     private FloatingActionButton fabAddImage;
     private ArrayList<Uri> images;
     private ImageButton ibtnPrevious, ibtnNext;
+    private Button btnAnalyze;
     private int imageSwitcherPosition;
 
     @Override
@@ -36,11 +39,13 @@ public class NewRequestActivity extends AppCompatActivity {
         fabAddImage.setOnClickListener(listenerFabAddImage);
         ibtnNext = findViewById(R.id.ibtnNext);
         ibtnPrevious = findViewById(R.id.ibtnPrevious);
+        btnAnalyze = findViewById(R.id.btnAnalyze);
 
         images = new ArrayList<>();
         imageSwitcher.setFactory(() -> new ImageView(getApplicationContext()));
         ibtnPrevious.setOnClickListener(listenerIbtnPrevious);
         ibtnNext.setOnClickListener(listenerIbtnNext);
+        btnAnalyze.setOnClickListener(listenerBtnAnalyze);
     }
 
     private void dispatchTakePictureIntent() {
@@ -91,6 +96,10 @@ public class NewRequestActivity extends AppCompatActivity {
         if (imageSwitcherPosition < images.size() - 1) {
             imageSwitcher.setImageURI(images.get(imageSwitcherPosition++));
         }
+    };
+
+    private View.OnClickListener listenerBtnAnalyze = view -> {
+      startActivity(new Intent(NewRequestActivity.this, ImageDetailActivity.class));
     };
 
 }
