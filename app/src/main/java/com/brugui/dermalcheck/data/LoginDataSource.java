@@ -33,7 +33,7 @@ public class LoginDataSource {
                         if (task.isSuccessful()) {
                             FirebaseUser user = auth.getCurrentUser();
                             result = new Result.Success<>(new LoggedInUser(user.getUid(), user.getDisplayName()));
-                            Map<String, Object> map = new HashMap<String, Object>();
+                            Map<String, Object> map = new HashMap<>();
                             map.put("email", user.getEmail());
                             FirebaseFirestore.getInstance()
                                     .collection("users")

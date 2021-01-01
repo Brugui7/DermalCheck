@@ -53,7 +53,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/text_medical_service"
+            android:id="@+id/tvPatientId"
             style="@style/Base.TextAppearance.AppCompat.Body2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -67,9 +67,9 @@
             android:id="@+id/tvCreationDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintLeft_toLeftOf="@+id/text_medical_service"
-            app:layout_constraintStart_toStartOf="@+id/text_medical_service"
-            app:layout_constraintTop_toBottomOf="@id/text_medical_service"
+            app:layout_constraintLeft_toLeftOf="@+id/tvPatientId"
+            app:layout_constraintStart_toStartOf="@+id/tvPatientId"
+            app:layout_constraintTop_toBottomOf="@id/tvPatientId"
             tools:text="23/12/2020 23:01" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -22,4 +22,5 @@
     <string name="image">Imagen</string>
     <string name="images">Imágenes</string>
     <string name="cancel">Cancelar</string>
+    <string name="no_requests">No se encontraron consultas</string>
 </resources>

@@ -7,6 +7,7 @@ import com.brugui.dermalcheck.data.model.Status;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -20,22 +21,20 @@ import java.util.Map;
  */
 public class RequestDetailDataSource {
 
-    private FirebaseAuth auth;
     private Result<Request> result;
-    private static final String TAG = "Logger RequestDS";
+    private static final String TAG = "Logger RequestDetDS";
 
     public Result<Request> sendRequest(Request request) {
         try {
             FirebaseFirestore db = FirebaseFirestore.getInstance();
+            DocumentReference ref = db.collection("requests").document();
+            request.setId(ref.getId());
             Map<String, Object> mapping = request.toMap();
             mapping.put("creationDate", FieldValue.serverTimestamp());
-            mapping.put("status", db.document("status/" + Status.PENDING_STATUS_REFERENCE));
-            mapping.put("sender", db.document("users/" + request.getSender().getUserId()));
 
-            db.collection("requests")
-                    .add(mapping)
+            db.collection("requests").document(ref.getId())
+                    .set(mapping)
                     .addOnSuccessListener(documentReference -> {
-                        Log.d(TAG, "Todo ok " + documentReference.getId());
                         result = new Result.Success<>(request);
                     })
                     .addOnFailureListener(e -> {

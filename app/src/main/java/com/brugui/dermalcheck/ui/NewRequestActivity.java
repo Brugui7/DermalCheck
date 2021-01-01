@@ -129,11 +129,14 @@ public class NewRequestActivity extends AppCompatActivity {
       newRequest = new Request(0,
               chFamiliarAntecedents.isChecked(),
               chPersonalAntecedents.isChecked(),
-              Integer.valueOf(etPhototype.getText().toString()),
+              Integer.parseInt(etPhototype.getText().toString()),
               null, //TODO
-              userLogged,
-              new Status("Pendiente"),
-              Calendar.getInstance().getTime()
+              "123123", //TODO
+              userLogged.getUserId(),
+              userLogged.getUserId(), //TODO receiver
+              Status.PENDING_STATUS_NAME,
+              Calendar.getInstance().getTime(),
+              null
       );
 
       Intent intent = new Intent(NewRequestActivity.this, RequestDetailActivity.class);

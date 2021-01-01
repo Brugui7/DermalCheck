@@ -15,6 +15,9 @@ public class LoggedInUser implements Serializable {
         this.displayName = displayName;
     }
 
+    public LoggedInUser() {
+    }
+
     public String getUserId() {
         return userId;
     }
