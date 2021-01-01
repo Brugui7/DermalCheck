@@ -1,5 +1,6 @@
 package com.brugui.dermalcheck.ui.adapters;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,21 +11,25 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.brugui.dermalcheck.R;
 import com.brugui.dermalcheck.data.model.Request;
+import com.brugui.dermalcheck.data.model.Status;
+import com.brugui.dermalcheck.utils.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestViewHolder> {
 
-    private List<Request> data;
+    private final List<Request> data;
 
     public RequestAdapter(List<Request> data) {
         this.data = data;
     }
 
     public static class RequestViewHolder extends RecyclerView.ViewHolder {
-        private View vStatusIndicator;
-        private TextView tvEstimatedProbability, tvPatientId, tvCreationDate;
+        private final View vStatusIndicator;
+        private final TextView tvEstimatedProbability;
+        private final TextView tvPatientId;
+        private final TextView tvCreationDate;
 
         public RequestViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -46,14 +51,18 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
     @Override
     public void onBindViewHolder(@NonNull RequestAdapter.RequestViewHolder holder, int position) {
         Request request = data.get(position);
-        holder.tvEstimatedProbability.setText(String.valueOf(request.getEstimatedProbability()));
+        holder.tvEstimatedProbability.setText(request.getEstimatedProbability() + " %");
         holder.tvPatientId.setText(request.getPatientId());
-        holder.tvCreationDate.setText(request.getCreationDate().toString()); //TODO format
-        //TODO color del indicador
+        holder.tvCreationDate.setText(Constants.simpleDateFormat.format(request.getCreationDate().getTime()));
+        if (request.getStatus().equalsIgnoreCase(Status.ACCEPTED_STATUS_NAME)){
+            holder.vStatusIndicator.setBackgroundColor(Color.parseColor("#FF4CAF50"));
+        } else {
+            holder.vStatusIndicator.setBackgroundColor(Color.parseColor("#FFFF5722"));
+        }
     }
 
     @Override
     public int getItemCount() {
-        return data.size();
+        return data != null ? data.size() : 0;
     }
 }

@@ -48,6 +48,7 @@ public class Request implements Serializable {
         map.put("status", this.status);
         map.put("creationDate", this.creationDate);
         map.put("id", this.id);
+        map.put("patientId", this.patientId);
         return map;
     }
 

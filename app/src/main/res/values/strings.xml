@@ -23,4 +23,5 @@
     <string name="images">Imágenes</string>
     <string name="cancel">Cancelar</string>
     <string name="no_requests">No se encontraron consultas</string>
+    <string name="patient_id">Id del paciente</string>
 </resources>

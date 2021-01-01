@@ -38,7 +38,7 @@ public class NewRequestActivity extends AppCompatActivity {
     private ArrayList<Uri> images;
     private int imageSwitcherPosition;
     private Request newRequest;
-    private EditText etPhototype;
+    private EditText etPhototype, etPatientId;
     private LoggedInUser userLogged;
     private CheckBox chPersonalAntecedents, chFamiliarAntecedents;
 
@@ -54,6 +54,7 @@ public class NewRequestActivity extends AppCompatActivity {
         chFamiliarAntecedents = findViewById(R.id.chFamiliarAntecedents);
         chPersonalAntecedents = findViewById(R.id.chPersonalAntecedents);
         etPhototype = findViewById(R.id.etPhototype);
+        etPatientId = findViewById(R.id.etPatientId);
         FirebaseUser userTmp = FirebaseAuth.getInstance().getCurrentUser();
         userLogged = new LoggedInUser(userTmp.getUid(), userTmp.getDisplayName());
 
@@ -131,7 +132,7 @@ public class NewRequestActivity extends AppCompatActivity {
               chPersonalAntecedents.isChecked(),
               Integer.parseInt(etPhototype.getText().toString()),
               null, //TODO
-              "123123", //TODO
+              etPatientId.getText().toString(),
               userLogged.getUserId(),
               userLogged.getUserId(), //TODO receiver
               Status.PENDING_STATUS_NAME,

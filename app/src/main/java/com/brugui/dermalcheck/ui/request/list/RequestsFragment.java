@@ -1,12 +1,14 @@
-package com.brugui.dermalcheck.ui;
+package com.brugui.dermalcheck.ui.request.list;
 
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,8 +18,8 @@ import com.brugui.dermalcheck.data.RequestListDataSource;
 import com.brugui.dermalcheck.data.Result;
 import com.brugui.dermalcheck.data.model.LoggedInUser;
 import com.brugui.dermalcheck.data.model.Request;
+import com.brugui.dermalcheck.ui.NewRequestActivity;
 import com.brugui.dermalcheck.ui.adapters.RequestAdapter;
-import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -32,16 +34,18 @@ import java.util.List;
  */
 public class RequestsFragment extends Fragment {
     private FloatingActionButton fabNewRequest;
+    private ConstraintLayout clEmptyList;
     private RecyclerView rvRequests;
     private RequestListDataSource dataSource;
     private LoggedInUser userLogged;
     private List<Request> requests;
     private RequestAdapter adapter;
+    private RequestsViewModel requestsViewModel;
     private static final String TAG = "Logger RequestList";
 
 
-
-    public RequestsFragment() {}
+    public RequestsFragment() {
+    }
 
 
     public static RequestsFragment newInstance() {
@@ -57,7 +61,9 @@ public class RequestsFragment extends Fragment {
         dataSource = new RequestListDataSource();
         FirebaseUser userTmp = FirebaseAuth.getInstance().getCurrentUser();
         userLogged = new LoggedInUser(userTmp.getUid(), userTmp.getDisplayName());
-
+        requests = new ArrayList<>();
+        requestsViewModel = new RequestsViewModel();
+        requestsViewModel.fetchRequests();
     }
 
     @Override
@@ -67,24 +73,24 @@ public class RequestsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_requests, container, false);
         fabNewRequest = view.findViewById(R.id.fabNewRequest);
         rvRequests = view.findViewById(R.id.rvRequests);
+        clEmptyList = view.findViewById(R.id.clEmptyList);
         fabNewRequest.setOnClickListener(listenerFabNewRequest);
-        getRequests();
+        setUpRecyclerView();
+        requestsViewModel.getRequests().observe(getViewLifecycleOwner(), fetchedRequests -> {
+            requests.clear();
+            requests.addAll(fetchedRequests);
+            adapter.notifyDataSetChanged();
+            showEmptyListMessage(fetchedRequests.size() == 0);
+        });
         return view;
     }
 
-    private void setUpRecyclerView(Result<List<Request>> result) {
-        if (result instanceof Result.Success) {
-            requests = ((Result.Success<List<Request>>) result).getData();
-        } else {
-            //TODO display empty list
-        }
+    private void setUpRecyclerView() {
         rvRequests.setHasFixedSize(true);
+        rvRequests.setItemAnimator(new DefaultItemAnimator());
+        rvRequests.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new RequestAdapter(requests);
         rvRequests.setAdapter(adapter);
-    }
-
-    private void getRequests() {
-        Result<List<Request>> result = dataSource.getRequests(userLogged);
     }
 
     // ########## Listeners ##########
@@ -92,4 +98,8 @@ public class RequestsFragment extends Fragment {
         Intent intent = new Intent(getActivity(), NewRequestActivity.class);
         startActivity(intent);
     };
+
+    private void showEmptyListMessage(boolean show){
+        clEmptyList.setVisibility(show ? View.VISIBLE : View.GONE);
+    }
 }

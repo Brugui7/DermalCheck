@@ -85,15 +85,32 @@
                 android:id="@+id/etPhototype"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:backgroundTint="@android:color/transparent"
                 android:hint="@string/phototype"
                 android:inputType="number"
                 android:maxLength="1" />
 
         </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etPatientId"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@android:color/transparent"
+
+                android:hint="@string/patient_id"
+                android:inputType="number"
+                android:maxLength="10" />
+
+        </com.google.android.material.textfield.TextInputLayout>
 
         <CheckBox
             android:id="@+id/chPersonalAntecedents"
-
+            android:buttonTint="@color/accent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -104,6 +121,7 @@
         <CheckBox
             android:id="@+id/chFamiliarAntecedents"
             android:layout_width="wrap_content"
+            android:buttonTint="@color/accent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:checked="false"
@@ -129,11 +147,13 @@
         android:layout_height="300dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView4"
+        android:backgroundTint="@android:color/transparent"
         app:srcCompat="@drawable/ic_left" />
 
     <ImageButton
         android:id="@+id/ibtnNext"
         android:layout_width="wrap_content"
+        android:backgroundTint="@android:color/transparent"
         android:layout_height="300dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView4"

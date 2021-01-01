@@ -2,6 +2,7 @@ package com.brugui.dermalcheck.data;
 
 import android.util.Log;
 
+import com.brugui.dermalcheck.data.interfaces.OnDataFetched;
 import com.brugui.dermalcheck.data.model.LoggedInUser;
 import com.brugui.dermalcheck.data.model.Request;
 import com.brugui.dermalcheck.data.model.Status;
@@ -19,7 +20,7 @@ public class RequestListDataSource {
     private static final String TAG = "Logger RequestListDS";
     private Result<List<Request>> result;
 
-    public Result<List<Request>> getRequests(LoggedInUser loggedInUser) {
+    public void fetchRequests(LoggedInUser loggedInUser, OnDataFetched callback) {
         try {
             FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -31,16 +32,18 @@ public class RequestListDataSource {
                     .addOnSuccessListener(queryDocumentSnapshots -> {
                         Log.d(TAG, "ok " + queryDocumentSnapshots.size() + " resultados");
                         result = new Result.Success<>(queryDocumentSnapshots.toObjects(Request.class));
+                        callback.OnDataFetched(result);
                     })
                     .addOnFailureListener(e -> {
                         Log.e(TAG, e.getMessage(), e);
                         result = new Result.Error(new IOException("Error retrieving requests"));
+                        callback.OnDataFetched(result);
                     });
-
-            return result;
         } catch (Exception e) {
             Log.e(TAG, e.getMessage(), e);
-            return new Result.Error(new IOException("Error", e));
+            callback.OnDataFetched(new Result.Error(new IOException("Error", e)));
+
+
         }
     }
 
