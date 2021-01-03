@@ -1,5 +1,6 @@
 package com.brugui.dermalcheck.data;
 
+import android.net.Uri;
 import android.util.Log;
 
 import com.brugui.dermalcheck.data.model.Request;
@@ -12,8 +13,13 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -23,10 +29,15 @@ public class RequestDetailDataSource {
 
     private Result<Request> result;
     private static final String TAG = "Logger RequestDetDS";
+    private FirebaseFirestore db;
 
-    public Result<Request> sendRequest(Request request) {
+    public RequestDetailDataSource() {
+        db = FirebaseFirestore.getInstance();
+    }
+
+    //TODO callback
+    public Result<Request> sendRequest(Request request, ArrayList<Uri> images) {
         try {
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
             DocumentReference ref = db.collection("requests").document();
             request.setId(ref.getId());
             Map<String, Object> mapping = request.toMap();
@@ -36,6 +47,11 @@ public class RequestDetailDataSource {
                     .set(mapping)
                     .addOnSuccessListener(documentReference -> {
                         result = new Result.Success<>(request);
+                        if (images != null){
+                            //this should always be true, but just to ensure
+                            this.uploadImages(request, images);
+                        }
+
                     })
                     .addOnFailureListener(e -> {
                         Log.e(TAG, e.getMessage(), e);
@@ -49,7 +65,33 @@ public class RequestDetailDataSource {
         }
     }
 
+    private void uploadImages(Request request, ArrayList<Uri> images){
+        StorageReference storageReference = FirebaseStorage.getInstance().getReference();
+        for (Uri image : images){
+            StorageReference imageRef = storageReference.child("images/" + request.getId() + "/" + image.getLastPathSegment());
+            UploadTask uploadTask = imageRef.putFile(image);
+            uploadTask.addOnSuccessListener(result -> {
+                Task<Uri> downloadUrl = imageRef.getDownloadUrl();
+                downloadUrl.addOnSuccessListener(url -> {
+                    Log.d(TAG, "Url: " + url.toString());
+                    //todo actualizar firestore con la url https://youtu.be/lFPmgtD4lJg?t=771
+                    updateImageDatabase(request, url.toString());
+                });
+            });
+            uploadTask.addOnFailureListener(e -> {
+                Log.e(TAG, e.getMessage(), e);
+            });
+        }
+    }
 
+    private void updateImageDatabase(Request request, String url) {
+        Map<String, String> document = new HashMap<>();
+        document.put("remoteUri", url);
+        db.collection("requests")
+                .document(request.getId())
+                .collection("images")
+                .add(document);
+    }
 
     /*public void retreive() {
 

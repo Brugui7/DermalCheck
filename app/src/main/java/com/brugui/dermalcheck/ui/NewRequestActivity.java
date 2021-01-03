@@ -3,10 +3,8 @@ package com.brugui.dermalcheck.ui;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -14,22 +12,22 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
-import android.widget.ViewSwitcher;
 
 import com.brugui.dermalcheck.R;
 import com.brugui.dermalcheck.data.model.LoggedInUser;
 import com.brugui.dermalcheck.data.model.Request;
 import com.brugui.dermalcheck.data.model.Status;
 import com.brugui.dermalcheck.ui.components.ImageDetailActivity;
+import com.brugui.dermalcheck.ui.request.detail.RequestDetailActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 
-import static com.brugui.dermalcheck.ui.RequestDetailActivity.REQUEST;
+import static com.brugui.dermalcheck.ui.request.detail.RequestDetailActivity.IMAGES_ARRAY;
+import static com.brugui.dermalcheck.ui.request.detail.RequestDetailActivity.REQUEST;
 
 public class NewRequestActivity extends AppCompatActivity {
 
@@ -140,8 +138,11 @@ public class NewRequestActivity extends AppCompatActivity {
               null
       );
 
+
+
       Intent intent = new Intent(NewRequestActivity.this, RequestDetailActivity.class);
       intent.putExtra(REQUEST, newRequest);
+      intent.putExtra(IMAGES_ARRAY, images);
       startActivity(intent);
     };
 

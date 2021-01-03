@@ -52,4 +52,5 @@ dependencies {
     implementation 'com.igreenwood.loupe:loupe:1.2.1'
     implementation 'com.igreenwood.loupe:extensions:1.0.0'
     apply plugin: 'kotlin-android'
+    implementation 'com.google.firebase:firebase-storage'
 }

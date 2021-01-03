@@ -6,6 +6,8 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Date;
 
 import java.io.Serializable;
@@ -20,6 +22,7 @@ public class Request implements Serializable {
     private String notes, patientId, status;
     private String sender, receiver;
     private Date creationDate;
+    private ArrayList<String> imageUrls;
 
     public Request(double estimatedProbability, boolean familiarAntecedents, boolean personalAntecedents, int phototype, String notes, String patientId, String sender, String receiver, String status, Date creationDate, String id) {
         this.estimatedProbability = estimatedProbability;
@@ -147,6 +150,11 @@ public class Request implements Serializable {
                 '}';
     }
 
+    public ArrayList<String> getImageUrls() {
+        return imageUrls;
+    }
 
-
+    public void setImageUrls(ArrayList<String> imageUrls) {
+        this.imageUrls = imageUrls;
+    }
 }
