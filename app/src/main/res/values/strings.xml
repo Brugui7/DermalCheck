@@ -24,4 +24,7 @@
     <string name="cancel">Cancelar</string>
     <string name="no_requests">No se encontraron consultas</string>
     <string name="patient_id">Id del paciente</string>
+    <string name="notes">Notas</string>
+    <string name="request_detail">Detalles de la consulta</string>
+    <string name="new_request">Nueva consulta</string>
 </resources>

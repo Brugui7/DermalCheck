@@ -25,6 +25,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static com.brugui.dermalcheck.ui.request.detail.RequestDetailActivity.IMAGES_ARRAY;
 import static com.brugui.dermalcheck.ui.request.detail.RequestDetailActivity.REQUEST;
@@ -36,7 +37,7 @@ public class NewRequestActivity extends AppCompatActivity {
     private ArrayList<Uri> images;
     private int imageSwitcherPosition;
     private Request newRequest;
-    private EditText etPhototype, etPatientId;
+    private EditText etPhototype, etPatientId, etNotes;
     private LoggedInUser userLogged;
     private CheckBox chPersonalAntecedents, chFamiliarAntecedents;
 
@@ -44,6 +45,7 @@ public class NewRequestActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_request);
+        setTitle(R.string.new_request);
         imageSwitcher = findViewById(R.id.imgsPreview);
         FloatingActionButton fabAddImage = findViewById(R.id.fabAddImage);
         ImageButton ibtnNext = findViewById(R.id.ibtnNext);
@@ -53,6 +55,7 @@ public class NewRequestActivity extends AppCompatActivity {
         chPersonalAntecedents = findViewById(R.id.chPersonalAntecedents);
         etPhototype = findViewById(R.id.etPhototype);
         etPatientId = findViewById(R.id.etPatientId);
+        etNotes = findViewById(R.id.etNotes);
         FirebaseUser userTmp = FirebaseAuth.getInstance().getCurrentUser();
         userLogged = new LoggedInUser(userTmp.getUid(), userTmp.getDisplayName());
 
@@ -125,11 +128,12 @@ public class NewRequestActivity extends AppCompatActivity {
     };
 
     private final View.OnClickListener listenerBtnAnalyze = view -> {
-      newRequest = new Request(0,
+      newRequest = new Request(
+              Math.round(ThreadLocalRandom.current().nextDouble(0, 100) * 100.0) / 100.0,
               chFamiliarAntecedents.isChecked(),
               chPersonalAntecedents.isChecked(),
-              Integer.parseInt(etPhototype.getText().toString()),
-              null, //TODO
+              Integer.parseInt(etPhototype.getText().toString()), //TODO campo obligatorio
+              etNotes.getText().toString(),
               etPatientId.getText().toString(),
               userLogged.getUserId(),
               userLogged.getUserId(), //TODO receiver

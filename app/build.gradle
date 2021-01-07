@@ -53,4 +53,7 @@ dependencies {
     implementation 'com.igreenwood.loupe:extensions:1.0.0'
     apply plugin: 'kotlin-android'
     implementation 'com.google.firebase:firebase-storage'
+    implementation("app.futured.donut:library:2.1.0")
+    implementation("app.futured.donut:library-compose:2.1.0")
+
 }
