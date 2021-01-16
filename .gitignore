@@ -14,7 +14,7 @@
 .cxx
 local.properties
 /app/google-services.json
-
+/app/src/main/java/com/brugui/dermalcheck/utils/PrivateConstants.java
 # Created by https://www.toptal.com/developers/gitignore/api/windows,android,androidstudio
 # Edit at https://www.toptal.com/developers/gitignore?templates=windows,android,androidstudio
 

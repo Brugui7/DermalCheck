@@ -45,15 +45,20 @@ dependencies {
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
-    implementation platform('com.google.firebase:firebase-bom:26.1.1')
-    implementation 'com.google.firebase:firebase-analytics'
-    implementation 'com.firebaseui:firebase-ui-firestore:6.2.1'
     implementation "androidx.cardview:cardview:1.0.0"
     implementation 'com.igreenwood.loupe:loupe:1.2.1'
     implementation 'com.igreenwood.loupe:extensions:1.0.0'
     apply plugin: 'kotlin-android'
-    implementation 'com.google.firebase:firebase-storage'
     implementation("app.futured.donut:library:2.1.0")
     implementation("app.futured.donut:library-compose:2.1.0")
+    implementation 'com.android.volley:volley:1.1.1'
+
+
+    implementation platform('com.google.firebase:firebase-bom:26.1.1')
+    implementation 'com.google.firebase:firebase-storage'
+    implementation 'com.google.firebase:firebase-messaging'
+    implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.firebaseui:firebase-ui-firestore:6.2.1'
+
 
 }

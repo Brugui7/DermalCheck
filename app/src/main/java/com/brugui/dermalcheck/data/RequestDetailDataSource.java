@@ -3,8 +3,16 @@ package com.brugui.dermalcheck.data;
 import android.net.Uri;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
+import com.android.volley.AuthFailureError;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.brugui.dermalcheck.data.model.Request;
 import com.brugui.dermalcheck.data.model.Status;
+import com.brugui.dermalcheck.utils.NotificationRequestsQueue;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
@@ -13,9 +21,14 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.RemoteMessage;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -74,7 +87,6 @@ public class RequestDetailDataSource {
                 Task<Uri> downloadUrl = imageRef.getDownloadUrl();
                 downloadUrl.addOnSuccessListener(url -> {
                     Log.d(TAG, "Url: " + url.toString());
-                    //todo actualizar firestore con la url https://youtu.be/lFPmgtD4lJg?t=771
                     updateImageDatabase(request, url.toString());
                 });
             });
@@ -91,9 +103,13 @@ public class RequestDetailDataSource {
                 .document(request.getId())
                 .collection("images")
                 .add(document);
+
     }
 
-    /*public void retreive() {
 
+
+
+    /*public void retreive() {
+//todo
     }*/
 }

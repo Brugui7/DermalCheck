@@ -3,6 +3,7 @@
     package="com.brugui.dermalcheck">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.NETWORK_STATE"/>
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -15,8 +16,22 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.DermalCheck">
-        <activity android:name=".ui.request.detail.RequestDetailActivity"></activity>
-        <activity android:name=".ui.components.aaaActivity" />
+        <service
+            android:name=".services.NotificationService"
+            android:enabled="true"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <activity android:name=".ui.request.detail.RequestDetailActivity">
+            <intent-filter>
+                <action android:name="RequestDetailActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity android:name=".ui.components.ImageDetailActivity" />
         <activity android:name=".ui.NewRequestActivity" />
         <activity android:name=".ui.MainActivity">

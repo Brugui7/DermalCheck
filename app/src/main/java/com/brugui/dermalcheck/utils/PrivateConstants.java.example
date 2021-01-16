@@ -1,0 +1,5 @@
+package com.brugui.dermalcheck.utils;
+
+public class PrivateConstants {
+    public static final String CM_SERVER_KEY = "";
+}
