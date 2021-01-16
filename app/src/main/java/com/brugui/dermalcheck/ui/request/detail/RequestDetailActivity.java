@@ -10,14 +10,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Response;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.brugui.dermalcheck.R;
 import com.brugui.dermalcheck.data.RequestDetailDataSource;
+import com.brugui.dermalcheck.data.Result;
+import com.brugui.dermalcheck.data.interfaces.OnRequestCreated;
 import com.brugui.dermalcheck.data.model.Request;
 import com.brugui.dermalcheck.utils.NotificationRequestsQueue;
-import com.brugui.dermalcheck.utils.PrivateConstants;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 
@@ -26,8 +25,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 import app.futured.donut.DonutProgressView;
 import app.futured.donut.DonutSection;
@@ -64,14 +61,14 @@ public class RequestDetailActivity extends AppCompatActivity {
             images = bundle.getParcelableArrayList(IMAGES_ARRAY);
         }
 
-        setValues();
+        setChartValues();
 
         btnCancel.setOnClickListener(view -> {finish();});
         btnSendRequest.setOnClickListener(listenerBtnSendRequest);
         dataSource = new RequestDetailDataSource();
     }
 
-    private void setValues(){
+    private void setChartValues(){
         float estimatedProbability = (float)request.getEstimatedProbability();
         tvEstimatedProbability.setText(estimatedProbability + "%");
         int color = Color.parseColor("#f44336");
@@ -86,50 +83,22 @@ public class RequestDetailActivity extends AppCompatActivity {
     }
 
     //########## Listeners ##########
-    private final View.OnClickListener listenerBtnSendRequest = view -> {
-        //dataSource.sendRequest(request, images);
-        sendMessage();
+
+
+    private final OnRequestCreated onRequestCreated = result -> {
+        if (result instanceof Result.Error){
+            //TODO show error snackbar
+            return;
+        }
+
+        NotificationRequestsQueue
+                .getInstance(getApplicationContext())
+                .addToRequestQueue(((Result.Success<JsonObjectRequest>) result).getData());
+
     };
 
-
-
-    public void sendMessage(){
-        String topic = "/topics/userABC"; //topic must match with what the receiver subscribed to
-        FirebaseMessaging.getInstance().subscribeToTopic("/topics/userABC");
-        String title = "Prueba";
-        String message = "Funciona por dios";
-
-        JSONObject notification = new JSONObject();
-        JSONObject notifcationBody = new JSONObject();
-        try {
-            notifcationBody.put("title", title);
-            notifcationBody.put("message", message);
-
-            notification.put("to", topic);
-            notification.put("data", notifcationBody);
-        } catch (JSONException e) {
-            Log.e(TAG, "onCreate: " + e.getMessage() );
-        }
-        sendNotification(notification);
-
-    }
-
-    private void sendNotification(JSONObject notification) {
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
-                "https://fcm.googleapis.com/fcm/send",
-                notification,
-                (Response.Listener<JSONObject>) response -> Log.i(TAG, "onResponse: " + response.toString()),
-                (Response.ErrorListener) error -> Log.e(TAG, error.getMessage() + " " + error.getMessage(), error))
-        {
-            @Override
-            public Map<String, String> getHeaders() {
-                Map<String, String> params = new HashMap<>();
-                params.put("Authorization", "Bearer " + PrivateConstants.CM_SERVER_KEY);
-                params.put("Content-Type", "application/json");
-                return params;
-            }
-        };
-        NotificationRequestsQueue.getInstance(getApplicationContext()).addToRequestQueue(jsonObjectRequest);
-    }
+    private final View.OnClickListener listenerBtnSendRequest = view -> {
+        dataSource.sendRequest(request, images, onRequestCreated);
+    };
 
 }

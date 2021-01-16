@@ -9,9 +9,11 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.brugui.dermalcheck.data.interfaces.OnRequestCreated;
 import com.brugui.dermalcheck.data.model.Request;
 import com.brugui.dermalcheck.data.model.Status;
 import com.brugui.dermalcheck.utils.NotificationRequestsQueue;
+import com.brugui.dermalcheck.utils.PrivateConstants;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
@@ -48,8 +50,7 @@ public class RequestDetailDataSource {
         db = FirebaseFirestore.getInstance();
     }
 
-    //TODO callback
-    public Result<Request> sendRequest(Request request, ArrayList<Uri> images) {
+    public void sendRequest(Request request, ArrayList<Uri> images, OnRequestCreated onRequestCreated) {
         try {
             DocumentReference ref = db.collection("requests").document();
             request.setId(ref.getId());
@@ -63,18 +64,21 @@ public class RequestDetailDataSource {
                         if (images != null){
                             //this should always be true, but just to ensure
                             this.uploadImages(request, images);
+                            Result result = new Result.Success(prepareNotification(request));
+                            onRequestCreated.OnRequestCreated(result);
+
                         }
 
                     })
                     .addOnFailureListener(e -> {
                         Log.e(TAG, e.getMessage(), e);
                         result = new Result.Error(new IOException("Error creating Request", e));
+                        onRequestCreated.OnRequestCreated(result);
                     });
-            return  result;
-
         } catch (Exception e) {
             Log.e(TAG, e.getMessage(), e);
-            return new Result.Error(new IOException("Error", e));
+            result = new Result.Error(new IOException("Error creating Request", e));
+            onRequestCreated.OnRequestCreated(result);
         }
     }
 
@@ -106,6 +110,44 @@ public class RequestDetailDataSource {
 
     }
 
+    /**
+     * TODO
+     * @param request
+     * @return request notification http request
+     */
+    private JsonObjectRequest prepareNotification(Request request){
+        String topic = "/topics/userABC"; //the receiver id
+        FirebaseMessaging.getInstance().subscribeToTopic("/topics/userABC");
+        String title = "Prueba";
+        String message = "Funciona";
+
+        JSONObject notification = new JSONObject();
+        JSONObject notifcationBody = new JSONObject();
+        try {
+            notifcationBody.put("title", title);
+            notifcationBody.put("message", message);
+
+            notification.put("to", topic);
+            notification.put("data", notifcationBody);
+        } catch (JSONException e) {
+            Log.e(TAG, "onCreate: " + e.getMessage() );
+        }
+
+        return new JsonObjectRequest(
+                "https://fcm.googleapis.com/fcm/send",
+                notification,
+                (Response.Listener<JSONObject>) response -> Log.i(TAG, "onResponse: " + response.toString()),
+                (Response.ErrorListener) error -> Log.e(TAG, error.getMessage() + " " + error.getMessage(), error))
+        {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> params = new HashMap<>();
+                params.put("Authorization", "Bearer " + PrivateConstants.CM_SERVER_KEY);
+                params.put("Content-Type", "application/json");
+                return params;
+            }
+        };
+    }
 
 
 
