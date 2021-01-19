@@ -157,4 +157,12 @@ public class Request implements Serializable {
     public void setImageUrls(ArrayList<String> imageUrls) {
         this.imageUrls = imageUrls;
     }
+
+    public String getReceiver() {
+        return receiver;
+    }
+
+    public void setReceiver(String receiver) {
+        this.receiver = receiver;
+    }
 }

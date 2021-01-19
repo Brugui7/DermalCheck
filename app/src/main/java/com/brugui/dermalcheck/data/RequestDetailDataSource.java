@@ -61,12 +61,12 @@ public class RequestDetailDataSource {
                     .set(mapping)
                     .addOnSuccessListener(documentReference -> {
                         result = new Result.Success<>(request);
+
                         if (images != null){
                             //this should always be true, but just to ensure
                             this.uploadImages(request, images);
                             Result result = new Result.Success(prepareNotification(request));
                             onRequestCreated.OnRequestCreated(result);
-
                         }
 
                     })
@@ -116,10 +116,8 @@ public class RequestDetailDataSource {
      * @return request notification http request
      */
     private JsonObjectRequest prepareNotification(Request request){
-        String topic = "/topics/userABC"; //the receiver id
-        FirebaseMessaging.getInstance().subscribeToTopic("/topics/userABC");
-        String title = "Prueba";
-        String message = "Funciona";
+        String title = "Nueva consulta recibida";
+        String message = "Te han asignado una nueva consulta con una probabilidad del " + request.getEstimatedProbability() + "%";
 
         JSONObject notification = new JSONObject();
         JSONObject notifcationBody = new JSONObject();
@@ -127,7 +125,7 @@ public class RequestDetailDataSource {
             notifcationBody.put("title", title);
             notifcationBody.put("message", message);
 
-            notification.put("to", topic);
+            notification.put("to", "/topics/" + request.getReceiver());
             notification.put("data", notifcationBody);
         } catch (JSONException e) {
             Log.e(TAG, "onCreate: " + e.getMessage() );

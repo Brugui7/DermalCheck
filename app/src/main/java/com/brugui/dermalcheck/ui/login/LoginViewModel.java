@@ -8,6 +8,7 @@ import android.util.Patterns;
 
 import com.brugui.dermalcheck.data.LoginRepository;
 import com.brugui.dermalcheck.data.Result;
+import com.brugui.dermalcheck.data.interfaces.OnLoginFinished;
 import com.brugui.dermalcheck.data.model.LoggedInUser;
 import com.brugui.dermalcheck.R;
 
@@ -31,15 +32,17 @@ public class LoginViewModel extends ViewModel {
 
     public void login(String username, String password) {
         // can be launched in a separate asynchronous job
-        Result<LoggedInUser> result = loginRepository.login(username, password);
+        loginRepository.login(username, password, onLoginFinished);
+    }
 
+    private final OnLoginFinished onLoginFinished = result -> {
         if (result instanceof Result.Success) {
             LoggedInUser data = ((Result.Success<LoggedInUser>) result).getData();
             loginResult.setValue(new LoginResult(new LoggedInUserView(data.getDisplayName())));
         } else {
             loginResult.setValue(new LoginResult(R.string.login_failed));
         }
-    }
+    };
 
     public void loginDataChanged(String username, String password) {
         if (!isUserNameValid(username)) {
@@ -56,6 +59,7 @@ public class LoginViewModel extends ViewModel {
         if (username == null) {
             return false;
         }
+
         if (username.contains("@")) {
             return Patterns.EMAIL_ADDRESS.matcher(username).matches();
         } else {

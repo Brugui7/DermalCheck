@@ -1,5 +1,6 @@
 package com.brugui.dermalcheck.data;
 
+import com.brugui.dermalcheck.data.interfaces.OnLoginFinished;
 import com.brugui.dermalcheck.data.model.LoggedInUser;
 
 /**
@@ -43,12 +44,15 @@ public class LoginRepository {
         // @see https://developer.android.com/training/articles/keystore
     }
 
-    public Result<LoggedInUser> login(String username, String password) {
+    public void login(String username, String password, OnLoginFinished callback) {
         // handle login
-        Result<LoggedInUser> result = dataSource.login(username, password);
-        if (result instanceof Result.Success) {
-            setLoggedInUser(((Result.Success<LoggedInUser>) result).getData());
-        }
-        return result;
+        dataSource.login(username, password, result -> {
+            if (result instanceof Result.Success) {
+                setLoggedInUser(((Result.Success<LoggedInUser>) result).getData());
+            }
+            callback.onLoginFinished(result);
+        });
     }
+
 }
+

@@ -58,7 +58,7 @@ public class NotificationService extends FirebaseMessagingService {
                 R.drawable.ic_baseline_add);
 
         Uri notificationSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, "userABC")
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, "dermalcheck")
                 .setSmallIcon(R.drawable.ic_baseline_add)
                 .setLargeIcon(largeIcon)
                 .setContentTitle(remoteMessage.getData().get("title"))
@@ -76,11 +76,11 @@ public class NotificationService extends FirebaseMessagingService {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void setupChannels(NotificationManager notificationManager){
-        CharSequence adminChannelName = "New notification";
-        String adminChannelDescription = "Device to devie notification";
+        CharSequence adminChannelName = "Dermalcheck";
+        String adminChannelDescription = "Notificaciones Dermalcheck";
 
         NotificationChannel adminChannel;
-        adminChannel = new NotificationChannel("userABC", adminChannelName, NotificationManager.IMPORTANCE_HIGH);
+        adminChannel = new NotificationChannel("dermalcheck", adminChannelName, NotificationManager.IMPORTANCE_HIGH);
         adminChannel.setDescription(adminChannelDescription);
         adminChannel.enableLights(true);
         adminChannel.setLightColor(Color.RED);
