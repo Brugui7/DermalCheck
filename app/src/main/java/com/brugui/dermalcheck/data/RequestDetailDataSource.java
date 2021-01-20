@@ -117,7 +117,7 @@ public class RequestDetailDataSource {
      */
     private JsonObjectRequest prepareNotification(Request request){
         String title = "Nueva consulta recibida";
-        String message = "Te han asignado una nueva consulta con una probabilidad del " + request.getEstimatedProbability() + "%";
+        String message = "Te han asignado una nueva consulta.";
 
         JSONObject notification = new JSONObject();
         JSONObject notifcationBody = new JSONObject();
