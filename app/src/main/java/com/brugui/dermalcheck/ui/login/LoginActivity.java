@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -27,6 +28,7 @@ import android.widget.Toast;
 import com.brugui.dermalcheck.R;
 //import com.brugui.dermalcheck.ui.components.snackbar.CustomSnackbar;
 import com.brugui.dermalcheck.ui.MainActivity;
+import com.brugui.dermalcheck.ui.components.snackbar.CustomSnackbar;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -34,6 +36,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private LoginViewModel loginViewModel;
     private ConstraintLayout container;
+    private static final String TAG = "Logger Login";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -68,6 +71,7 @@ public class LoginActivity extends AppCompatActivity {
             loadingProgressBar.setVisibility(View.GONE);
             if (loginResult.getError() != null) {
                 showLoginFailed(loginResult.getError());
+                return;
             }
             if (loginResult.getSuccess() != null) {
                 updateUiWithUser(loginResult.getSuccess());
@@ -75,7 +79,9 @@ public class LoginActivity extends AppCompatActivity {
             setResult(Activity.RESULT_OK);
 
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-            intent.setFlags(intent.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         });
 
@@ -122,7 +128,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void showLoginFailed(@StringRes Integer errorString) {
-        com.brugui.dermalcheck.ui.components.snackbar.CustomSnackbar.Companion.make(container, getString(errorString),
+        CustomSnackbar.make(container, getString(errorString),
                 Snackbar.LENGTH_SHORT,
                 null,
                 R.drawable.ic_error_outline,

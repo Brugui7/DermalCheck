@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/clContainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/secondary"
@@ -15,11 +16,11 @@
         android:layout_marginBottom="32dp"
         android:backgroundTint="@color/main_dark"
         android:clickable="true"
-        app:tint="@color/white"
+        android:focusable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/add_a_photo"
-        android:focusable="true" />
+        app:tint="@color/white" />
 
     <TextView
         android:id="@+id/textView4"
@@ -166,16 +167,16 @@
         android:id="@+id/ibtnPrevious"
         android:layout_width="wrap_content"
         android:layout_height="300dp"
+        android:backgroundTint="@android:color/transparent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView4"
-        android:backgroundTint="@android:color/transparent"
         app:srcCompat="@drawable/ic_left" />
 
     <ImageButton
         android:id="@+id/ibtnNext"
         android:layout_width="wrap_content"
-        android:backgroundTint="@android:color/transparent"
         android:layout_height="300dp"
+        android:backgroundTint="@android:color/transparent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView4"
         app:srcCompat="@drawable/ic_right" />

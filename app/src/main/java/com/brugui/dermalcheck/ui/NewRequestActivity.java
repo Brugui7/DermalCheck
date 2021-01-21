@@ -1,8 +1,10 @@
 package com.brugui.dermalcheck.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Intent;
+import android.net.ParseException;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -18,8 +20,10 @@ import com.brugui.dermalcheck.data.model.LoggedInUser;
 import com.brugui.dermalcheck.data.model.Request;
 import com.brugui.dermalcheck.data.model.Status;
 import com.brugui.dermalcheck.ui.components.ImageDetailActivity;
+import com.brugui.dermalcheck.ui.components.snackbar.CustomSnackbar;
 import com.brugui.dermalcheck.ui.request.detail.RequestDetailActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -40,6 +44,7 @@ public class NewRequestActivity extends AppCompatActivity {
     private EditText etPhototype, etPatientId, etNotes;
     private LoggedInUser userLogged;
     private CheckBox chPersonalAntecedents, chFamiliarAntecedents;
+    private ConstraintLayout clContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +61,7 @@ public class NewRequestActivity extends AppCompatActivity {
         etPhototype = findViewById(R.id.etPhototype);
         etPatientId = findViewById(R.id.etPatientId);
         etNotes = findViewById(R.id.etNotes);
+        clContainer = findViewById(R.id.clContainer);
         FirebaseUser userTmp = FirebaseAuth.getInstance().getCurrentUser();
         userLogged = new LoggedInUser(userTmp.getUid(), userTmp.getDisplayName());
 
@@ -84,7 +90,7 @@ public class NewRequestActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             images.clear();
-            if (data.getClipData() != null){
+            if (data.getClipData() != null) {
                 //multiple imgs
                 int imgCount = data.getClipData().getItemCount();
                 for (int i = 0; i < imgCount; i++) {
@@ -103,7 +109,7 @@ public class NewRequestActivity extends AppCompatActivity {
     //########## LISTENERS ##########
 
     private final View.OnClickListener listenerFabAddImage = view -> {
-      dispatchTakePictureIntent();
+        dispatchTakePictureIntent();
     };
 
     private final View.OnClickListener listenerIbtnPrevious = view -> {
@@ -128,26 +134,74 @@ public class NewRequestActivity extends AppCompatActivity {
     };
 
     private final View.OnClickListener listenerBtnAnalyze = view -> {
-      newRequest = new Request(
-              Math.round(ThreadLocalRandom.current().nextDouble(0, 100) * 100.0) / 100.0,
-              chFamiliarAntecedents.isChecked(),
-              chPersonalAntecedents.isChecked(),
-              Integer.parseInt(etPhototype.getText().toString()), //TODO campo obligatorio
-              etNotes.getText().toString(),
-              etPatientId.getText().toString(),
-              userLogged.getUserId(),
-              userLogged.getUserId(), //TODO receiver
-              Status.PENDING_STATUS_NAME,
-              Calendar.getInstance().getTime(),
-              null
-      );
+
+        if (!validateInput()){
+            return;
+        }
+
+        newRequest = new Request(
+                Math.round(ThreadLocalRandom.current().nextDouble(0, 100) * 100.0) / 100.0,
+                chFamiliarAntecedents.isChecked(),
+                chPersonalAntecedents.isChecked(),
+                Integer.parseInt(etPhototype.getText().toString()), //TODO campo obligatorio
+                etNotes.getText().toString(),
+                etPatientId.getText().toString(),
+                userLogged.getUserId(),
+                userLogged.getUserId(), //TODO receiver
+                Status.PENDING_STATUS_NAME,
+                Calendar.getInstance().getTime(),
+                null
+        );
 
 
-
-      Intent intent = new Intent(NewRequestActivity.this, RequestDetailActivity.class);
-      intent.putExtra(REQUEST, newRequest);
-      intent.putExtra(IMAGES_ARRAY, images);
-      startActivity(intent);
+        Intent intent = new Intent(NewRequestActivity.this, RequestDetailActivity.class);
+        intent.putExtra(REQUEST, newRequest);
+        intent.putExtra(IMAGES_ARRAY, images);
+        startActivity(intent);
     };
+
+    private boolean validateInput() {
+        etPatientId.setError(null);
+        etPhototype.setError(null);
+
+        if (images.size() == 0){
+            CustomSnackbar.Companion.make(clContainer, getString(R.string.error_no_images),
+                    Snackbar.LENGTH_SHORT,
+                    null,
+                    R.drawable.ic_error_outline,
+                    null,
+                    getColor(R.color.accent)
+            ).show();
+            return false;
+        }
+
+        if (etPatientId.getText().toString().trim().length() == 0){
+            etPatientId.setError(getString(R.string.required_field));
+            etPatientId.requestFocus();
+            return false;
+        }
+
+        String stringPhototype = etPhototype.getText().toString().trim();
+        if (stringPhototype.length() == 0){
+            etPhototype.setError(getString(R.string.required_field));
+            etPhototype.requestFocus();
+            return false;
+        }
+
+        try {
+            int phototype = Integer.parseInt(stringPhototype);
+            if (phototype < 1 || phototype > 7){
+                etPhototype.setError(getString(R.string.invalid_phototype));
+                etPhototype.requestFocus();
+                return false;
+            }
+        } catch (NumberFormatException e){
+            etPhototype.setError(getString(R.string.invalid_phototype));
+            etPhototype.requestFocus();
+            return false;
+        }
+
+        return true;
+    }
 
 }

@@ -1,7 +1,9 @@
 package com.brugui.dermalcheck.ui.request.detail;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,7 +18,11 @@ import com.brugui.dermalcheck.data.RequestDetailDataSource;
 import com.brugui.dermalcheck.data.Result;
 import com.brugui.dermalcheck.data.interfaces.OnRequestCreated;
 import com.brugui.dermalcheck.data.model.Request;
+import com.brugui.dermalcheck.ui.MainActivity;
+import com.brugui.dermalcheck.ui.components.snackbar.CustomSnackbar;
 import com.brugui.dermalcheck.utils.NotificationRequestsQueue;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 
@@ -25,6 +31,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Objects;
 
 import app.futured.donut.DonutProgressView;
 import app.futured.donut.DonutSection;
@@ -34,11 +41,13 @@ public class RequestDetailActivity extends AppCompatActivity {
     private static final String TAG = "Logger RequestDetAc";
     public static final String IMAGES_ARRAY = "IMAGES_ARRAY";
     public static final String REQUEST = "REQUEST";
-    private Button btnSendRequest, btnCancel;
+
     private TextView tvEstimatedProbability;
     private RequestDetailDataSource dataSource;
     private Request request;
     private DonutProgressView dpvChart;
+    private ConstraintLayout clContainer;
+    private Button btnSendRequest;
 
     private ArrayList<Uri> images;
 
@@ -49,10 +58,10 @@ public class RequestDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_request_detail);
         setTitle(R.string.request_detail);
         btnSendRequest = findViewById(R.id.btnSendRequest);
-        btnCancel = findViewById(R.id.btnCancel);
+        Button btnCancel = findViewById(R.id.btnCancel);
         dpvChart = findViewById(R.id.dpvChart);
         tvEstimatedProbability = findViewById(R.id.tvEstimatedProbability);
-
+        clContainer = findViewById(R.id.clContainer);
 
 
         Bundle bundle = getIntent().getExtras();
@@ -63,19 +72,19 @@ public class RequestDetailActivity extends AppCompatActivity {
 
         setChartValues();
 
-        btnCancel.setOnClickListener(view -> {finish();});
+        btnCancel.setOnClickListener(view -> finish());
         btnSendRequest.setOnClickListener(listenerBtnSendRequest);
         dataSource = new RequestDetailDataSource();
     }
 
-    private void setChartValues(){
-        float estimatedProbability = (float)request.getEstimatedProbability();
+    private void setChartValues() {
+        float estimatedProbability = (float) request.getEstimatedProbability();
         tvEstimatedProbability.setText(estimatedProbability + "%");
         int color = Color.parseColor("#f44336");
         if (estimatedProbability < 30) {
-            color  = Color.parseColor("#4caf50");
+            color = Color.parseColor("#4caf50");
         } else if (estimatedProbability < 70) {
-            color  = Color.parseColor("#ff9800");
+            color = Color.parseColor("#ff9800");
         }
         DonutSection section = new DonutSection("", color, estimatedProbability);
         dpvChart.setCap(100f);
@@ -86,19 +95,48 @@ public class RequestDetailActivity extends AppCompatActivity {
 
 
     private final OnRequestCreated onRequestCreated = result -> {
-        if (result instanceof Result.Error){
-            //TODO show error snackbar
+        if (result instanceof Result.Error) {
+            btnSendRequest.setEnabled(true);
+            CustomSnackbar.make(clContainer, getString(R.string.error_creating_request),
+                    Snackbar.LENGTH_SHORT,
+                    null,
+                    R.drawable.ic_error_outline,
+                    null,
+                    getColor(R.color.accent)
+            ).show();
             return;
         }
 
+        //Sends the notification to the receiver
         NotificationRequestsQueue
                 .getInstance(getApplicationContext())
                 .addToRequestQueue(((Result.Success<JsonObjectRequest>) result).getData());
 
+
+        Objects.requireNonNull(CustomSnackbar.make(clContainer,
+                getString(R.string.request_created_successfully),
+                BaseTransientBottomBar.LENGTH_SHORT,
+                null,
+                R.drawable.ic_check_circle_outline,
+                null,
+                getColor(R.color.success)
+        ))
+                .addCallback(new BaseTransientBottomBar.BaseCallback<CustomSnackbar>() {
+                    @Override
+                    public void onDismissed(CustomSnackbar transientBottomBar, int event) {
+                        super.onDismissed(transientBottomBar, event);
+                        Intent intent = new Intent(RequestDetailActivity.this, MainActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                    }
+                })
+                .show();
+
     };
 
     private final View.OnClickListener listenerBtnSendRequest = view -> {
+        btnSendRequest.setEnabled(false);
         dataSource.sendRequest(request, images, onRequestCreated);
     };
-
 }

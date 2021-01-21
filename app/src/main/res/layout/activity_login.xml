@@ -60,6 +60,7 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/username"
+            android:backgroundTint="@android:color/transparent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/email"
@@ -79,6 +80,7 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/password"
+            android:backgroundTint="@android:color/transparent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/password"
