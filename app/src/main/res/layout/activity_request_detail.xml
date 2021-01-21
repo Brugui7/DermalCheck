@@ -8,6 +8,120 @@
     android:background="@color/secondary"
     tools:context=".ui.request.detail.RequestDetailActivity">
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/btnCancel"
+        app:layout_constraintTop_toBottomOf="@+id/dpvChart"
+        tools:layout_editor_absoluteX="48dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/additional_data"
+                android:textAlignment="center"
+                android:textColor="@color/main"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                android:padding="8dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etPatientId"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@android:color/transparent"
+
+                    android:hint="@string/patient_id"
+                    android:inputType="number"
+                    android:maxLength="10" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                android:padding="8dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etPhototype"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@android:color/transparent"
+                    android:hint="@string/phototype"
+                    android:inputType="number"
+                    android:maxLength="1" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <CheckBox
+                android:id="@+id/chFamiliarAntecedents"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:buttonTint="@color/accent"
+                android:checked="false"
+                android:clickable="false"
+                android:paddingTop="8dp"
+                android:text="@string/familiar_antecedents" />
+
+            <CheckBox
+                android:id="@+id/chPersonalAntecedents"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:buttonTint="@color/accent"
+                android:clickable="false"
+                android:paddingTop="8dp"
+                android:text="@string/personal_atecedents"
+                android:textAllCaps="false" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="8dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etNotes"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@android:color/transparent"
+                    android:enabled="false"
+                    android:hint="@string/notes"
+                    android:inputType="textMultiLine"
+                    android:lines="3" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/estimated_probability"
+        android:textAlignment="center"
+        android:textColor="@color/main"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <app.futured.donut.DonutProgressView
         android:id="@+id/dpvChart"
         android:layout_width="200dp"
@@ -19,7 +133,21 @@
         app:donut_strokeWidth="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+
+    <TextView
+        android:id="@+id/tvEstimatedProbability"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="80.35%"
+        android:textAlignment="center"
+        android:textColor="#000000"
+        android:textSize="36sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/dpvChart"
+        app:layout_constraintEnd_toEndOf="@+id/dpvChart"
+        app:layout_constraintStart_toStartOf="@+id/dpvChart"
+        app:layout_constraintTop_toTopOf="@+id/dpvChart" />
 
     <Button
         android:id="@+id/btnSendRequest"
@@ -41,18 +169,4 @@
         android:text="@string/cancel"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/tvEstimatedProbability"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="80.35%"
-        android:textAlignment="center"
-        android:textColor="#000000"
-        android:textSize="36sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/dpvChart"
-        app:layout_constraintEnd_toEndOf="@+id/dpvChart"
-        app:layout_constraintStart_toStartOf="@+id/dpvChart"
-        app:layout_constraintTop_toTopOf="@+id/dpvChart" />
 </androidx.constraintlayout.widget.ConstraintLayout>

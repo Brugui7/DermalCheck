@@ -28,6 +28,7 @@
     <string name="request_detail">Detalles de la consulta</string>
     <string name="new_request">Nueva consulta</string>
     <string name="request_created_successfully">Consulta creada correctamente</string>
+    <string name="estimated_probability">Probabilidad estimada</string>
 
     <string name="required_field">Este campo es obligatorio</string>
     <string name="invalid_phototype">Fototipo inválido</string>
