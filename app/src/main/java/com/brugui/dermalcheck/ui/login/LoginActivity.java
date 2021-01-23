@@ -73,10 +73,8 @@ public class LoginActivity extends AppCompatActivity {
                 showLoginFailed(loginResult.getError());
                 return;
             }
-            if (loginResult.getSuccess() != null) {
-                updateUiWithUser(loginResult.getSuccess());
-            }
-            setResult(Activity.RESULT_OK);
+
+            loginViewModel.persistUserData(this, loginResult.getSuccess());
 
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
@@ -119,12 +117,6 @@ public class LoginActivity extends AppCompatActivity {
             loginViewModel.login(usernameEditText.getText().toString(),
                     passwordEditText.getText().toString());
         });
-    }
-
-    private void updateUiWithUser(LoggedInUserView model) {
-        //String welcome = getString(R.string.welcome) + model.getDisplayName();
-        // TODO : initiate successful logged in experience
-        //Toast.makeText(getApplicationContext(), welcome, Toast.LENGTH_LONG).show();
     }
 
     private void showLoginFailed(@StringRes Integer errorString) {

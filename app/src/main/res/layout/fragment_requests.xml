@@ -13,12 +13,12 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="32dp"
-        app:backgroundTint="@color/main_dark"
-        app:tint="@color/white"
         android:clickable="true"
         android:src="@drawable/ic_baseline_add"
+        app:backgroundTint="@color/main_dark"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:tint="@color/white" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvRequests"

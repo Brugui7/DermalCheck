@@ -11,6 +11,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessaging;
 
@@ -39,25 +40,41 @@ public class LoginDataSource {
                         }
 
                         FirebaseUser user = auth.getCurrentUser();
+                        updateUserData(user);
 
-                        Map<String, Object> map = new HashMap<>();
-                        map.put("email", user.getEmail());
-                        map.put("uid", user.getUid());
+                        LoggedInUser loggedInUser = new LoggedInUser(user.getUid(), user.getEmail());
 
-                        // Updates the user data
+
                         FirebaseFirestore.getInstance()
                                 .collection("users")
                                 .document(user.getUid())
-                                .set(map);
+                                .get()
+                                .addOnCompleteListener(userDataTask -> {
+                                    if (userDataTask.isSuccessful()) {
+                                        DocumentSnapshot userDocument = userDataTask.getResult();
+                                        if (userDocument != null) {
+                                            if (userDocument.contains("rol")) {
+                                                loggedInUser.setRol(userDocument
+                                                        .getString("rol")
+                                                );
+                                            }
 
-                        // The user subscribes to its own notification channel
-                        FirebaseMessaging firebaseMessaging = FirebaseMessaging.getInstance();
+                                            if (userDocument.contains("displayName")) {
+                                                loggedInUser.setDisplayName(userDocument
+                                                        .getString("displayName")
+                                                );
+                                            }
 
-                        firebaseMessaging.subscribeToTopic("/topics/" + user.getUid());
-                        //for general purposes
-                        firebaseMessaging.subscribeToTopic("/topics/dermalcheck");
+                                        }
 
-                        callback.onLoginFinished(new Result.Success<>(new LoggedInUser(user.getUid(), user.getDisplayName())));
+                                    }
+
+                                    callback.onLoginFinished(new Result.Success<>(loggedInUser));
+
+                                });
+
+
+                        subscribeToNotification(user.getUid());
 
                     });
         } catch (Exception e) {
@@ -69,5 +86,29 @@ public class LoginDataSource {
 
     public void logout() {
         // TODO: revoke authentication
+    }
+
+    private void subscribeToNotification(String userId) {
+        // The user subscribes to its own notification channel
+        FirebaseMessaging firebaseMessaging = FirebaseMessaging.getInstance();
+
+        //for new Requests
+        firebaseMessaging.subscribeToTopic("/topics/" + userId);
+
+        //for general purposes
+        firebaseMessaging.subscribeToTopic("/topics/dermalcheck");
+    }
+
+    private void updateUserData(FirebaseUser user) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("email", user.getEmail());
+        map.put("uid", user.getUid());
+
+
+        // Updates the user data
+        FirebaseFirestore.getInstance()
+                .collection("users")
+                .document(user.getUid())
+                .set(map);
     }
 }

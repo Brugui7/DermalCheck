@@ -4,10 +4,12 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import android.content.Context;
 import android.util.Patterns;
 
 import com.brugui.dermalcheck.data.LoginRepository;
 import com.brugui.dermalcheck.data.Result;
+import com.brugui.dermalcheck.data.SharedPreferencesRepository;
 import com.brugui.dermalcheck.data.interfaces.OnLoginFinished;
 import com.brugui.dermalcheck.data.model.LoggedInUser;
 import com.brugui.dermalcheck.R;
@@ -38,7 +40,7 @@ public class LoginViewModel extends ViewModel {
     private final OnLoginFinished onLoginFinished = result -> {
         if (result instanceof Result.Success) {
             LoggedInUser data = ((Result.Success<LoggedInUser>) result).getData();
-            loginResult.setValue(new LoginResult(new LoggedInUserView(data.getDisplayName())));
+            loginResult.setValue(new LoginResult(data));
         } else {
             loginResult.setValue(new LoginResult(R.string.login_failed));
         }
@@ -70,5 +72,10 @@ public class LoginViewModel extends ViewModel {
     // A placeholder password validation check
     private boolean isPasswordValid(String password) {
         return password != null && password.trim().length() > 5;
+    }
+
+    public void persistUserData(Context context, LoggedInUser user){
+        SharedPreferencesRepository sharedPreferencesRepository = new SharedPreferencesRepository(context);
+        sharedPreferencesRepository.saveUserLogged(user);
     }
 }

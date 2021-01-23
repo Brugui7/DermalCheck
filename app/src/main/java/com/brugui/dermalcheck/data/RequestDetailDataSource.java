@@ -111,7 +111,6 @@ public class RequestDetailDataSource {
     }
 
     /**
-     * TODO
      * @param request
      * @return request notification http request
      */
@@ -134,8 +133,8 @@ public class RequestDetailDataSource {
         return new JsonObjectRequest(
                 "https://fcm.googleapis.com/fcm/send",
                 notification,
-                (Response.Listener<JSONObject>) response -> Log.i(TAG, "onResponse: " + response.toString()),
-                (Response.ErrorListener) error -> Log.e(TAG, error.getMessage() + " " + error.getMessage(), error))
+                response -> Log.i(TAG, "onResponse: " + response.toString()),
+                error -> Log.e(TAG, error.getMessage() + " " + error.getMessage(), error))
         {
             @Override
             public Map<String, String> getHeaders() {

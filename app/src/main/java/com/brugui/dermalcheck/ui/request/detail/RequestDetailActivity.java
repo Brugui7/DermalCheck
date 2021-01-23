@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -17,6 +19,7 @@ import com.brugui.dermalcheck.R;
 import com.brugui.dermalcheck.data.RequestDetailDataSource;
 import com.brugui.dermalcheck.data.Result;
 import com.brugui.dermalcheck.data.interfaces.OnRequestCreated;
+import com.brugui.dermalcheck.data.model.LoggedInUser;
 import com.brugui.dermalcheck.data.model.Request;
 import com.brugui.dermalcheck.ui.MainActivity;
 import com.brugui.dermalcheck.ui.components.snackbar.CustomSnackbar;
@@ -47,7 +50,9 @@ public class RequestDetailActivity extends AppCompatActivity {
     private Request request;
     private DonutProgressView dpvChart;
     private ConstraintLayout clContainer;
-    private Button btnSendRequest;
+    private Button btnSendRequest, btnCancel;
+    private EditText etPhototype, etPatientId, etNotes;
+    private CheckBox chPersonalAntecedents, chFamiliarAntecedents;
 
     private ArrayList<Uri> images;
 
@@ -57,23 +62,37 @@ public class RequestDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_request_detail);
         setTitle(R.string.request_detail);
+        clContainer = findViewById(R.id.clContainer);
+
         btnSendRequest = findViewById(R.id.btnSendRequest);
-        Button btnCancel = findViewById(R.id.btnCancel);
+        btnCancel = findViewById(R.id.btnCancel);
         dpvChart = findViewById(R.id.dpvChart);
         tvEstimatedProbability = findViewById(R.id.tvEstimatedProbability);
-        clContainer = findViewById(R.id.clContainer);
+
+        chFamiliarAntecedents = findViewById(R.id.chFamiliarAntecedents);
+        chPersonalAntecedents = findViewById(R.id.chPersonalAntecedents);
+        etPhototype = findViewById(R.id.etPhototype);
+        etPatientId = findViewById(R.id.etPatientId);
+        etNotes = findViewById(R.id.etNotes);
 
 
         Bundle bundle = getIntent().getExtras();
-        if (bundle != null) {
-            request = (Request) bundle.getSerializable(REQUEST);
-            images = bundle.getParcelableArrayList(IMAGES_ARRAY);
+        if (bundle == null) {
+            finish();
         }
 
-        setChartValues();
+        //creation
+        if (bundle.getSerializable(REQUEST) != null) {
+            request = (Request) bundle.getSerializable(REQUEST);
+            images = bundle.getParcelableArrayList(IMAGES_ARRAY);
+            setUpCreationUI();
+        } else {
+            //consultation
+            //todo
+        }
 
-        btnCancel.setOnClickListener(view -> finish());
-        btnSendRequest.setOnClickListener(listenerBtnSendRequest);
+
+
         dataSource = new RequestDetailDataSource();
     }
 
@@ -91,6 +110,23 @@ public class RequestDetailActivity extends AppCompatActivity {
         dpvChart.submitData(new ArrayList<>(Collections.singleton(section)));
     }
 
+    private void setFormValues(){
+        chFamiliarAntecedents.setChecked(request.isFamiliarAntecedents());
+        chPersonalAntecedents.setChecked(request.isPersonalAntecedents());
+        etPhototype.setText(request.getPhototype());
+        etPatientId.setText(request.getPatientId());
+        etNotes.setText(request.getNotes());
+    }
+
+    private void setUpCreationUI(){
+        setChartValues();
+        setFormValues();
+
+        btnCancel.setOnClickListener(view -> finish());
+        btnSendRequest.setOnClickListener(listenerBtnSendRequest);
+        btnSendRequest.setVisibility(View.VISIBLE);
+        btnCancel.setVisibility(View.VISIBLE);
+    }
     //########## Listeners ##########
 
 
