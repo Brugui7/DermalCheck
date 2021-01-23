@@ -147,6 +147,7 @@ public class Request implements Serializable {
                 ", receiver=" + receiver +
                 ", status=" + status +
                 ", creationDate=" + creationDate +
+                ", imageUrls=" + imageUrls +
                 '}';
     }
 

@@ -7,9 +7,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.brugui.dermalcheck.R;
+import com.brugui.dermalcheck.data.interfaces.OnItemClick;
 import com.brugui.dermalcheck.data.model.Request;
 import com.brugui.dermalcheck.data.model.Status;
 import com.brugui.dermalcheck.utils.Constants;
@@ -20,9 +22,11 @@ import java.util.List;
 public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestViewHolder> {
 
     private final List<Request> data;
+    private OnItemClick listener;
 
-    public RequestAdapter(List<Request> data) {
+    public RequestAdapter(List<Request> data, OnItemClick listener) {
         this.data = data;
+        this.listener = listener;
     }
 
     public static class RequestViewHolder extends RecyclerView.ViewHolder {
@@ -30,6 +34,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
         private final TextView tvEstimatedProbability;
         private final TextView tvPatientId;
         private final TextView tvCreationDate;
+        private final CardView cvContainer;
 
         public RequestViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -37,6 +42,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
             this.tvEstimatedProbability = itemView.findViewById(R.id.tvEstimatedProbability);
             this.tvPatientId = itemView.findViewById(R.id.tvPatientId);
             this.tvCreationDate = itemView.findViewById(R.id.tvCreationDate);
+            this.cvContainer = itemView.findViewById(R.id.cvContainer);
         }
     }
 
@@ -51,14 +57,18 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
     @Override
     public void onBindViewHolder(@NonNull RequestAdapter.RequestViewHolder holder, int position) {
         Request request = data.get(position);
-        holder.tvEstimatedProbability.setText(request.getEstimatedProbability() + " %");
+        holder.tvEstimatedProbability.setText(request.getEstimatedProbability() + "%");
         holder.tvPatientId.setText(request.getPatientId());
-        holder.tvCreationDate.setText(Constants.simpleDateFormat.format(request.getCreationDate().getTime()));
+        holder.tvCreationDate.setText(Constants.simpleDateFormat.format(request
+                .getCreationDate()
+                .getTime()
+        ));
         if (request.getStatus().equalsIgnoreCase(Status.ACCEPTED_STATUS_NAME)){
             holder.vStatusIndicator.setBackgroundColor(Color.parseColor("#FF4CAF50"));
         } else {
             holder.vStatusIndicator.setBackgroundColor(Color.parseColor("#FFFF5722"));
         }
+        holder.cvContainer.setOnClickListener(view -> listener.onItemClick(position));
     }
 
     @Override

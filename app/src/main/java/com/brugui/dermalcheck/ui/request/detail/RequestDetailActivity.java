@@ -79,19 +79,22 @@ public class RequestDetailActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         if (bundle == null) {
             finish();
+            return;
         }
 
-        //creation
-        if (bundle.getSerializable(REQUEST) != null) {
-            request = (Request) bundle.getSerializable(REQUEST);
+        request = (Request) bundle.getSerializable(REQUEST);
+
+        if (bundle.getSerializable(IMAGES_ARRAY) != null) {
+            //Creation
             images = bundle.getParcelableArrayList(IMAGES_ARRAY);
             setUpCreationUI();
         } else {
-            //consultation
-            //todo
+            //Consultation
+            //todo getImages
         }
 
-
+        setFormValues();
+        setChartValues();
 
         dataSource = new RequestDetailDataSource();
     }
@@ -113,14 +116,12 @@ public class RequestDetailActivity extends AppCompatActivity {
     private void setFormValues(){
         chFamiliarAntecedents.setChecked(request.isFamiliarAntecedents());
         chPersonalAntecedents.setChecked(request.isPersonalAntecedents());
-        etPhototype.setText(request.getPhototype());
+        etPhototype.setText(String.valueOf(request.getPhototype()));
         etPatientId.setText(request.getPatientId());
         etNotes.setText(request.getNotes());
     }
 
     private void setUpCreationUI(){
-        setChartValues();
-        setFormValues();
 
         btnCancel.setOnClickListener(view -> finish());
         btnSendRequest.setOnClickListener(listenerBtnSendRequest);

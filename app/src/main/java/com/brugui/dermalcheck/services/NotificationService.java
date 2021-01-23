@@ -20,11 +20,13 @@ import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
 import com.brugui.dermalcheck.R;
+import com.brugui.dermalcheck.data.model.Request;
 import com.brugui.dermalcheck.ui.request.detail.RequestDetailActivity;
 import com.google.android.gms.cloudmessaging.CloudMessage;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.google.gson.Gson;
 
 import java.util.Random;
 
@@ -39,7 +41,12 @@ public class NotificationService extends FirebaseMessagingService {
         Log.d(TAG, "He recibido una notificación");
 
         final Intent intent = new Intent(this, RequestDetailActivity.class);
-        NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+        String requestJson = remoteMessage.getData().get("request");
+        if (requestJson != null) {
+            Gson gson = new Gson();
+            intent.putExtra(RequestDetailActivity.REQUEST, gson.fromJson(requestJson, Request.class));
+        }
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         int notificationID = new Random().nextInt(3000);
 
       /*
@@ -51,7 +58,7 @@ public class NotificationService extends FirebaseMessagingService {
         }
 
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this , 0, intent,
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
                 PendingIntent.FLAG_ONE_SHOT);
 
         Bitmap largeIcon = BitmapFactory.decodeResource(getResources(),
@@ -68,14 +75,14 @@ public class NotificationService extends FirebaseMessagingService {
                 .setContentIntent(pendingIntent);
 
         //Set notification color to match your app color template
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             notificationBuilder.setColor(getResources().getColor(R.color.main_dark));
         }
         notificationManager.notify(notificationID, notificationBuilder.build());
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void setupChannels(NotificationManager notificationManager){
+    private void setupChannels(NotificationManager notificationManager) {
         CharSequence adminChannelName = "Dermalcheck";
         String adminChannelDescription = "Notificaciones Dermalcheck";
 
@@ -105,8 +112,6 @@ public class NotificationService extends FirebaseMessagingService {
         // FCM registration token to your app server.
         //sendRegistrationToServer(token);
     }
-
-
 
 
 }

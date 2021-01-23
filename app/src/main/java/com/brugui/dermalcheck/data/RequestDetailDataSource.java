@@ -28,6 +28,7 @@ import com.google.firebase.messaging.RemoteMessage;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -62,7 +63,7 @@ public class RequestDetailDataSource {
                     .addOnSuccessListener(documentReference -> {
                         result = new Result.Success<>(request);
 
-                        if (images != null){
+                        if (images != null) {
                             //this should always be true, but just to ensure
                             this.uploadImages(request, images);
                             Result result = new Result.Success(prepareNotification(request));
@@ -82,9 +83,9 @@ public class RequestDetailDataSource {
         }
     }
 
-    private void uploadImages(Request request, ArrayList<Uri> images){
+    private void uploadImages(Request request, ArrayList<Uri> images) {
         StorageReference storageReference = FirebaseStorage.getInstance().getReference();
-        for (Uri image : images){
+        for (Uri image : images) {
             StorageReference imageRef = storageReference.child("images/" + request.getId() + "/" + image.getLastPathSegment());
             UploadTask uploadTask = imageRef.putFile(image);
             uploadTask.addOnSuccessListener(result -> {
@@ -114,28 +115,30 @@ public class RequestDetailDataSource {
      * @param request
      * @return request notification http request
      */
-    private JsonObjectRequest prepareNotification(Request request){
+    private JsonObjectRequest prepareNotification(Request request) {
         String title = "Nueva consulta recibida";
         String message = "Te han asignado una nueva consulta.";
 
         JSONObject notification = new JSONObject();
         JSONObject notifcationBody = new JSONObject();
         try {
-            notifcationBody.put("title", title);
-            notifcationBody.put("message", message);
+            Gson gson = new Gson();
+            notifcationBody
+                    .put("title", title)
+                    .put("message", message)
+                    .put("request", gson.toJson(request));
 
             notification.put("to", "/topics/" + request.getReceiver());
             notification.put("data", notifcationBody);
         } catch (JSONException e) {
-            Log.e(TAG, "onCreate: " + e.getMessage() );
+            Log.e(TAG, "onCreate: " + e.getMessage());
         }
 
         return new JsonObjectRequest(
                 "https://fcm.googleapis.com/fcm/send",
                 notification,
                 response -> Log.i(TAG, "onResponse: " + response.toString()),
-                error -> Log.e(TAG, error.getMessage() + " " + error.getMessage(), error))
-        {
+                error -> Log.e(TAG, error.getMessage() + " " + error.getMessage(), error)) {
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> params = new HashMap<>();

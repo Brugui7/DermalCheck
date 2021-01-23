@@ -31,7 +31,8 @@ public class RequestListDataSource {
                     .get()
                     .addOnSuccessListener(queryDocumentSnapshots -> {
                         Log.d(TAG, "ok " + queryDocumentSnapshots.size() + " resultados");
-                        result = new Result.Success<>(queryDocumentSnapshots.toObjects(Request.class));
+                        List<Request> requests = queryDocumentSnapshots.toObjects(Request.class);
+                        result = new Result.Success<>(requests);
                         callback.OnDataFetched(result);
                     })
                     .addOnFailureListener(e -> {

@@ -2,12 +2,13 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cvContainer"
     android:layout_width="match_parent"
     android:layout_height="130dp"
     android:clickable="true"
+    android:focusable="true"
     android:foreground="?android:attr/selectableItemBackground"
-    app:cardUseCompatPadding="true"
-    android:focusable="true">
+    app:cardUseCompatPadding="true">
 
     <!-- Indicador de estado -->
     <View
