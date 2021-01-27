@@ -34,4 +34,9 @@
     <string name="invalid_phototype">Fototipo inválido</string>
     <string name="error_no_images">Se debe proporcionar al menos una imagen</string>
     <string name="error_creating_request">Ocurrió un error al crear la consulta. Por favor, inténtelo de nuevo más tarde</string>
+    <string name="choose_images">Seleccionar imágenes</string>
+    <string name="choose_images_from_gallery">Seleccionar desde mi galería</string>
+    <string name="choose_images_from_camera">Hacer foto</string>
+    <string name="remaining_images_select">Selecciona hasta %1$d imágenes más.</string>
+    <string name="select_new_images">Seleccionar nuevas imágenes</string>
 </resources>

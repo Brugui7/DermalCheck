@@ -59,11 +59,11 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
         Request request = data.get(position);
         holder.tvEstimatedProbability.setText(request.getEstimatedProbability() + "%");
         holder.tvPatientId.setText(request.getPatientId());
-        holder.tvCreationDate.setText(Constants.simpleDateFormat.format(request
+        holder.tvCreationDate.setText(Constants.D_M_Y_H_M.format(request
                 .getCreationDate()
                 .getTime()
         ));
-        if (request.getStatus().equalsIgnoreCase(Status.ACCEPTED_STATUS_NAME)){
+        if (request.getStatus().equalsIgnoreCase(Status.DIAGNOSED_STATUS_NAME)){
             holder.vStatusIndicator.setBackgroundColor(Color.parseColor("#FF4CAF50"));
         } else {
             holder.vStatusIndicator.setBackgroundColor(Color.parseColor("#FFFF5722"));
