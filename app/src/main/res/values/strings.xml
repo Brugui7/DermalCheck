@@ -39,4 +39,17 @@
     <string name="choose_images_from_camera">Hacer foto</string>
     <string name="remaining_images_select">Selecciona hasta %1$d imágenes más.</string>
     <string name="select_new_images">Seleccionar nuevas imágenes</string>
+
+    <!-- LABELS -->
+    <string name="label1">Queratosis actinica</string>
+    <string name="label2">Carcinoma basocelular</string>
+    <string name="label3">Lesiones similares a la queratosis benigna</string>
+    <string name="label4">Dermatofibroma</string>
+    <string name="label5">Melanoma</string>
+    <string name="label6">Nevus melanocitico</string>
+    <string name="label7">Lesiones vasculares cutaneas</string>
+    <string name="label8">Carcinoma de células escamosas</string>
+    <string name="label9">Desconocido</string>
+    <!-- END LABELS -->
+
 </resources>

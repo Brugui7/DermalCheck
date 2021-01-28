@@ -11,6 +11,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.ImageDecoder;
 import android.media.MediaScannerConnection;
 import android.net.ParseException;
 import android.net.Uri;
@@ -31,6 +32,7 @@ import com.brugui.dermalcheck.R;
 import com.brugui.dermalcheck.data.model.LoggedInUser;
 import com.brugui.dermalcheck.data.model.Request;
 import com.brugui.dermalcheck.data.model.Status;
+import com.brugui.dermalcheck.ml.Model;
 import com.brugui.dermalcheck.ui.components.ImageDetailActivity;
 import com.brugui.dermalcheck.ui.components.snackbar.CustomSnackbar;
 import com.brugui.dermalcheck.ui.request.detail.RequestDetailActivity;
@@ -40,11 +42,22 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import org.tensorflow.lite.DataType;
+import org.tensorflow.lite.Interpreter;
+import org.tensorflow.lite.support.common.FileUtil;
+import org.tensorflow.lite.support.image.ImageProcessor;
+import org.tensorflow.lite.support.image.TensorImage;
+import org.tensorflow.lite.support.image.ops.ResizeOp;
+import org.tensorflow.lite.support.tensorbuffer.TensorBuffer;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.nio.MappedByteBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -105,7 +118,7 @@ public class NewRequestActivity extends AppCompatActivity {
 
 
         AlertDialog.Builder builder = new AlertDialog.Builder(NewRequestActivity.this);
-        if (images.size() == 3){
+        if (images.size() == 3) {
             builder.setTitle(R.string.select_new_images);
         } else {
             builder.setTitle(getString(R.string.remaining_images_select, 3 - images.size()));
@@ -143,11 +156,10 @@ public class NewRequestActivity extends AppCompatActivity {
                 int imgCount = data.getClipData().getItemCount();
                 for (int i = 0; i < imgCount; i++) {
                     images.add(data.getClipData().getItemAt(i).getUri());
-                    if (images.size() > 3){
+                    if (images.size() > 3) {
                         images.remove(0);
                     }
                 }
-                return;
             } else {
                 //single img
                 images.add(data.getData());
@@ -165,13 +177,12 @@ public class NewRequestActivity extends AppCompatActivity {
                     });
         }
 
-        if (images.size() > 3){
+        if (images.size() > 3) {
             images.remove(0);
         }
         imageSwitcher.setImageURI(images.get(0));
         imageSwitcherPosition = 0;
     }
-
 
 
     private void dispatchTakePictureIntent() {
@@ -294,5 +305,7 @@ public class NewRequestActivity extends AppCompatActivity {
 
         return true;
     }
+
+
 
 }
