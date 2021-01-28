@@ -22,7 +22,28 @@
         app:srcCompat="@drawable/add_a_photo"
         app:tint="@color/white" />
 
-    <TextView
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="3dp"
+            android:layout_marginTop="3dp"
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/image_probability_list_item" />
+
+    </LinearLayout>
+
+    <!--<TextView
         android:id="@+id/textView4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -36,17 +57,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!--<ImageView
-        android:id="@+id/ivPreview"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_marginTop="32dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView4"
-        app:srcCompat="@drawable/add_a_photo" />-->
-
     <ImageSwitcher
         android:id="@+id/imgsPreview"
         android:layout_width="0dp"
@@ -55,15 +65,16 @@
         app:layout_constraintStart_toEndOf="@+id/ibtnPrevious"
         app:layout_constraintTop_toBottomOf="@+id/textView4">
 
-    </ImageSwitcher>
+    </ImageSwitcher>-->
 
     <ScrollView
+        android:id="@+id/scrollView2"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="8dp"
         app:layout_constraintBottom_toTopOf="@+id/btnAnalyze"
-        app:layout_constraintTop_toBottomOf="@+id/imgsPreview"
-        tools:layout_editor_absoluteX="48dp">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -163,7 +174,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <ImageButton
+    <!--<ImageButton
         android:id="@+id/ibtnPrevious"
         android:layout_width="wrap_content"
         android:layout_height="300dp"
@@ -179,5 +190,5 @@
         android:backgroundTint="@android:color/transparent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView4"
-        app:srcCompat="@drawable/ic_right" />
+        app:srcCompat="@drawable/ic_right" />-->
 </androidx.constraintlayout.widget.ConstraintLayout>

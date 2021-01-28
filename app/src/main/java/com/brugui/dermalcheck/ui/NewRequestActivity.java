@@ -4,6 +4,9 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.FileProvider;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -29,13 +32,17 @@ import android.widget.ImageView;
 
 import com.brugui.dermalcheck.BuildConfig;
 import com.brugui.dermalcheck.R;
+import com.brugui.dermalcheck.data.model.ImageProbability;
 import com.brugui.dermalcheck.data.model.LoggedInUser;
 import com.brugui.dermalcheck.data.model.Request;
 import com.brugui.dermalcheck.data.model.Status;
 import com.brugui.dermalcheck.ml.Model;
+import com.brugui.dermalcheck.ui.adapters.ImageProbabilityAdapter;
+import com.brugui.dermalcheck.ui.adapters.RequestAdapter;
 import com.brugui.dermalcheck.ui.components.ImageDetailActivity;
 import com.brugui.dermalcheck.ui.components.snackbar.CustomSnackbar;
 import com.brugui.dermalcheck.ui.request.detail.RequestDetailActivity;
+import com.brugui.dermalcheck.utils.Classifier;
 import com.brugui.dermalcheck.utils.Common;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -69,9 +76,8 @@ public class NewRequestActivity extends AppCompatActivity {
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
     static final int REQUEST_IMAGE_PICK = 2;
-    private ImageSwitcher imageSwitcher;
     private ArrayList<Uri> images;
-    private int imageSwitcherPosition;
+    private ArrayList<ImageProbability> imageProbabilities;
     private Request newRequest;
     private EditText etPhototype, etPatientId, etNotes;
     private LoggedInUser userLogged;
@@ -79,17 +85,16 @@ public class NewRequestActivity extends AppCompatActivity {
     private ConstraintLayout clContainer;
     private Uri currentPhotoUri;
     private static final String TAG = "Logger NewRequestAc";
-
+    private RecyclerView rvList;
+    private ImageProbabilityAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_request);
         setTitle(R.string.new_request);
-        imageSwitcher = findViewById(R.id.imgsPreview);
         FloatingActionButton fabAddImage = findViewById(R.id.fabAddImage);
-        ImageButton ibtnNext = findViewById(R.id.ibtnNext);
-        ImageButton ibtnPrevious = findViewById(R.id.ibtnPrevious);
+        rvList = findViewById(R.id.rvList);
         Button btnAnalyze = findViewById(R.id.btnAnalyze);
         chFamiliarAntecedents = findViewById(R.id.chFamiliarAntecedents);
         chPersonalAntecedents = findViewById(R.id.chPersonalAntecedents);
@@ -102,11 +107,12 @@ public class NewRequestActivity extends AppCompatActivity {
 
         fabAddImage.setOnClickListener(listenerFabAddImage);
         images = new ArrayList<>();
-        imageSwitcher.setFactory(() -> new ImageView(getApplicationContext()));
-        ibtnPrevious.setOnClickListener(listenerIbtnPrevious);
-        ibtnNext.setOnClickListener(listenerIbtnNext);
+        imageProbabilities = new ArrayList<>();
+        rvList.setHasFixedSize(true);
+        rvList.setItemAnimator(new DefaultItemAnimator());
+        adapter = new ImageProbabilityAdapter(imageProbabilities, null);
+        rvList.setAdapter(adapter);
         btnAnalyze.setOnClickListener(listenerBtnAnalyze);
-        imageSwitcher.setOnClickListener(listenerImgSwitcher);
     }
 
     private void dispatchPictureIntent() {
@@ -145,10 +151,10 @@ public class NewRequestActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.d(TAG, "Result: " + resultCode);
         if (resultCode != RESULT_OK) {
             return;
         }
+        List<Uri> images = new ArrayList<>();
 
         if (requestCode == REQUEST_IMAGE_PICK) {
             if (data.getClipData() != null) {
@@ -156,9 +162,6 @@ public class NewRequestActivity extends AppCompatActivity {
                 int imgCount = data.getClipData().getItemCount();
                 for (int i = 0; i < imgCount; i++) {
                     images.add(data.getClipData().getItemAt(i).getUri());
-                    if (images.size() > 3) {
-                        images.remove(0);
-                    }
                 }
             } else {
                 //single img
@@ -177,11 +180,23 @@ public class NewRequestActivity extends AppCompatActivity {
                     });
         }
 
-        if (images.size() > 3) {
-            images.remove(0);
+        showPredictions(images);
+    }
+
+    private void showPredictions(List<Uri> images) {
+        try {
+            for (Uri image : images){
+                imageProbabilities.add(
+                        Classifier.getImageProbabilityPrediction(NewRequestActivity.this, image)
+                );
+                if (imageProbabilities.size() > 3){
+                    imageProbabilities.remove(0);
+                }
+            }
+            adapter.notifyDataSetChanged();
+        } catch (IOException exception){
+            //todo show error snackbar
         }
-        imageSwitcher.setImageURI(images.get(0));
-        imageSwitcherPosition = 0;
     }
 
 
@@ -212,27 +227,6 @@ public class NewRequestActivity extends AppCompatActivity {
 
     private final View.OnClickListener listenerFabAddImage = view -> {
         dispatchPictureIntent();
-    };
-
-    private final View.OnClickListener listenerIbtnPrevious = view -> {
-        if (imageSwitcherPosition > 0) {
-            imageSwitcher.setImageURI(images.get(--imageSwitcherPosition));
-        }
-    };
-
-    private final View.OnClickListener listenerIbtnNext = view -> {
-        if (imageSwitcherPosition < images.size() - 1) {
-            imageSwitcher.setImageURI(images.get(++imageSwitcherPosition));
-        }
-    };
-
-    private final View.OnClickListener listenerImgSwitcher = view -> {
-        if (images.size() == 0) {
-            return;
-        }
-        Intent intent = new Intent(NewRequestActivity.this, ImageDetailActivity.class);
-        intent.putExtra(ImageDetailActivity.IMAGE_URI, images.get(imageSwitcherPosition));
-        startActivity(intent);
     };
 
     private final View.OnClickListener listenerBtnAnalyze = view -> {
@@ -305,7 +299,6 @@ public class NewRequestActivity extends AppCompatActivity {
 
         return true;
     }
-
 
 
 }

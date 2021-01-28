@@ -15,6 +15,7 @@ import android.util.Log;
 import androidx.core.app.ActivityCompat;
 
 import com.brugui.dermalcheck.R;
+import com.brugui.dermalcheck.data.model.ImageProbability;
 import com.brugui.dermalcheck.ui.NewRequestActivity;
 
 import org.tensorflow.lite.DataType;
@@ -55,7 +56,7 @@ public class Classifier {
      * @return
      * @throws IOException
      */
-    private float[] predict(Context context, Uri imageUri) throws IOException {
+    private static float[] predict(Context context, Uri imageUri) throws IOException {
         Bitmap bitmap;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             bitmap = ImageDecoder.decodeBitmap(ImageDecoder.createSource(context.getContentResolver(), imageUri));
@@ -96,6 +97,23 @@ public class Classifier {
 
         return probabilityBuffer.getFloatArray();
 
+    }
+
+    public static ImageProbability getImageProbabilityPrediction(Context context, Uri imageUri) throws IOException {
+        float[] probabilities = predict(context, imageUri);
+        int largestIndex = 0;
+        float largestValue = 0;
+        for (int i = 0; i < probabilities.length; i++) {
+            if (probabilities[i] > largestValue) {
+                largestValue = probabilities[i];
+                largestIndex = i;
+            }
+        }
+
+        return new ImageProbability(labels[largestIndex],
+                ((int) ((largestValue + 0.005f) * 10000)) / 100f,
+                imageUri
+        );
     }
 
 }
