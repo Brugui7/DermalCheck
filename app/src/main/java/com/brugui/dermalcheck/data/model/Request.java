@@ -45,7 +45,7 @@ public class Request implements Serializable {
 
     public Map<String, Object> toMap(){
      Map<String, Object> map = new HashMap<>();
-        map.put("estimatedProbability", this.estimatedProbability);
+        map.put("estimatedProbability",  Math.ceil(this.estimatedProbability * 100) / 100);
         map.put("familiarAntecedents", this.familiarAntecedents);
         map.put("personalAntecedents", this.personalAntecedents);
         map.put("phototype", this.phototype);
@@ -170,5 +170,9 @@ public class Request implements Serializable {
 
     public void setReceiver(String receiver) {
         this.receiver = receiver;
+    }
+
+    public int getLabel() {
+        return label;
     }
 }

@@ -260,8 +260,10 @@ public class NewRequestActivity extends AppCompatActivity {
 
         Intent intent = new Intent(NewRequestActivity.this, RequestDetailActivity.class);
         intent.putExtra(REQUEST, newRequest);
-        //Todo por si hay que poder pasar más de una foto en algún momento
-        intent.putExtra(IMAGES_ARRAY, new ArrayList<>().add(imageSelected.getImageUri()));
+        //por si hay que poder pasar más de una foto en algún momento
+        ArrayList<Uri> imagesTmp = new ArrayList<>();
+        imagesTmp.add(imageSelected.getImageUri());
+        intent.putExtra(IMAGES_ARRAY, imagesTmp);
         startActivity(intent);
     };
 

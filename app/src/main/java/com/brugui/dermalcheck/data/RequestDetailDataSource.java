@@ -57,6 +57,7 @@ public class RequestDetailDataSource {
             request.setId(ref.getId());
             Map<String, Object> mapping = request.toMap();
             mapping.put("creationDate", FieldValue.serverTimestamp());
+            Log.d(TAG, mapping.toString());
 
             db.collection("requests").document(ref.getId())
                     .set(mapping)

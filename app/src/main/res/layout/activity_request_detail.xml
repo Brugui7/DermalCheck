@@ -9,8 +9,10 @@
     tools:context=".ui.request.detail.RequestDetailActivity">
 
     <ScrollView
+        android:id="@+id/scrollView3"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toTopOf="@+id/btnCancel"
         app:layout_constraintTop_toBottomOf="@+id/dpvChart"
@@ -57,10 +59,10 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etPhototype"
-                    android:focusable="false"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:backgroundTint="@android:color/transparent"
+                    android:focusable="false"
                     android:hint="@string/phototype"
                     android:inputType="number"
                     android:maxLength="1" />
@@ -111,13 +113,13 @@
     </ScrollView>
 
     <TextView
-        android:id="@+id/textView5"
+        android:id="@+id/tvLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="@string/estimated_probability"
         android:textAlignment="center"
-        android:textColor="@color/main"
+        android:textColor="@color/accent"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -126,16 +128,16 @@
 
     <app.futured.donut.DonutProgressView
         android:id="@+id/dpvChart"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
         app:donut_bgLineColor="@color/grey"
         app:donut_gapAngle="270"
         app:donut_gapWidth="20"
-        app:donut_strokeWidth="16dp"
+        app:donut_strokeWidth="14dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+        app:layout_constraintTop_toBottomOf="@+id/tvLabel" />
 
     <TextView
         android:id="@+id/tvEstimatedProbability"
@@ -144,7 +146,7 @@
         android:text="80.35%"
         android:textAlignment="center"
         android:textColor="#000000"
-        android:textSize="36sp"
+        android:textSize="30sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/dpvChart"
         app:layout_constraintEnd_toEndOf="@+id/dpvChart"
@@ -173,4 +175,18 @@
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
+        android:id="@+id/ivImage"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/scrollView3"
+        app:layout_constraintEnd_toStartOf="@+id/dpvChart"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvLabel"
+        app:srcCompat="@drawable/ic_baseline_camera" />
 </androidx.constraintlayout.widget.ConstraintLayout>

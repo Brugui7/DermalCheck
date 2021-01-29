@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -22,6 +23,7 @@ import com.brugui.dermalcheck.data.interfaces.OnRequestCreated;
 import com.brugui.dermalcheck.data.model.LoggedInUser;
 import com.brugui.dermalcheck.data.model.Request;
 import com.brugui.dermalcheck.ui.MainActivity;
+import com.brugui.dermalcheck.ui.components.ImageDetailActivity;
 import com.brugui.dermalcheck.ui.components.snackbar.CustomSnackbar;
 import com.brugui.dermalcheck.utils.NotificationRequestsQueue;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
@@ -45,7 +47,7 @@ public class RequestDetailActivity extends AppCompatActivity {
     public static final String IMAGES_ARRAY = "IMAGES_ARRAY";
     public static final String REQUEST = "REQUEST";
 
-    private TextView tvEstimatedProbability;
+    private TextView tvEstimatedProbability, tvLabel;
     private RequestDetailDataSource dataSource;
     private Request request;
     private DonutProgressView dpvChart;
@@ -53,6 +55,7 @@ public class RequestDetailActivity extends AppCompatActivity {
     private Button btnSendRequest, btnCancel;
     private EditText etPhototype, etPatientId, etNotes;
     private CheckBox chPersonalAntecedents, chFamiliarAntecedents;
+    private ImageView ivImage;
 
     private ArrayList<Uri> images;
 
@@ -68,6 +71,8 @@ public class RequestDetailActivity extends AppCompatActivity {
         btnCancel = findViewById(R.id.btnCancel);
         dpvChart = findViewById(R.id.dpvChart);
         tvEstimatedProbability = findViewById(R.id.tvEstimatedProbability);
+        tvLabel = findViewById(R.id.tvLabel);
+        ivImage = findViewById(R.id.ivImage);
 
         chFamiliarAntecedents = findViewById(R.id.chFamiliarAntecedents);
         chPersonalAntecedents = findViewById(R.id.chPersonalAntecedents);
@@ -119,6 +124,14 @@ public class RequestDetailActivity extends AppCompatActivity {
         etPhototype.setText(String.valueOf(request.getPhototype()));
         etPatientId.setText(request.getPatientId());
         etNotes.setText(request.getNotes());
+
+        if (request.getLabel() != 0){
+            tvLabel.setText(getString(request.getLabel()));
+        }
+        if (images != null && images.size() > 0){
+            ivImage.setImageURI(images.get(0));
+            ivImage.setOnClickListener(listenerIvImage);
+        }
     }
 
     private void setUpCreationUI(){
@@ -175,5 +188,11 @@ public class RequestDetailActivity extends AppCompatActivity {
     private final View.OnClickListener listenerBtnSendRequest = view -> {
         btnSendRequest.setEnabled(false);
         dataSource.sendRequest(request, images, onRequestCreated);
+    };
+
+    private final View.OnClickListener listenerIvImage = view -> {
+        Intent intent = new Intent(RequestDetailActivity.this, ImageDetailActivity.class);
+        intent.putExtra(ImageDetailActivity.IMAGE_URI, images.get(0));
+        startActivity(intent);
     };
 }

@@ -30,7 +30,6 @@ public class RequestsViewModel  extends ViewModel {
     public void fetchRequests(){
         dataSource.fetchRequests(userLogged, result -> {
             if (result instanceof Result.Success) {
-                Log.d(TAG, "Todo okey");
                 requests.setValue(((Result.Success<List<Request>>) result).getData());
             }
         });
