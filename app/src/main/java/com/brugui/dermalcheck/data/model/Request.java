@@ -18,13 +18,16 @@ public class Request implements Serializable {
     private String id;
     private double estimatedProbability;
     private boolean familiarAntecedents, personalAntecedents;
-    private int phototype;
+    private int phototype, label;
     private String notes, patientId, status;
     private String sender, receiver;
     private Date creationDate;
     private ArrayList<String> imageUrls;
 
-    public Request(double estimatedProbability, boolean familiarAntecedents, boolean personalAntecedents, int phototype, String notes, String patientId, String sender, String receiver, String status, Date creationDate, String id) {
+    public Request(double estimatedProbability, boolean familiarAntecedents, boolean personalAntecedents,
+                   int phototype, String notes, String patientId, String sender, String receiver,
+                   String status, Date creationDate, int label
+    ) {
         this.estimatedProbability = estimatedProbability;
         this.familiarAntecedents = familiarAntecedents;
         this.personalAntecedents = personalAntecedents;
@@ -35,6 +38,7 @@ public class Request implements Serializable {
         this.receiver = receiver;
         this.status = status;
         this.creationDate = creationDate;
+        this.label = label;
     }
 
     public Request() {}
@@ -52,6 +56,7 @@ public class Request implements Serializable {
         map.put("creationDate", this.creationDate);
         map.put("id", this.id);
         map.put("patientId", this.patientId);
+        map.put("label", this.label);
         return map;
     }
 

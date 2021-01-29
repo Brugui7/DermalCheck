@@ -1,6 +1,7 @@
 package com.brugui.dermalcheck.ui.adapters;
 
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,11 +29,10 @@ import app.futured.donut.DonutSection;
 public class ImageProbabilityAdapter extends RecyclerView.Adapter<ImageProbabilityAdapter.RequestViewHolder> {
 
     private final List<ImageProbability> data;
-    private OnItemClick listener;
+    private int positionSelected = -1;
 
     public ImageProbabilityAdapter(List<ImageProbability> data, OnItemClick listener) {
         this.data = data;
-        this.listener = listener;
     }
 
     public static class RequestViewHolder extends RecyclerView.ViewHolder {
@@ -73,7 +73,18 @@ public class ImageProbabilityAdapter extends RecyclerView.Adapter<ImageProbabili
         holder.dpvChart.setCap(100f);
         holder.dpvChart.submitData(new ArrayList<>(Collections.singleton(section)));
         holder.tvLabel.setText(imageProbability.getLabel());
-        holder.cvContainer.setOnClickListener(view -> listener.onItemClick(position));
+
+        boolean isSelected = positionSelected == position;
+        holder.cvContainer.setCardElevation(isSelected ? 16 : 0);
+        holder.cvContainer.setBackgroundColor(isSelected
+                ? Color.parseColor("#937ee9")
+                : Color.WHITE
+        );
+
+        holder.cvContainer.setOnClickListener(view -> {
+            positionSelected = position;
+            this.notifyDataSetChanged();
+        });
     }
 
     @Override
@@ -90,5 +101,9 @@ public class ImageProbabilityAdapter extends RecyclerView.Adapter<ImageProbabili
           return Color.parseColor("#ff9800");
         }
         return Color.parseColor("#f44336");
+    }
+
+    public int getPositionSelected() {
+        return positionSelected;
     }
 }

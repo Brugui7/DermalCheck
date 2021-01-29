@@ -184,19 +184,24 @@ public class NewRequestActivity extends AppCompatActivity {
     }
 
     private void showPredictions(List<Uri> images) {
-        try {
-            for (Uri image : images){
-                imageProbabilities.add(
-                        Classifier.getImageProbabilityPrediction(NewRequestActivity.this, image)
-                );
-                if (imageProbabilities.size() > 3){
-                    imageProbabilities.remove(0);
+        //TODO: load spinner
+        new Thread(() -> {
+            try {
+                for (Uri image : images) {
+                    imageProbabilities.add(
+                            Classifier.getImageProbabilityPrediction(NewRequestActivity.this, image)
+                    );
+                    if (imageProbabilities.size() > 3) {
+                        imageProbabilities.remove(0);
+                    }
                 }
+                runOnUiThread(() -> adapter.notifyDataSetChanged());
+            } catch (IOException exception) {
+                //todo show error snackbar
             }
-            adapter.notifyDataSetChanged();
-        } catch (IOException exception){
-            //todo show error snackbar
-        }
+        }).start();
+
+
     }
 
 
@@ -235,8 +240,11 @@ public class NewRequestActivity extends AppCompatActivity {
             return;
         }
 
+        ImageProbability imageSelected = imageProbabilities.get(adapter.getPositionSelected());
+
+
         newRequest = new Request(
-                Math.round(ThreadLocalRandom.current().nextDouble(0, 100) * 100.0) / 100.0,
+                imageSelected.getEstimatedProbability(),
                 chFamiliarAntecedents.isChecked(),
                 chPersonalAntecedents.isChecked(),
                 Integer.parseInt(etPhototype.getText().toString()), //TODO campo obligatorio
@@ -246,13 +254,14 @@ public class NewRequestActivity extends AppCompatActivity {
                 userLogged.getUserId(), //TODO receiver
                 Status.PENDING_STATUS_NAME,
                 Calendar.getInstance().getTime(),
-                null
+                imageSelected.getLabel()
         );
 
 
         Intent intent = new Intent(NewRequestActivity.this, RequestDetailActivity.class);
         intent.putExtra(REQUEST, newRequest);
-        intent.putExtra(IMAGES_ARRAY, images);
+        //Todo por si hay que poder pasar más de una foto en algún momento
+        intent.putExtra(IMAGES_ARRAY, new ArrayList<>().add(imageSelected.getImageUri()));
         startActivity(intent);
     };
 
@@ -260,7 +269,7 @@ public class NewRequestActivity extends AppCompatActivity {
         etPatientId.setError(null);
         etPhototype.setError(null);
 
-        if (images.size() == 0) {
+        if (adapter.getPositionSelected() == -1) {
             CustomSnackbar.Companion.make(clContainer, getString(R.string.error_no_images),
                     Snackbar.LENGTH_SHORT,
                     null,

@@ -43,30 +43,6 @@
 
     </LinearLayout>
 
-    <!--<TextView
-        android:id="@+id/textView4"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="@string/images"
-        android:textAlignment="center"
-        android:textColor="@color/main"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageSwitcher
-        android:id="@+id/imgsPreview"
-        android:layout_width="0dp"
-        android:layout_height="299dp"
-        app:layout_constraintEnd_toStartOf="@+id/ibtnNext"
-        app:layout_constraintStart_toEndOf="@+id/ibtnPrevious"
-        app:layout_constraintTop_toBottomOf="@+id/textView4">
-
-    </ImageSwitcher>-->
-
     <ScrollView
         android:id="@+id/scrollView2"
         android:layout_width="match_parent"
@@ -169,26 +145,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:text="@string/analyze_image"
+        android:text="@string/review"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
-
-    <!--<ImageButton
-        android:id="@+id/ibtnPrevious"
-        android:layout_width="wrap_content"
-        android:layout_height="300dp"
-        android:backgroundTint="@android:color/transparent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView4"
-        app:srcCompat="@drawable/ic_left" />
-
-    <ImageButton
-        android:id="@+id/ibtnNext"
-        android:layout_width="wrap_content"
-        android:layout_height="300dp"
-        android:backgroundTint="@android:color/transparent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView4"
-        app:srcCompat="@drawable/ic_right" />-->
 </androidx.constraintlayout.widget.ConstraintLayout>

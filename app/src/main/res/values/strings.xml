@@ -32,7 +32,7 @@
 
     <string name="required_field">Este campo es obligatorio</string>
     <string name="invalid_phototype">Fototipo inválido</string>
-    <string name="error_no_images">Se debe proporcionar al menos una imagen</string>
+    <string name="error_no_images">Se debe seleccionar al menos una imagen</string>
     <string name="error_creating_request">Ocurrió un error al crear la consulta. Por favor, inténtelo de nuevo más tarde</string>
     <string name="choose_images">Seleccionar imágenes</string>
     <string name="choose_images_from_gallery">Seleccionar desde mi galería</string>
@@ -50,6 +50,7 @@
     <string name="label7">Lesiones vasculares cutaneas</string>
     <string name="label8">Carcinoma de células escamosas</string>
     <string name="label9">Desconocido</string>
+    <string name="review">Revisar</string>
     <!-- END LABELS -->
 
 </resources>
