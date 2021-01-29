@@ -29,6 +29,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
+import android.widget.RadioGroup;
 
 import com.brugui.dermalcheck.BuildConfig;
 import com.brugui.dermalcheck.R;
@@ -86,6 +87,7 @@ public class NewRequestActivity extends AppCompatActivity {
     private Uri currentPhotoUri;
     private static final String TAG = "Logger NewRequestAc";
     private RecyclerView rvList;
+    private RadioGroup rgSex;
     private ImageProbabilityAdapter adapter;
 
     @Override
@@ -101,6 +103,7 @@ public class NewRequestActivity extends AppCompatActivity {
         etPhototype = findViewById(R.id.etPhototype);
         etPatientId = findViewById(R.id.etPatientId);
         etNotes = findViewById(R.id.etNotes);
+        rgSex = findViewById(R.id.rgSex);
         clContainer = findViewById(R.id.clContainer);
         FirebaseUser userTmp = FirebaseAuth.getInstance().getCurrentUser();
         userLogged = new LoggedInUser(userTmp.getUid(), userTmp.getDisplayName());
@@ -218,9 +221,14 @@ public class NewRequestActivity extends AppCompatActivity {
             }
             // Continue only if the File was successfully created
             if (photoFile != null) {
-                currentPhotoUri = FileProvider.getUriForFile(this,
-                        BuildConfig.APPLICATION_ID + ".provider",
-                        photoFile);
+                currentPhotoUri = Uri.fromFile(photoFile);
+
+                if (Build.VERSION.SDK_INT >= 24) {
+                    currentPhotoUri = FileProvider.getUriForFile(this,
+                            BuildConfig.APPLICATION_ID + ".provider",
+                            photoFile);
+                }
+
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, currentPhotoUri);
                 startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
             }
@@ -270,6 +278,17 @@ public class NewRequestActivity extends AppCompatActivity {
     private boolean validateInput() {
         etPatientId.setError(null);
         etPhototype.setError(null);
+
+        if (rgSex.getCheckedRadioButtonId() == -1){
+            CustomSnackbar.Companion.make(clContainer, getString(R.string.error_no_sex),
+                    Snackbar.LENGTH_SHORT,
+                    null,
+                    R.drawable.ic_error_outline,
+                    null,
+                    getColor(R.color.accent)
+            ).show();
+            return false;
+        }
 
         if (adapter.getPositionSelected() == -1) {
             CustomSnackbar.Companion.make(clContainer, getString(R.string.error_no_images),

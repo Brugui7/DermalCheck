@@ -80,8 +80,8 @@ public class Classifier {
 
         // Preprocess the image
         tImage.load(bitmap);
-        tImage.getTensorBuffer();
         tImage = imageProcessor.process(tImage);
+        tImage.getTensorBuffer();
 
         TensorBuffer probabilityBuffer =
                 TensorBuffer.createFixedSize(new int[]{1, 9}, DataType.FLOAT32);

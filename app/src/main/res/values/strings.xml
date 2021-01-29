@@ -33,6 +33,7 @@
     <string name="required_field">Este campo es obligatorio</string>
     <string name="invalid_phototype">Fototipo inválido</string>
     <string name="error_no_images">Se debe seleccionar al menos una imagen</string>
+    <string name="error_no_sex">Seleccione un sexo.</string>
     <string name="error_creating_request">Ocurrió un error al crear la consulta. Por favor, inténtelo de nuevo más tarde</string>
     <string name="choose_images">Seleccionar imágenes</string>
     <string name="choose_images_from_gallery">Seleccionar desde mi galería</string>
@@ -51,6 +52,8 @@
     <string name="label8">Carcinoma de células escamosas</string>
     <string name="label9">Desconocido</string>
     <string name="review">Revisar</string>
+    <string name="male">Hombre</string>
+    <string name="female">Mujer</string>
     <!-- END LABELS -->
 
 </resources>
