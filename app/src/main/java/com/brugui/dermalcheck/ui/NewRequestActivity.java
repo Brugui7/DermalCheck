@@ -80,7 +80,7 @@ public class NewRequestActivity extends AppCompatActivity {
     private ArrayList<Uri> images;
     private ArrayList<ImageProbability> imageProbabilities;
     private Request newRequest;
-    private EditText etPhototype, etPatientId, etNotes;
+    private EditText etPhototype, etPatientId, etNotes, etAge;
     private LoggedInUser userLogged;
     private CheckBox chPersonalAntecedents, chFamiliarAntecedents;
     private ConstraintLayout clContainer;
@@ -102,6 +102,7 @@ public class NewRequestActivity extends AppCompatActivity {
         chPersonalAntecedents = findViewById(R.id.chPersonalAntecedents);
         etPhototype = findViewById(R.id.etPhototype);
         etPatientId = findViewById(R.id.etPatientId);
+        etAge = findViewById(R.id.etAge);
         etNotes = findViewById(R.id.etNotes);
         rgSex = findViewById(R.id.rgSex);
         clContainer = findViewById(R.id.clContainer);
@@ -249,13 +250,15 @@ public class NewRequestActivity extends AppCompatActivity {
         }
 
         ImageProbability imageSelected = imageProbabilities.get(adapter.getPositionSelected());
-
+        String sex = rgSex.getCheckedRadioButtonId() == R.id.rbMale ? "male" : "female";
 
         newRequest = new Request(
                 imageSelected.getEstimatedProbability(),
+                Integer.parseInt(etAge.getText().toString()),
+                sex,
                 chFamiliarAntecedents.isChecked(),
                 chPersonalAntecedents.isChecked(),
-                Integer.parseInt(etPhototype.getText().toString()), //TODO campo obligatorio
+                Integer.parseInt(etPhototype.getText().toString()),
                 etNotes.getText().toString(),
                 etPatientId.getText().toString(),
                 userLogged.getUserId(),
@@ -275,11 +278,13 @@ public class NewRequestActivity extends AppCompatActivity {
         startActivity(intent);
     };
 
+
     private boolean validateInput() {
         etPatientId.setError(null);
         etPhototype.setError(null);
+        etAge.setError(null);
 
-        if (rgSex.getCheckedRadioButtonId() == -1){
+        if (rgSex.getCheckedRadioButtonId() == -1) {
             CustomSnackbar.Companion.make(clContainer, getString(R.string.error_no_sex),
                     Snackbar.LENGTH_SHORT,
                     null,
@@ -311,6 +316,13 @@ public class NewRequestActivity extends AppCompatActivity {
         if (stringPhototype.length() == 0) {
             etPhototype.setError(getString(R.string.required_field));
             etPhototype.requestFocus();
+            return false;
+        }
+
+        String stringAge = etAge.getText().toString().trim();
+        if (stringAge.length() == 0) {
+            etAge.setError(getString(R.string.required_field));
+            etAge.requestFocus();
             return false;
         }
 

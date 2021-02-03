@@ -18,13 +18,13 @@ public class Request implements Serializable {
     private String id;
     private double estimatedProbability;
     private boolean familiarAntecedents, personalAntecedents;
-    private int phototype, label;
-    private String notes, patientId, status;
+    private int phototype, label, age;
+    private String notes, patientId, status, sex;
     private String sender, receiver;
     private Date creationDate;
     private ArrayList<String> imageUrls;
 
-    public Request(double estimatedProbability, boolean familiarAntecedents, boolean personalAntecedents,
+    public Request(double estimatedProbability, int age, String sex, boolean familiarAntecedents, boolean personalAntecedents,
                    int phototype, String notes, String patientId, String sender, String receiver,
                    String status, Date creationDate, int label
     ) {
@@ -39,6 +39,8 @@ public class Request implements Serializable {
         this.status = status;
         this.creationDate = creationDate;
         this.label = label;
+        this.age = age;
+        this.sex = sex;
     }
 
     public Request() {}
@@ -57,6 +59,8 @@ public class Request implements Serializable {
         map.put("id", this.id);
         map.put("patientId", this.patientId);
         map.put("label", this.label);
+        map.put("age", this.age);
+        map.put("sex", this.sex);
         return map;
     }
 
@@ -175,4 +179,6 @@ public class Request implements Serializable {
     public int getLabel() {
         return label;
     }
+
+
 }

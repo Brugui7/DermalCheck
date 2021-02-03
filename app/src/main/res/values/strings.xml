@@ -40,6 +40,7 @@
     <string name="choose_images_from_camera">Hacer foto</string>
     <string name="remaining_images_select">Selecciona hasta %1$d imágenes más.</string>
     <string name="select_new_images">Seleccionar nuevas imágenes</string>
+    <string name="age">Edad</string>
 
     <!-- LABELS -->
     <string name="label1">Queratosis actinica</string>
