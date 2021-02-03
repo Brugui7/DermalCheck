@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -53,7 +54,8 @@ public class RequestDetailActivity extends AppCompatActivity {
     private DonutProgressView dpvChart;
     private ConstraintLayout clContainer;
     private Button btnSendRequest, btnCancel;
-    private EditText etPhototype, etPatientId, etNotes;
+    private EditText etPhototype, etPatientId, etNotes, etAge;
+    private RadioGroup rgSex;
     private CheckBox chPersonalAntecedents, chFamiliarAntecedents;
     private ImageView ivImage;
 
@@ -79,7 +81,8 @@ public class RequestDetailActivity extends AppCompatActivity {
         etPhototype = findViewById(R.id.etPhototype);
         etPatientId = findViewById(R.id.etPatientId);
         etNotes = findViewById(R.id.etNotes);
-
+        etAge = findViewById(R.id.etAge);
+        rgSex = findViewById(R.id.rgSex);
 
         Bundle bundle = getIntent().getExtras();
         if (bundle == null) {
@@ -122,8 +125,14 @@ public class RequestDetailActivity extends AppCompatActivity {
         chFamiliarAntecedents.setChecked(request.isFamiliarAntecedents());
         chPersonalAntecedents.setChecked(request.isPersonalAntecedents());
         etPhototype.setText(String.valueOf(request.getPhototype()));
+        etAge.setText(String.valueOf(request.getAge()));
         etPatientId.setText(request.getPatientId());
         etNotes.setText(request.getNotes());
+        if (request.getSex().equals("male")){
+            rgSex.check(R.id.rbMale);
+        } else {
+            rgSex.check(R.id.rbFemale);
+        }
 
         if (request.getLabel() != 0){
             tvLabel.setText(getString(request.getLabel()));

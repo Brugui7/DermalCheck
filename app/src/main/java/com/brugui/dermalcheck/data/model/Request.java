@@ -150,6 +150,7 @@ public class Request implements Serializable {
                 ", familiarAntecedents=" + familiarAntecedents +
                 ", personalAntecedents=" + personalAntecedents +
                 ", phototype=" + phototype +
+                ", age=" + age +
                 ", notes='" + notes + '\'' +
                 ", patientId='" + patientId + '\'' +
                 ", sender=" + sender +
@@ -180,5 +181,23 @@ public class Request implements Serializable {
         return label;
     }
 
+    public void setLabel(int label) {
+        this.label = label;
+    }
 
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public String getSex() {
+        return sex;
+    }
+
+    public void setSex(String sex) {
+        this.sex = sex;
+    }
 }
