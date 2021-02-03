@@ -26,7 +26,9 @@ import com.brugui.dermalcheck.data.model.Request;
 import com.brugui.dermalcheck.ui.MainActivity;
 import com.brugui.dermalcheck.ui.components.ImageDetailActivity;
 import com.brugui.dermalcheck.ui.components.snackbar.CustomSnackbar;
+import com.brugui.dermalcheck.ui.request.list.RequestsViewModel;
 import com.brugui.dermalcheck.utils.NotificationRequestsQueue;
+import com.bumptech.glide.Glide;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -37,6 +39,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 import app.futured.donut.DonutProgressView;
@@ -58,8 +61,13 @@ public class RequestDetailActivity extends AppCompatActivity {
     private RadioGroup rgSex;
     private CheckBox chPersonalAntecedents, chFamiliarAntecedents;
     private ImageView ivImage;
+    private RequestDetailViewModel requestDetailViewModel;
 
+    //For creation
     private ArrayList<Uri> images;
+
+    //For visualization
+    private List<String> imageUrls;
 
 
     @Override
@@ -83,6 +91,7 @@ public class RequestDetailActivity extends AppCompatActivity {
         etNotes = findViewById(R.id.etNotes);
         etAge = findViewById(R.id.etAge);
         rgSex = findViewById(R.id.rgSex);
+        requestDetailViewModel = new RequestDetailViewModel();
 
         Bundle bundle = getIntent().getExtras();
         if (bundle == null) {
@@ -97,8 +106,12 @@ public class RequestDetailActivity extends AppCompatActivity {
             images = bundle.getParcelableArrayList(IMAGES_ARRAY);
             setUpCreationUI();
         } else {
-            //Consultation
-            //todo getImages
+            requestDetailViewModel.fetchImages(request.getId());
+            requestDetailViewModel.getImages().observe(this, images -> {
+                imageUrls = images;
+                Glide.with(this).load(imageUrls.get(0)).into(ivImage);
+                ivImage.setOnClickListener(listenerIvImageFromUrl);
+            });
         }
 
         setFormValues();
@@ -139,7 +152,7 @@ public class RequestDetailActivity extends AppCompatActivity {
         }
         if (images != null && images.size() > 0){
             ivImage.setImageURI(images.get(0));
-            ivImage.setOnClickListener(listenerIvImage);
+            ivImage.setOnClickListener(listenerIvImageFromUri);
         }
     }
 
@@ -150,6 +163,7 @@ public class RequestDetailActivity extends AppCompatActivity {
         btnSendRequest.setVisibility(View.VISIBLE);
         btnCancel.setVisibility(View.VISIBLE);
     }
+
     //########## Listeners ##########
 
 
@@ -199,9 +213,15 @@ public class RequestDetailActivity extends AppCompatActivity {
         dataSource.sendRequest(request, images, onRequestCreated);
     };
 
-    private final View.OnClickListener listenerIvImage = view -> {
+    private final View.OnClickListener listenerIvImageFromUri = view -> {
         Intent intent = new Intent(RequestDetailActivity.this, ImageDetailActivity.class);
         intent.putExtra(ImageDetailActivity.IMAGE_URI, images.get(0));
+        startActivity(intent);
+    };
+
+    private final View.OnClickListener listenerIvImageFromUrl = view -> {
+        Intent intent = new Intent(RequestDetailActivity.this, ImageDetailActivity.class);
+        intent.putExtra(ImageDetailActivity.IMAGE_URL, imageUrls.get(0));
         startActivity(intent);
     };
 }

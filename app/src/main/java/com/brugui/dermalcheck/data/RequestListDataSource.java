@@ -30,7 +30,6 @@ public class RequestListDataSource {
                     .orderBy("estimatedProbability", Query.Direction.DESCENDING)
                     .get()
                     .addOnSuccessListener(queryDocumentSnapshots -> {
-                        Log.d(TAG, "ok " + queryDocumentSnapshots.size() + " resultados");
                         List<Request> requests = queryDocumentSnapshots.toObjects(Request.class);
                         result = new Result.Success<>(requests);
                         callback.OnDataFetched(result);
@@ -43,7 +42,6 @@ public class RequestListDataSource {
         } catch (Exception e) {
             Log.e(TAG, e.getMessage(), e);
             callback.OnDataFetched(new Result.Error(new IOException("Error", e)));
-
 
         }
     }

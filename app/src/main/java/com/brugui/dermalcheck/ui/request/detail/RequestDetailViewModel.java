@@ -19,6 +19,7 @@ import java.util.List;
 public class RequestDetailViewModel extends ViewModel {
     private static final String TAG = "Logger RequestDetVM";
     private LoggedInUser userLogged;
+    private MutableLiveData<List<String>> images = new MutableLiveData<>();
     private RequestDetailDataSource dataSource;
 
     public RequestDetailViewModel() {
@@ -27,4 +28,16 @@ public class RequestDetailViewModel extends ViewModel {
         dataSource = new RequestDetailDataSource();
     }
 
+    public void fetchImages(String requestId){
+        dataSource.fetchImages(requestId, result -> {
+            if (result instanceof Result.Success) {
+                images.setValue(((Result.Success<List<String>>) result).getData());
+
+            }
+        });
+    }
+
+    public MutableLiveData<List<String>> getImages() {
+        return images;
+    }
 }

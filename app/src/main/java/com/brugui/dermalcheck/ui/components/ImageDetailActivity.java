@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.widget.ImageView;
 
 import com.brugui.dermalcheck.R;
+import com.bumptech.glide.Glide;
 import com.igreenwood.loupe.Loupe;
 
 import org.jetbrains.annotations.NotNull;
@@ -19,6 +20,7 @@ import kotlin.jvm.internal.Intrinsics;
 public class ImageDetailActivity extends AppCompatActivity {
 
     public static final String IMAGE_URI = "IMAGE_URI";
+    public static final String IMAGE_URL = "IMAGE_URL";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,8 +30,11 @@ public class ImageDetailActivity extends AppCompatActivity {
         ConstraintLayout clContainer = findViewById(R.id.clContainer);
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
-            Uri uri = bundle.getParcelable(IMAGE_URI);
-            imageView.setImageURI(uri);
+            if (bundle.getParcelable(IMAGE_URI) != null){
+                imageView.setImageURI(bundle.getParcelable(IMAGE_URI));
+            } else {
+                Glide.with(this).load(bundle.getString(IMAGE_URL)).into(imageView);
+            }
         }
 
         Loupe loupe = Loupe.Companion.create(imageView, clContainer, new Function1() {

@@ -9,6 +9,7 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.brugui.dermalcheck.data.interfaces.OnDataFetched;
 import com.brugui.dermalcheck.data.interfaces.OnRequestCreated;
 import com.brugui.dermalcheck.data.model.Request;
 import com.brugui.dermalcheck.data.model.Status;
@@ -19,6 +20,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -36,6 +38,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -113,7 +116,7 @@ public class RequestDetailDataSource {
     }
 
     /**
-     * @param request
+     * @param request Request
      * @return request notification http request
      */
     private JsonObjectRequest prepareNotification(Request request) {
@@ -150,9 +153,22 @@ public class RequestDetailDataSource {
         };
     }
 
-
-
-    /*public void retreive() {
-//todo
-    }*/
+    public void fetchImages(String requestId, OnDataFetched callback) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("requests/" + requestId + "/images")
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    List<String> images = new ArrayList<>();
+                    for (DocumentSnapshot image : queryDocumentSnapshots) {
+                        images.add(image.getString("remoteUri"));
+                    }
+                    result = new Result.Success<>(images);
+                    callback.OnDataFetched(result);
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, e.getMessage(), e);
+                    result = new Result.Error(new IOException("Error retrieving requests"));
+                    callback.OnDataFetched(result);
+                });
+    }
 }
