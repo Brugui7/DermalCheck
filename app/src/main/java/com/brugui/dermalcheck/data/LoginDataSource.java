@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 
 import com.brugui.dermalcheck.data.interfaces.OnLoginFinished;
 import com.brugui.dermalcheck.data.model.LoggedInUser;
+import com.brugui.dermalcheck.data.model.Rol;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -103,12 +104,22 @@ public class LoginDataSource {
         Map<String, Object> map = new HashMap<>();
         map.put("email", user.getEmail());
         map.put("uid", user.getUid());
+        map.put("role", Rol.GENERAL_ROL);
 
 
         // Updates the user data
         FirebaseFirestore.getInstance()
                 .collection("users")
                 .document(user.getUid())
-                .set(map);
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (!documentSnapshot.exists()) {
+                        FirebaseFirestore.getInstance()
+                                .collection("users")
+                                .document(user.getUid())
+                                .set(map);
+                    }
+                });
+
     }
 }

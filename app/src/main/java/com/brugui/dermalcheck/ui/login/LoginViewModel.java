@@ -33,7 +33,6 @@ public class LoginViewModel extends ViewModel {
     }
 
     public void login(String username, String password) {
-        // can be launched in a separate asynchronous job
         loginRepository.login(username, password, onLoginFinished);
     }
 
@@ -77,5 +76,15 @@ public class LoginViewModel extends ViewModel {
     public void persistUserData(Context context, LoggedInUser user){
         SharedPreferencesRepository sharedPreferencesRepository = new SharedPreferencesRepository(context);
         sharedPreferencesRepository.saveUserLogged(user);
+    }
+
+    public String getPersistedUserEmail(Context context){
+        SharedPreferencesRepository sharedPreferencesRepository = new SharedPreferencesRepository(context);
+        LoggedInUser loggedInUser = sharedPreferencesRepository.getUserLogged();
+        if (loggedInUser != null) {
+            return loggedInUser.getEmail();
+        }
+
+        return null;
     }
 }

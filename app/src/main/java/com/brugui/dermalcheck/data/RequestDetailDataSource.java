@@ -12,6 +12,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.brugui.dermalcheck.data.interfaces.OnDataFetched;
 import com.brugui.dermalcheck.data.interfaces.OnRequestCreated;
 import com.brugui.dermalcheck.data.model.Request;
+import com.brugui.dermalcheck.data.model.Rol;
 import com.brugui.dermalcheck.data.model.Status;
 import com.brugui.dermalcheck.utils.NotificationRequestsQueue;
 import com.brugui.dermalcheck.utils.PrivateConstants;
@@ -62,24 +63,51 @@ public class RequestDetailDataSource {
             mapping.put("creationDate", FieldValue.serverTimestamp());
             Log.d(TAG, mapping.toString());
 
-            db.collection("requests").document(ref.getId())
-                    .set(mapping)
-                    .addOnSuccessListener(documentReference -> {
-                        result = new Result.Success<>(request);
 
-                        if (images != null) {
-                            //this should always be true, but just to ensure
-                            this.uploadImages(request, images);
-                            Result result = new Result.Success(prepareNotification(request));
+            //gets the request receiver
+            Task<QuerySnapshot> receiverTask = fetchOptimalReceiver();
+            if (receiverTask == null) {
+                Log.e(TAG, "Error obtaining request receiver");
+                result = new Result.Error(new IOException("Error obtaining request receiver"));
+                onRequestCreated.OnRequestCreated(result);
+                return;
+            }
+
+
+            receiverTask.addOnSuccessListener(queryDocumentSnapshots -> {
+                if (queryDocumentSnapshots.size() == 0){
+                    result = new Result.Error(new IOException("No valid receivers"));
+                    onRequestCreated.OnRequestCreated(result);
+                }
+
+                String receiverId = queryDocumentSnapshots.iterator().next().getId();
+                mapping.put("receiver", receiverId);
+
+                //Sends the request
+                db.collection("requests")
+                        .document(ref.getId())
+                        .set(mapping)
+                        .addOnSuccessListener(documentReference -> {
+                            result = new Result.Success<>(request);
+
+                            if (images != null) {
+                                //this should always be true, but just to ensure
+                                this.uploadImages(request, images);
+                                Result result = new Result.Success(prepareNotification(request));
+                                onRequestCreated.OnRequestCreated(result);
+                            }
+
+                        })
+                        .addOnFailureListener(e -> {
+                            Log.e(TAG, e.getMessage(), e);
+                            result = new Result.Error(new IOException("Error creating Request", e));
                             onRequestCreated.OnRequestCreated(result);
-                        }
-
-                    })
-                    .addOnFailureListener(e -> {
-                        Log.e(TAG, e.getMessage(), e);
-                        result = new Result.Error(new IOException("Error creating Request", e));
-                        onRequestCreated.OnRequestCreated(result);
-                    });
+                        });
+            }).addOnFailureListener(e -> {
+                Log.e(TAG, e.getMessage(), e);
+                result = new Result.Error(new IOException("Error obtaining request receiver", e));
+                onRequestCreated.OnRequestCreated(result);
+            });
         } catch (Exception e) {
             Log.e(TAG, e.getMessage(), e);
             result = new Result.Error(new IOException("Error creating Request", e));
@@ -170,5 +198,23 @@ public class RequestDetailDataSource {
                     result = new Result.Error(new IOException("Error retrieving requests"));
                     callback.OnDataFetched(result);
                 });
+    }
+
+
+    /**
+     * Gets the user id with less pending requests assigned
+     */
+    private Task<QuerySnapshot> fetchOptimalReceiver() {
+        try {
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            return db.collection("users")
+                    .whereEqualTo("role", Rol.SPECIALIST_ROL)
+                    .orderBy("pendingRequests", Query.Direction.ASCENDING)
+                    .limit(1)
+                    .get();
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage(), e);
+        }
+        return null;
     }
 }
