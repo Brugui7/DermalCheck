@@ -50,6 +50,8 @@ public class RequestDetailDataSource {
     private Result<Request> result;
     private static final String TAG = "Logger RequestDetDS";
     private FirebaseFirestore db;
+    private static final int INCREASE = 0;
+    private static final int DECREASE = 1;
 
     public RequestDetailDataSource() {
         db = FirebaseFirestore.getInstance();
@@ -75,7 +77,7 @@ public class RequestDetailDataSource {
 
 
             receiverTask.addOnSuccessListener(queryDocumentSnapshots -> {
-                if (queryDocumentSnapshots.size() == 0){
+                if (queryDocumentSnapshots.size() == 0) {
                     result = new Result.Error(new IOException("No valid receivers"));
                     onRequestCreated.OnRequestCreated(result);
                 }
@@ -93,6 +95,7 @@ public class RequestDetailDataSource {
                             if (images != null) {
                                 //this should always be true, but just to ensure
                                 this.uploadImages(request, images);
+                                this.updateReceiverPendingRequests(receiverId, INCREASE);
                                 Result result = new Result.Success(prepareNotification(request));
                                 onRequestCreated.OnRequestCreated(result);
                             }
@@ -216,5 +219,33 @@ public class RequestDetailDataSource {
             Log.e(TAG, e.getMessage(), e);
         }
         return null;
+    }
+
+    /**
+     * Increases by one the user pending requests
+     *
+     * @param receiverId String
+     * @param mode       INCREASE | DECREASE
+     */
+    private void updateReceiverPendingRequests(String receiverId, int mode) {
+
+        FirebaseFirestore.getInstance()
+                .collection("users")
+                .document(receiverId)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (!documentSnapshot.exists()) {
+                        //this must never happen
+                        return;
+                    }
+                    Map<String, Object> mapping = new HashMap<>();
+                    mapping.put("pendingRequests", (long)(documentSnapshot.get("pendingRequests")) + 1);
+//todo mode
+                    FirebaseFirestore.getInstance()
+                            .collection("users")
+                            .document(receiverId)
+                            .update(mapping);
+
+                });
     }
 }
