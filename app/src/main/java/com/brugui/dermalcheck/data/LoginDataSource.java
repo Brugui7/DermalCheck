@@ -14,6 +14,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.io.IOException;
@@ -26,7 +27,6 @@ import java.util.Map;
 public class LoginDataSource {
 
     private FirebaseAuth auth;
-    private Result<LoggedInUser> result;
     private static final String TAG = "Logger LoginDS";
 
     public void login(String username, String password, OnLoginFinished callback) {
@@ -54,20 +54,14 @@ public class LoginDataSource {
                                     if (userDataTask.isSuccessful()) {
                                         DocumentSnapshot userDocument = userDataTask.getResult();
                                         if (userDocument != null) {
-                                            if (userDocument.contains("rol")) {
-                                                loggedInUser.setRol(userDocument
-                                                        .getString("rol")
-                                                );
+                                            if (userDocument.contains("role")) {
+                                                loggedInUser.setRole(userDocument.getString("role"));
                                             }
 
                                             if (userDocument.contains("displayName")) {
-                                                loggedInUser.setDisplayName(userDocument
-                                                        .getString("displayName")
-                                                );
+                                                loggedInUser.setDisplayName(userDocument.getString("displayName"));
                                             }
-
                                         }
-
                                     }
 
                                     callback.onLoginFinished(new Result.Success<>(loggedInUser));
@@ -104,7 +98,7 @@ public class LoginDataSource {
         Map<String, Object> map = new HashMap<>();
         map.put("email", user.getEmail());
         map.put("uid", user.getUid());
-        map.put("role", Rol.GENERAL_ROL);
+
 
 
         // Updates the user data
@@ -114,11 +108,17 @@ public class LoginDataSource {
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (!documentSnapshot.exists()) {
+                        map.put("role", Rol.GENERAL_ROL);
                         FirebaseFirestore.getInstance()
                                 .collection("users")
                                 .document(user.getUid())
                                 .set(map);
+                        return;
                     }
+                    FirebaseFirestore.getInstance()
+                            .collection("users")
+                            .document(user.getUid())
+                            .set(map, SetOptions.merge());
                 });
 
     }

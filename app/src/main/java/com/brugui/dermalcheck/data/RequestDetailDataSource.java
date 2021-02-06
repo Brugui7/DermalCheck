@@ -50,8 +50,8 @@ public class RequestDetailDataSource {
     private Result<Request> result;
     private static final String TAG = "Logger RequestDetDS";
     private FirebaseFirestore db;
-    private static final int INCREASE = 0;
-    private static final int DECREASE = 1;
+    private static final int INCREASE = 1;
+    private static final int DECREASE = -1;
 
     public RequestDetailDataSource() {
         db = FirebaseFirestore.getInstance();
@@ -238,9 +238,13 @@ public class RequestDetailDataSource {
                         //this must never happen
                         return;
                     }
+                    long actualValue = 0;
+                    if (documentSnapshot.get("pendingRequests") != null) {
+                        actualValue = (long) documentSnapshot.get("pendingRequests");
+                    }
+
                     Map<String, Object> mapping = new HashMap<>();
-                    mapping.put("pendingRequests", (long)(documentSnapshot.get("pendingRequests")) + 1);
-//todo mode
+                    mapping.put("pendingRequests", actualValue + mode);
                     FirebaseFirestore.getInstance()
                             .collection("users")
                             .document(receiverId)

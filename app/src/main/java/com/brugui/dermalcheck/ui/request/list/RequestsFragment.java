@@ -21,6 +21,7 @@ import com.brugui.dermalcheck.data.Result;
 import com.brugui.dermalcheck.data.interfaces.OnItemClick;
 import com.brugui.dermalcheck.data.model.LoggedInUser;
 import com.brugui.dermalcheck.data.model.Request;
+import com.brugui.dermalcheck.data.model.Rol;
 import com.brugui.dermalcheck.ui.NewRequestActivity;
 import com.brugui.dermalcheck.ui.adapters.RequestAdapter;
 import com.brugui.dermalcheck.ui.request.detail.RequestDetailActivity;
@@ -41,7 +42,6 @@ public class RequestsFragment extends Fragment {
     private ConstraintLayout clEmptyList;
     private RecyclerView rvRequests;
     private RequestListDataSource dataSource;
-    private LoggedInUser userLogged;
     private List<Request> requests;
     private RequestAdapter adapter;
     private RequestsViewModel requestsViewModel;
@@ -63,22 +63,29 @@ public class RequestsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         dataSource = new RequestListDataSource();
-        FirebaseUser userTmp = FirebaseAuth.getInstance().getCurrentUser();
-        userLogged = new LoggedInUser(userTmp.getUid(), userTmp.getDisplayName());
+
         requests = new ArrayList<>();
         requestsViewModel = new RequestsViewModel();
+        requestsViewModel.loadUserData(getContext());
         requestsViewModel.fetchRequests();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_requests, container, false);
         fabNewRequest = view.findViewById(R.id.fabNewRequest);
         rvRequests = view.findViewById(R.id.rvRequests);
         clEmptyList = view.findViewById(R.id.clEmptyList);
         fabNewRequest.setOnClickListener(listenerFabNewRequest);
+
+        LoggedInUser loggedInUser = requestsViewModel.getUserLogged();
+        if (loggedInUser != null && loggedInUser.getRole() != null) {
+            if (loggedInUser.getRole().equalsIgnoreCase(Rol.SPECIALIST_ROL)) {
+                fabNewRequest.setVisibility(View.GONE);
+            }
+        }
+
         setUpRecyclerView();
         requestsViewModel.getRequests().observe(getViewLifecycleOwner(), fetchedRequests -> {
             requests.clear();
@@ -103,18 +110,16 @@ public class RequestsFragment extends Fragment {
         startActivity(intent);
     };
 
-    private void showEmptyListMessage(boolean show){
+    private void showEmptyListMessage(boolean show) {
         clEmptyList.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
     private final OnItemClick onItemClick = position -> {
-        if (getActivity() == null){
+        if (getActivity() == null) {
             return;
         }
         Intent intent = new Intent(getActivity(), RequestDetailActivity.class);
         intent.putExtra(RequestDetailActivity.REQUEST, requests.get(position));
-
         getActivity().startActivity(intent);
-
     };
 }

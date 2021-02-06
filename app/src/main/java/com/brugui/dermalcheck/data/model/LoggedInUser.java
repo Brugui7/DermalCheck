@@ -8,17 +8,17 @@ import java.io.Serializable;
 public class LoggedInUser implements Serializable {
 
     private String userId;
-    private String displayName, rol, email;
+    private String displayName, role, email;
 
     public LoggedInUser(String userId, String email) {
         this.userId = userId;
         this.email = email;
     }
 
-    public LoggedInUser(String userId, String email, String displayName, String rol) {
+    public LoggedInUser(String userId, String email, String displayName, String role) {
         this.userId = userId;
         this.displayName = displayName;
-        this.rol = rol;
+        this.role = role;
     }
 
     public LoggedInUser() {
@@ -36,8 +36,8 @@ public class LoggedInUser implements Serializable {
         return email;
     }
 
-    public String getRol() {
-        return rol;
+    public String getRole() {
+        return role;
     }
 
     public void setUserId(String userId) {
@@ -48,8 +48,8 @@ public class LoggedInUser implements Serializable {
         this.displayName = displayName;
     }
 
-    public void setRol(String rol) {
-        this.rol = rol;
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public void setEmail(String email) {
