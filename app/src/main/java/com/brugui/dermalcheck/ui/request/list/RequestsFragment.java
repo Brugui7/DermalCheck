@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -41,10 +42,10 @@ public class RequestsFragment extends Fragment {
     private FloatingActionButton fabNewRequest;
     private ConstraintLayout clEmptyList;
     private RecyclerView rvRequests;
-    private RequestListDataSource dataSource;
     private List<Request> requests;
     private RequestAdapter adapter;
     private RequestsViewModel requestsViewModel;
+    private SwipeRefreshLayout srLayout;
     private static final String TAG = "Logger RequestList";
 
 
@@ -62,7 +63,6 @@ public class RequestsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        dataSource = new RequestListDataSource();
 
         requests = new ArrayList<>();
         requestsViewModel = new RequestsViewModel();
@@ -77,6 +77,7 @@ public class RequestsFragment extends Fragment {
         fabNewRequest = view.findViewById(R.id.fabNewRequest);
         rvRequests = view.findViewById(R.id.rvRequests);
         clEmptyList = view.findViewById(R.id.clEmptyList);
+        srLayout = view.findViewById(R.id.srLayout);
         fabNewRequest.setOnClickListener(listenerFabNewRequest);
 
         LoggedInUser loggedInUser = requestsViewModel.getUserLogged();
@@ -92,7 +93,10 @@ public class RequestsFragment extends Fragment {
             requests.addAll(fetchedRequests);
             adapter.notifyDataSetChanged();
             showEmptyListMessage(fetchedRequests.size() == 0);
+            srLayout.setRefreshing(false);
         });
+
+        srLayout.setOnRefreshListener(() -> requestsViewModel.fetchRequests());
         return view;
     }
 
