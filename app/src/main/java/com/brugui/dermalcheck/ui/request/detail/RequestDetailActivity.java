@@ -23,6 +23,7 @@ import com.brugui.dermalcheck.data.Result;
 import com.brugui.dermalcheck.data.interfaces.OnRequestCreated;
 import com.brugui.dermalcheck.data.model.LoggedInUser;
 import com.brugui.dermalcheck.data.model.Request;
+import com.brugui.dermalcheck.data.model.Rol;
 import com.brugui.dermalcheck.ui.MainActivity;
 import com.brugui.dermalcheck.ui.components.ImageDetailActivity;
 import com.brugui.dermalcheck.ui.components.snackbar.CustomSnackbar;
@@ -56,7 +57,7 @@ public class RequestDetailActivity extends AppCompatActivity {
     private Request request;
     private DonutProgressView dpvChart;
     private ConstraintLayout clContainer;
-    private Button btnSendRequest, btnCancel;
+    private Button btnSendRequest, btnCancel, btnDiagnose;
     private EditText etPhototype, etPatientId, etNotes, etAge;
     private RadioGroup rgSex;
     private CheckBox chPersonalAntecedents, chFamiliarAntecedents;
@@ -79,6 +80,7 @@ public class RequestDetailActivity extends AppCompatActivity {
 
         btnSendRequest = findViewById(R.id.btnSendRequest);
         btnCancel = findViewById(R.id.btnCancel);
+        btnDiagnose = findViewById(R.id.btnDiagnose);
         dpvChart = findViewById(R.id.dpvChart);
         tvEstimatedProbability = findViewById(R.id.tvEstimatedProbability);
         tvLabel = findViewById(R.id.tvLabel);
@@ -92,6 +94,8 @@ public class RequestDetailActivity extends AppCompatActivity {
         etAge = findViewById(R.id.etAge);
         rgSex = findViewById(R.id.rgSex);
         requestDetailViewModel = new RequestDetailViewModel();
+        requestDetailViewModel.loadUserData(this);
+
 
         Bundle bundle = getIntent().getExtras();
         if (bundle == null) {
@@ -112,6 +116,13 @@ public class RequestDetailActivity extends AppCompatActivity {
                 Glide.with(this).load(imageUrls.get(0)).into(ivImage);
                 ivImage.setOnClickListener(listenerIvImageFromUrl);
             });
+
+            LoggedInUser loggedInUser = requestDetailViewModel.getUserLogged();
+            if (loggedInUser != null && loggedInUser.getRole() != null) {
+                if (loggedInUser.getRole().equalsIgnoreCase(Rol.SPECIALIST_ROL)) {
+                    setUpDiagnosticUI();
+                }
+            }
         }
 
         setFormValues();
@@ -119,6 +130,11 @@ public class RequestDetailActivity extends AppCompatActivity {
 
         dataSource = new RequestDetailDataSource();
     }
+
+
+
+
+    //########## Init Functions ##########
 
     private void setChartValues() {
         float estimatedProbability = (float) request.getEstimatedProbability();
@@ -162,6 +178,10 @@ public class RequestDetailActivity extends AppCompatActivity {
         btnSendRequest.setOnClickListener(listenerBtnSendRequest);
         btnSendRequest.setVisibility(View.VISIBLE);
         btnCancel.setVisibility(View.VISIBLE);
+    }
+
+    private void setUpDiagnosticUI(){
+        btnDiagnose.setVisibility(View.VISIBLE);
     }
 
     //########## Listeners ##########

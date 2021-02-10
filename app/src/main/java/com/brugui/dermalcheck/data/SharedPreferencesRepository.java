@@ -47,6 +47,10 @@ public class SharedPreferencesRepository {
 
     public LoggedInUser getUserLogged() {
         LoggedInUser user = new LoggedInUser();
+        user.setUserId(this.getString(PREF_USER_UID));
+        if (user.getUserId() == null) {
+            return null;
+        }
         user.setEmail(this.getString(PREF_USER_EMAIL));
         if (user.getEmail() == null) {
             return null;

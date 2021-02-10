@@ -1,5 +1,6 @@
 package com.brugui.dermalcheck.ui.request.detail;
 
+import android.content.Context;
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
@@ -8,6 +9,7 @@ import androidx.lifecycle.ViewModel;
 import com.brugui.dermalcheck.data.RequestDetailDataSource;
 import com.brugui.dermalcheck.data.RequestListDataSource;
 import com.brugui.dermalcheck.data.Result;
+import com.brugui.dermalcheck.data.SharedPreferencesRepository;
 import com.brugui.dermalcheck.data.model.LoggedInUser;
 import com.brugui.dermalcheck.data.model.Request;
 import com.google.firebase.auth.FirebaseAuth;
@@ -22,9 +24,14 @@ public class RequestDetailViewModel extends ViewModel {
     private MutableLiveData<List<String>> images = new MutableLiveData<>();
     private RequestDetailDataSource dataSource;
 
+
     public RequestDetailViewModel() {
         FirebaseUser userTmp = FirebaseAuth.getInstance().getCurrentUser();
-        userLogged = new LoggedInUser(userTmp.getUid(), userTmp.getDisplayName());
+        //Todo if null al login
+        if (userTmp != null){
+            userLogged = new LoggedInUser(userTmp.getUid(), userTmp.getEmail());
+        }
+
         dataSource = new RequestDetailDataSource();
     }
 
@@ -39,5 +46,13 @@ public class RequestDetailViewModel extends ViewModel {
 
     public MutableLiveData<List<String>> getImages() {
         return images;
+    }
+
+    public void loadUserData(Context context) {
+        userLogged = new SharedPreferencesRepository(context).getUserLogged();
+    }
+
+    public LoggedInUser getUserLogged() {
+        return userLogged;
     }
 }

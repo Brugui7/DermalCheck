@@ -4,8 +4,8 @@ import java.io.Serializable;
 
 public class Status  implements Serializable {
     public static final String PENDING_STATUS_REFERENCE = "2MPSfDTgcdQ77IPZAblt";
-    public static final String PENDING_STATUS_NAME = "Pendiente";
-    public static final String DIAGNOSED_STATUS_NAME = "Diagnosticada";
+    public static final String PENDING_STATUS_NAME = "Pending";
+    public static final String DIAGNOSED_STATUS_NAME = "Diagnosed";
     private String name;
 
     public Status(String name) {

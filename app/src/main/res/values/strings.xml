@@ -55,6 +55,7 @@
     <string name="review">Revisar</string>
     <string name="male">Hombre</string>
     <string name="female">Mujer</string>
+    <string name="diagnose">Diagnosticar</string>
     <!-- END LABELS -->
 
 </resources>
