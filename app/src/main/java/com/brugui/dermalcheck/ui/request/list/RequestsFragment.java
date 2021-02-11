@@ -5,30 +5,24 @@ import android.os.Bundle;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.brugui.dermalcheck.R;
-import com.brugui.dermalcheck.data.RequestListDataSource;
-import com.brugui.dermalcheck.data.Result;
 import com.brugui.dermalcheck.data.interfaces.OnItemClick;
 import com.brugui.dermalcheck.data.model.LoggedInUser;
 import com.brugui.dermalcheck.data.model.Request;
 import com.brugui.dermalcheck.data.model.Rol;
-import com.brugui.dermalcheck.ui.NewRequestActivity;
+import com.brugui.dermalcheck.ui.request.creation.NewRequestActivity;
 import com.brugui.dermalcheck.ui.adapters.RequestAdapter;
 import com.brugui.dermalcheck.ui.request.detail.RequestDetailActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.List;

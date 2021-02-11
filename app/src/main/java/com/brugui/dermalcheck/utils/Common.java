@@ -11,6 +11,8 @@ import android.os.Environment;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -39,18 +41,20 @@ public class Common {
         return true;
     }
 
-    public static File createNewImageFile(Context context) throws IOException {
+    /**
+     * Creates an image file on the pictures directory of the external storage
+     * @param context Context
+     * @return File the file created
+     * @throws IOException if there is an error creating the file
+     */
+    @NotNull
+    public static File createNewImageFile(@NotNull Context context) throws IOException {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
         File storageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
 
-        return image;
+        return File.createTempFile(imageFileName, ".jpg", storageDir);
     }
 
 }

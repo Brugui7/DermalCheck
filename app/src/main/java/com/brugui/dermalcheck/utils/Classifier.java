@@ -1,22 +1,14 @@
 package com.brugui.dermalcheck.utils;
 
-import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.ImageDecoder;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Environment;
 import android.provider.MediaStore;
-import android.util.Log;
-
-import androidx.core.app.ActivityCompat;
 
 import com.brugui.dermalcheck.R;
 import com.brugui.dermalcheck.data.model.ImageProbability;
-import com.brugui.dermalcheck.ui.NewRequestActivity;
 
 import org.tensorflow.lite.DataType;
 import org.tensorflow.lite.Interpreter;
@@ -26,14 +18,8 @@ import org.tensorflow.lite.support.image.TensorImage;
 import org.tensorflow.lite.support.image.ops.ResizeOp;
 import org.tensorflow.lite.support.tensorbuffer.TensorBuffer;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.MappedByteBuffer;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
 
 public class Classifier {
 

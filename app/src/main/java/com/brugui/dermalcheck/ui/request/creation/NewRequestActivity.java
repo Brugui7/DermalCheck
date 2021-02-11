@@ -1,22 +1,14 @@
-package com.brugui.dermalcheck.ui;
+package com.brugui.dermalcheck.ui.request.creation;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.ImageDecoder;
 import android.media.MediaScannerConnection;
-import android.net.ParseException;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -26,9 +18,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ImageSwitcher;
-import android.widget.ImageView;
 import android.widget.RadioGroup;
 
 import com.brugui.dermalcheck.BuildConfig;
@@ -37,38 +26,23 @@ import com.brugui.dermalcheck.data.model.ImageProbability;
 import com.brugui.dermalcheck.data.model.LoggedInUser;
 import com.brugui.dermalcheck.data.model.Request;
 import com.brugui.dermalcheck.data.model.Status;
-import com.brugui.dermalcheck.ml.Model;
 import com.brugui.dermalcheck.ui.adapters.ImageProbabilityAdapter;
-import com.brugui.dermalcheck.ui.adapters.RequestAdapter;
-import com.brugui.dermalcheck.ui.components.ImageDetailActivity;
 import com.brugui.dermalcheck.ui.components.snackbar.CustomSnackbar;
 import com.brugui.dermalcheck.ui.request.detail.RequestDetailActivity;
 import com.brugui.dermalcheck.utils.Classifier;
 import com.brugui.dermalcheck.utils.Common;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import org.tensorflow.lite.DataType;
-import org.tensorflow.lite.Interpreter;
-import org.tensorflow.lite.support.common.FileUtil;
-import org.tensorflow.lite.support.image.ImageProcessor;
-import org.tensorflow.lite.support.image.TensorImage;
-import org.tensorflow.lite.support.image.ops.ResizeOp;
-import org.tensorflow.lite.support.tensorbuffer.TensorBuffer;
-
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.ByteBuffer;
-import java.nio.MappedByteBuffer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.Objects;
 
 import static com.brugui.dermalcheck.ui.request.detail.RequestDetailActivity.IMAGES_ARRAY;
 import static com.brugui.dermalcheck.ui.request.detail.RequestDetailActivity.REQUEST;
@@ -89,6 +63,7 @@ public class NewRequestActivity extends AppCompatActivity {
     private RecyclerView rvList;
     private RadioGroup rgSex;
     private ImageProbabilityAdapter adapter;
+    private NewRequestViewModel newRequestViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,6 +92,7 @@ public class NewRequestActivity extends AppCompatActivity {
         adapter = new ImageProbabilityAdapter(imageProbabilities, null);
         rvList.setAdapter(adapter);
         btnAnalyze.setOnClickListener(listenerBtnAnalyze);
+        newRequestViewModel = new NewRequestViewModel();
     }
 
     private void dispatchPictureIntent() {
@@ -179,14 +155,16 @@ public class NewRequestActivity extends AppCompatActivity {
 
             // ScanFile so it will be appeared on Gallery
             MediaScannerConnection.scanFile(NewRequestActivity.this,
-                    new String[]{currentPhotoUri.getPath()}, null,
-                    (path, uri) -> {
-                    });
+                    new String[]{currentPhotoUri.getPath()}, null, null);
         }
 
         showPredictions(images);
     }
 
+    /**
+     *
+     * @param images List<Uri> image uris
+     */
     private void showPredictions(List<Uri> images) {
         //TODO: load spinner
         new Thread(() -> {
@@ -217,9 +195,10 @@ public class NewRequestActivity extends AppCompatActivity {
             File photoFile = null;
             try {
                 photoFile = Common.createNewImageFile(NewRequestActivity.this);
-            } catch (IOException ex) {
-                //TODO error
+            } catch (IOException e) {
+                Log.e(TAG, e.getMessage(), e);
             }
+
             // Continue only if the File was successfully created
             if (photoFile != null) {
                 currentPhotoUri = Uri.fromFile(photoFile);
@@ -230,8 +209,22 @@ public class NewRequestActivity extends AppCompatActivity {
                             photoFile);
                 }
 
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, currentPhotoUri);
-                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+                if (currentPhotoUri != null){
+                    //aquí
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, currentPhotoUri);
+                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+                    return;
+                }
+
+                Objects.requireNonNull(CustomSnackbar.make(clContainer,
+                        getString(R.string.error_taking_photo),
+                        BaseTransientBottomBar.LENGTH_SHORT,
+                        null,
+                        R.drawable.ic_error_outline,
+                        null,
+                        getColor(R.color.accent)
+                )).show();
+
             }
         }
     }
@@ -262,7 +255,7 @@ public class NewRequestActivity extends AppCompatActivity {
                 etNotes.getText().toString(),
                 etPatientId.getText().toString(),
                 userLogged.getUserId(),
-                userLogged.getUserId(), //TODO receiver
+                null, //automatically assigned before sending
                 Status.PENDING_STATUS_NAME,
                 Calendar.getInstance().getTime(),
                 imageSelected.getLabel()
@@ -279,6 +272,7 @@ public class NewRequestActivity extends AppCompatActivity {
     };
 
 
+    //TODO formstate y al viewmodel
     private boolean validateInput() {
         etPatientId.setError(null);
         etPhototype.setError(null);

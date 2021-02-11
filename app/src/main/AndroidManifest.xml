@@ -7,7 +7,8 @@
     <uses-permission android:name="android.permission.NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        android:maxSdkVersion="18" />
+        android:maxSdkVersion="28"
+        />
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -50,7 +51,7 @@
         <activity
             android:name=".ui.components.ImageDetailActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".ui.NewRequestActivity" />
+        <activity android:name=".ui.request.creation.NewRequestActivity" />
         <activity android:name=".ui.MainActivity">
 
         </activity>
