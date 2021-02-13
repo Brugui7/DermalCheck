@@ -263,6 +263,17 @@ public class NewRequestActivity extends AppCompatActivity {
     private boolean validateInput() {
         etPatientId.setError(null);
 
+        if (imageProbability == null) {
+            CustomSnackbar.Companion.make(clContainer, getString(R.string.error_no_images),
+                    Snackbar.LENGTH_SHORT,
+                    null,
+                    R.drawable.ic_error_outline,
+                    null,
+                    getColor(R.color.accent)
+            ).show();
+            return false;
+        }
+
         if (etPatientId.getText().toString().trim().length() == 0) {
             etPatientId.setError(getString(R.string.required_field));
             etPatientId.requestFocus();

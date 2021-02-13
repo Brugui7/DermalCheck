@@ -67,56 +67,52 @@ public class RequestDetailDataSource {
             Log.d(TAG, mapping.toString());
 
 
-            //gets the request receiver
-            Task<QuerySnapshot> receiverTask = fetchOptimalReceiver();
-            if (receiverTask == null) {
-                Log.e(TAG, "Error obtaining request receiver");
-                result = new Result.Error(new IOException("Error obtaining request receiver"));
-                onRequestCreated.OnRequestCreated(result);
-                return;
-            }
+            //Sends the request
+            db.collection("requests")
+                    .document(ref.getId())
+                    .set(mapping)
+                    .addOnSuccessListener(documentReference -> {
+                        result = new Result.Success<>(request);
 
-
-            receiverTask.addOnSuccessListener(queryDocumentSnapshots -> {
-                if (queryDocumentSnapshots.size() == 0) {
-                    result = new Result.Error(new IOException("No valid receivers"));
-                    onRequestCreated.OnRequestCreated(result);
-                }
-
-                String receiverId = queryDocumentSnapshots.iterator().next().getId();
-                mapping.put("receiver", receiverId);
-
-                //Sends the request
-                db.collection("requests")
-                        .document(ref.getId())
-                        .set(mapping)
-                        .addOnSuccessListener(documentReference -> {
-                            result = new Result.Success<>(request);
-
-                            if (images != null) {
-                                //this should always be true, but just to ensure
-                                this.uploadImages(request, images);
-                                this.updateReceiverPendingRequests(receiverId, INCREASE);
-                                Result result = new Result.Success(prepareNotification(request));
-                                onRequestCreated.OnRequestCreated(result);
-                            }
-
-                        })
-                        .addOnFailureListener(e -> {
-                            Log.e(TAG, e.getMessage(), e);
-                            result = new Result.Error(new IOException("Error creating Request", e));
+                        if (images != null) {
+                            //this should always be true, but just to ensure
+                            this.uploadImages(request, images);
+                            this.updateStatistics();
+                            Result result = new Result.Success(prepareNotification(request));
                             onRequestCreated.OnRequestCreated(result);
-                        });
-            }).addOnFailureListener(e -> {
-                Log.e(TAG, e.getMessage(), e);
-                result = new Result.Error(new IOException("Error obtaining request receiver", e));
-                onRequestCreated.OnRequestCreated(result);
-            });
+                        }
+
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e(TAG, e.getMessage(), e);
+                        onRequestCreated.OnRequestCreated(new Result.Error(new IOException("Error creating Request", e)));
+                    });
+
         } catch (Exception e) {
             Log.e(TAG, e.getMessage(), e);
             result = new Result.Error(new IOException("Error creating Request", e));
             onRequestCreated.OnRequestCreated(result);
         }
+    }
+
+    private void updateStatistics() {
+        FirebaseFirestore.getInstance()
+                .document("statistics/0")
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (!documentSnapshot.exists()) {
+                        //this must never happen
+                        return;
+                    }
+
+                    Map<String, Object> mapping = new HashMap<>();
+                    mapping.put("requestsCreated", ((long) documentSnapshot.get("pendingRequests")) + 1);
+
+                    FirebaseFirestore.getInstance()
+                            .document("statistics/0")
+                            .update(mapping);
+
+                });
     }
 
     private void uploadImages(Request request, ArrayList<Uri> images) {

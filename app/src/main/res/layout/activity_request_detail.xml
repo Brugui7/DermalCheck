@@ -37,7 +37,6 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:enabled="false"
                 android:padding="8dp">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -45,7 +44,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:backgroundTint="@android:color/transparent"
-                    android:focusable="false"
                     android:hint="@string/patient_id"
                     android:inputType="number"
                     android:maxLength="10" />
@@ -64,7 +62,6 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
                     android:buttonTint="@color/accent"
-                    android:enabled="false"
                     android:text="@string/male" />
 
                 <RadioButton
@@ -73,14 +70,12 @@
                     android:layout_height="wrap_content"
                     android:layout_weight=".5"
                     android:buttonTint="@color/accent"
-                    android:enabled="false"
                     android:text="@string/female" />
             </RadioGroup>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:enabled="false"
                 android:padding="8dp">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -97,7 +92,6 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:enabled="false"
                 android:padding="8dp">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -105,7 +99,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:backgroundTint="@android:color/transparent"
-                    android:focusable="false"
                     android:hint="@string/phototype"
                     android:inputType="number"
                     android:maxLength="1" />
@@ -119,7 +112,6 @@
                 android:layout_weight="1"
                 android:buttonTint="@color/accent"
                 android:checked="false"
-                android:enabled="false"
                 android:paddingTop="8dp"
                 android:text="@string/familiar_antecedents" />
 
@@ -129,7 +121,6 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:buttonTint="@color/accent"
-                android:enabled="false"
                 android:paddingTop="8dp"
                 android:text="@string/personal_atecedents"
                 android:textAllCaps="false" />
@@ -137,7 +128,6 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:enabled="false"
                 android:padding="8dp">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -145,7 +135,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:backgroundTint="@android:color/transparent"
-                    android:focusable="false"
                     android:hint="@string/notes"
                     android:inputType="textMultiLine"
                     android:lines="3" />

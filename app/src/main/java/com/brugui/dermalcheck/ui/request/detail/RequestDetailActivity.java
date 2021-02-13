@@ -195,9 +195,9 @@ public class RequestDetailActivity extends AppCompatActivity {
         }
 
         //Sends the notification to the receiver
-        NotificationRequestsQueue
+        /*NotificationRequestsQueue
                 .getInstance(getApplicationContext())
-                .addToRequestQueue(((Result.Success<JsonObjectRequest>) result).getData());
+                .addToRequestQueue(((Result.Success<JsonObjectRequest>) result).getData());*/
 
 
         Objects.requireNonNull(CustomSnackbar.make(clContainer,
