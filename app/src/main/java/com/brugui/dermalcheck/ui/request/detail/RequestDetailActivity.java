@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -18,7 +17,7 @@ import android.widget.TextView;
 
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.brugui.dermalcheck.R;
-import com.brugui.dermalcheck.data.RequestDetailDataSource;
+import com.brugui.dermalcheck.data.request.RequestDetailDataSource;
 import com.brugui.dermalcheck.data.Result;
 import com.brugui.dermalcheck.data.interfaces.OnRequestCreated;
 import com.brugui.dermalcheck.data.model.LoggedInUser;
@@ -27,16 +26,11 @@ import com.brugui.dermalcheck.data.model.Rol;
 import com.brugui.dermalcheck.ui.MainActivity;
 import com.brugui.dermalcheck.ui.components.ImageDetailActivity;
 import com.brugui.dermalcheck.ui.components.snackbar.CustomSnackbar;
-import com.brugui.dermalcheck.ui.request.list.RequestsViewModel;
 import com.brugui.dermalcheck.utils.NotificationRequestsQueue;
 import com.bumptech.glide.Glide;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.messaging.FirebaseMessaging;
 
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;

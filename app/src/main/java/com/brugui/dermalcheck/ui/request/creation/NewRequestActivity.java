@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
@@ -18,7 +19,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 
 import com.brugui.dermalcheck.BuildConfig;
 import com.brugui.dermalcheck.R;
@@ -41,8 +44,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+
+import app.futured.donut.DonutProgressView;
+import app.futured.donut.DonutSection;
 
 import static com.brugui.dermalcheck.ui.request.detail.RequestDetailActivity.IMAGES_ARRAY;
 import static com.brugui.dermalcheck.ui.request.detail.RequestDetailActivity.REQUEST;
@@ -52,17 +59,16 @@ public class NewRequestActivity extends AppCompatActivity {
     static final int REQUEST_IMAGE_CAPTURE = 1;
     static final int REQUEST_IMAGE_PICK = 2;
     private ArrayList<Uri> images;
-    private ArrayList<ImageProbability> imageProbabilities;
+    private ImageProbability imageProbability;
     private Request newRequest;
-    private EditText etPhototype, etPatientId, etNotes, etAge;
+    private EditText etPatientId;
+    private ImageView ivImage;
+    private DonutProgressView dpvChart;
+    private TextView tvEstimatedProbability, tvLabel;
     private LoggedInUser userLogged;
-    private CheckBox chPersonalAntecedents, chFamiliarAntecedents;
     private ConstraintLayout clContainer;
     private Uri currentPhotoUri;
     private static final String TAG = "Logger NewRequestAc";
-    private RecyclerView rvList;
-    private RadioGroup rgSex;
-    private ImageProbabilityAdapter adapter;
     private NewRequestViewModel newRequestViewModel;
 
     @Override
@@ -71,28 +77,25 @@ public class NewRequestActivity extends AppCompatActivity {
         setContentView(R.layout.activity_new_request);
         setTitle(R.string.new_request);
         FloatingActionButton fabAddImage = findViewById(R.id.fabAddImage);
-        rvList = findViewById(R.id.rvList);
         Button btnAnalyze = findViewById(R.id.btnAnalyze);
-        chFamiliarAntecedents = findViewById(R.id.chFamiliarAntecedents);
-        chPersonalAntecedents = findViewById(R.id.chPersonalAntecedents);
-        etPhototype = findViewById(R.id.etPhototype);
-        etPatientId = findViewById(R.id.etPatientId);
-        etAge = findViewById(R.id.etAge);
-        etNotes = findViewById(R.id.etNotes);
-        rgSex = findViewById(R.id.rgSex);
         clContainer = findViewById(R.id.clContainer);
+        dpvChart = findViewById(R.id.dpvChart);
+        tvEstimatedProbability = findViewById(R.id.tvEstimatedProbability);
+        tvLabel = findViewById(R.id.tvLabel);
+        ivImage = findViewById(R.id.ivImage);
+        etPatientId = findViewById(R.id.etPatientId);
+
         FirebaseUser userTmp = FirebaseAuth.getInstance().getCurrentUser();
         userLogged = new LoggedInUser(userTmp.getUid(), userTmp.getDisplayName());
 
         fabAddImage.setOnClickListener(listenerFabAddImage);
         images = new ArrayList<>();
-        imageProbabilities = new ArrayList<>();
-        rvList.setHasFixedSize(true);
-        rvList.setItemAnimator(new DefaultItemAnimator());
-        adapter = new ImageProbabilityAdapter(imageProbabilities, null);
-        rvList.setAdapter(adapter);
         btnAnalyze.setOnClickListener(listenerBtnAnalyze);
         newRequestViewModel = new NewRequestViewModel();
+        newRequestViewModel.getRequestNumber().observe(this, requestNumber -> {
+            etPatientId.setText(String.valueOf(requestNumber));
+        });
+        newRequestViewModel.fetchNewRequestNumber();
     }
 
     private void dispatchPictureIntent() {
@@ -104,12 +107,7 @@ public class NewRequestActivity extends AppCompatActivity {
 
 
         AlertDialog.Builder builder = new AlertDialog.Builder(NewRequestActivity.this);
-        if (images.size() == 3) {
-            builder.setTitle(R.string.select_new_images);
-        } else {
-            builder.setTitle(getString(R.string.remaining_images_select, 3 - images.size()));
-        }
-
+        builder.setTitle(R.string.select_new_image);
         builder.setItems(options, (dialog, item) -> {
             if (item == 0 && Common.hasCameraPermissions(NewRequestActivity.this)) {
                 //Take photo
@@ -117,9 +115,8 @@ public class NewRequestActivity extends AppCompatActivity {
             } else if (item == 1) {
                 //pick image
                 Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                pickPhoto.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+                pickPhoto.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false);
                 startActivityForResult(pickPhoto, REQUEST_IMAGE_PICK);
-
             } else {
                 dialog.dismiss();
             }
@@ -131,53 +128,46 @@ public class NewRequestActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
         if (resultCode != RESULT_OK) {
             return;
         }
-        List<Uri> images = new ArrayList<>();
 
+        Uri uri = null;
         if (requestCode == REQUEST_IMAGE_PICK) {
-            if (data.getClipData() != null) {
-                //multiple imgs
-                int imgCount = data.getClipData().getItemCount();
-                for (int i = 0; i < imgCount; i++) {
-                    images.add(data.getClipData().getItemAt(i).getUri());
-                }
-            } else {
+            if (data.getClipData() == null) {
                 //single img
-                images.add(data.getData());
+                uri = data.getData();
             }
         }
 
         if (requestCode == REQUEST_IMAGE_CAPTURE) {
             // Shows the thumbnail on ImageView
-            images.add(currentPhotoUri);
+            uri = currentPhotoUri;
 
             // ScanFile so it will be appeared on Gallery
             MediaScannerConnection.scanFile(NewRequestActivity.this,
                     new String[]{currentPhotoUri.getPath()}, null, null);
         }
 
-        showPredictions(images);
+        if (uri != null){
+            showPredictions(uri);
+        }
     }
 
     /**
-     *
-     * @param images List<Uri> image uris
+     * @param imageUri Uri image
      */
-    private void showPredictions(List<Uri> images) {
+    private void showPredictions(Uri imageUri) {
         //TODO: load spinner
         new Thread(() -> {
             try {
-                for (Uri image : images) {
-                    imageProbabilities.add(
-                            Classifier.getImageProbabilityPrediction(NewRequestActivity.this, image)
-                    );
-                    if (imageProbabilities.size() > 3) {
-                        imageProbabilities.remove(0);
-                    }
-                }
-                runOnUiThread(() -> adapter.notifyDataSetChanged());
+                imageProbability = Classifier.getImageProbabilityPrediction(NewRequestActivity.this, imageUri);
+                runOnUiThread(() -> {
+                    ivImage.setImageURI(imageProbability.getImageUri());
+                    tvLabel.setText(imageProbability.getLabel());
+                    setChartValues(imageProbability);
+                });
             } catch (IOException exception) {
                 //todo show error snackbar
             }
@@ -209,7 +199,7 @@ public class NewRequestActivity extends AppCompatActivity {
                             photoFile);
                 }
 
-                if (currentPhotoUri != null){
+                if (currentPhotoUri != null) {
                     //aquí
                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, currentPhotoUri);
                     startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
@@ -242,31 +232,28 @@ public class NewRequestActivity extends AppCompatActivity {
             return;
         }
 
-        ImageProbability imageSelected = imageProbabilities.get(adapter.getPositionSelected());
-        String sex = rgSex.getCheckedRadioButtonId() == R.id.rbMale ? "male" : "female";
-
         newRequest = new Request(
-                imageSelected.getEstimatedProbability(),
-                Integer.parseInt(etAge.getText().toString()),
-                sex,
-                chFamiliarAntecedents.isChecked(),
-                chPersonalAntecedents.isChecked(),
-                Integer.parseInt(etPhototype.getText().toString()),
-                etNotes.getText().toString(),
+                imageProbability.getEstimatedProbability(),
+                -1,
+                null,
+                false,
+                false,
+                -1,
+                null,
                 etPatientId.getText().toString(),
                 userLogged.getUserId(),
                 null, //automatically assigned before sending
                 Status.PENDING_STATUS_NAME,
                 Calendar.getInstance().getTime(),
-                imageSelected.getLabel()
+                imageProbability.getLabel()
         );
 
 
         Intent intent = new Intent(NewRequestActivity.this, RequestDetailActivity.class);
         intent.putExtra(REQUEST, newRequest);
-        //por si hay que poder pasar más de una foto en algún momento
+        //Por si hay que poder pasar más de una foto en algún momento
         ArrayList<Uri> imagesTmp = new ArrayList<>();
-        imagesTmp.add(imageSelected.getImageUri());
+        imagesTmp.add(imageProbability.getImageUri());
         intent.putExtra(IMAGES_ARRAY, imagesTmp);
         startActivity(intent);
     };
@@ -275,30 +262,6 @@ public class NewRequestActivity extends AppCompatActivity {
     //TODO formstate y al viewmodel
     private boolean validateInput() {
         etPatientId.setError(null);
-        etPhototype.setError(null);
-        etAge.setError(null);
-
-        if (rgSex.getCheckedRadioButtonId() == -1) {
-            CustomSnackbar.Companion.make(clContainer, getString(R.string.error_no_sex),
-                    Snackbar.LENGTH_SHORT,
-                    null,
-                    R.drawable.ic_error_outline,
-                    null,
-                    getColor(R.color.accent)
-            ).show();
-            return false;
-        }
-
-        if (adapter.getPositionSelected() == -1) {
-            CustomSnackbar.Companion.make(clContainer, getString(R.string.error_no_images),
-                    Snackbar.LENGTH_SHORT,
-                    null,
-                    R.drawable.ic_error_outline,
-                    null,
-                    getColor(R.color.accent)
-            ).show();
-            return false;
-        }
 
         if (etPatientId.getText().toString().trim().length() == 0) {
             etPatientId.setError(getString(R.string.required_field));
@@ -306,35 +269,25 @@ public class NewRequestActivity extends AppCompatActivity {
             return false;
         }
 
-        String stringPhototype = etPhototype.getText().toString().trim();
-        if (stringPhototype.length() == 0) {
-            etPhototype.setError(getString(R.string.required_field));
-            etPhototype.requestFocus();
-            return false;
-        }
-
-        String stringAge = etAge.getText().toString().trim();
-        if (stringAge.length() == 0) {
-            etAge.setError(getString(R.string.required_field));
-            etAge.requestFocus();
-            return false;
-        }
-
-        try {
-            int phototype = Integer.parseInt(stringPhototype);
-            if (phototype < 1 || phototype > 7) {
-                etPhototype.setError(getString(R.string.invalid_phototype));
-                etPhototype.requestFocus();
-                return false;
-            }
-        } catch (NumberFormatException e) {
-            etPhototype.setError(getString(R.string.invalid_phototype));
-            etPhototype.requestFocus();
-            return false;
-        }
-
         return true;
     }
 
+    /**
+     *
+     * @param image ImageProbability
+     */
+    private void setChartValues(ImageProbability image) {
+        float estimatedProbability = (float) image.getEstimatedProbability();
+        tvEstimatedProbability.setText(estimatedProbability + "%");
+        int color = Color.parseColor("#f44336");
+        if (estimatedProbability < 30) {
+            color = Color.parseColor("#4caf50");
+        } else if (estimatedProbability < 70) {
+            color = Color.parseColor("#ff9800");
+        }
+        DonutSection section = new DonutSection("", color, estimatedProbability);
+        dpvChart.setCap(100f);
+        dpvChart.submitData(new ArrayList<>(Collections.singleton(section)));
+    }
 
 }

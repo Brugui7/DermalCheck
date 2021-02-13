@@ -41,6 +41,7 @@
     <string name="choose_images_from_camera">Hacer foto</string>
     <string name="remaining_images_select">Selecciona hasta %1$d imágenes más.</string>
     <string name="select_new_images">Seleccionar nuevas imágenes</string>
+    <string name="select_new_image">Seleccionar nueva imagen</string>
     <string name="age">Edad</string>
 
     <!-- LABELS -->
@@ -53,10 +54,12 @@
     <string name="label7">Lesiones vasculares cutaneas</string>
     <string name="label8">Carcinoma de células escamosas</string>
     <string name="label9">Desconocido</string>
+    <!-- END LABELS -->
+
     <string name="review">Revisar</string>
     <string name="male">Hombre</string>
     <string name="female">Mujer</string>
     <string name="diagnose">Diagnosticar</string>
-    <!-- END LABELS -->
+
 
 </resources>

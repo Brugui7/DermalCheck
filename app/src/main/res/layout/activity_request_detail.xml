@@ -15,8 +15,9 @@
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toTopOf="@+id/btnCancel"
-        app:layout_constraintTop_toBottomOf="@+id/dpvChart"
-        tools:layout_editor_absoluteX="48dp">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dpvChart">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -59,26 +60,26 @@
 
                 <RadioButton
                     android:id="@+id/rbMale"
-                    android:enabled="false"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
                     android:buttonTint="@color/accent"
+                    android:enabled="false"
                     android:text="@string/male" />
 
                 <RadioButton
                     android:id="@+id/rbFemale"
-                    android:enabled="false"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight=".5"
                     android:buttonTint="@color/accent"
+                    android:enabled="false"
                     android:text="@string/female" />
             </RadioGroup>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
-               android:layout_height="match_parent"
+                android:layout_height="match_parent"
                 android:enabled="false"
                 android:padding="8dp">
 

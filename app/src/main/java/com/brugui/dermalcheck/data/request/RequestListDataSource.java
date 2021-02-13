@@ -1,7 +1,8 @@
-package com.brugui.dermalcheck.data;
+package com.brugui.dermalcheck.data.request;
 
 import android.util.Log;
 
+import com.brugui.dermalcheck.data.Result;
 import com.brugui.dermalcheck.data.interfaces.OnDataFetched;
 import com.brugui.dermalcheck.data.model.LoggedInUser;
 import com.brugui.dermalcheck.data.model.Request;

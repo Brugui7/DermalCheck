@@ -13,6 +13,9 @@ public class ImageProbability {
         this.imageUri = imageUri;
     }
 
+    public ImageProbability() {
+    }
+
     public int getLabel() {
         return label;
     }

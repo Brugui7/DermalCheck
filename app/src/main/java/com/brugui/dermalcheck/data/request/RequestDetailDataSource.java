@@ -1,4 +1,4 @@
-package com.brugui.dermalcheck.data;
+package com.brugui.dermalcheck.data.request;
 
 import android.net.Uri;
 import android.util.Log;
@@ -9,6 +9,7 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.brugui.dermalcheck.data.Result;
 import com.brugui.dermalcheck.data.interfaces.OnDataFetched;
 import com.brugui.dermalcheck.data.interfaces.OnRequestCreated;
 import com.brugui.dermalcheck.data.model.Request;
