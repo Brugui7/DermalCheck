@@ -5,6 +5,8 @@ import android.content.Context;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.brugui.dermalcheck.data.interfaces.OnRequestUpdated;
+import com.brugui.dermalcheck.data.model.Request;
 import com.brugui.dermalcheck.data.request.RequestDetailDataSource;
 import com.brugui.dermalcheck.data.Result;
 import com.brugui.dermalcheck.data.SharedPreferencesRepository;
@@ -49,7 +51,17 @@ public class RequestDetailViewModel extends ViewModel {
         userLogged = new SharedPreferencesRepository(context).getUserLogged();
     }
 
-    public LoggedInUser getUserLogged() {
+    /**
+     *
+     * @param request Request
+     * @param onRequestUpdated OnRequestUpdated
+     */
+    public void updateRequest(Request request, OnRequestUpdated onRequestUpdated){
+        dataSource.updateRequest(request, onRequestUpdated);
+    }
+
+
+        public LoggedInUser getUserLogged() {
         return userLogged;
     }
 }

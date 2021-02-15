@@ -137,13 +137,10 @@ public class RequestDetailDataSource {
      */
     public void updateRequest(Request request, OnRequestUpdated onRequestUpdated){
         try {
-            DocumentReference ref = db.collection("requests").document();
-            request.setId(ref.getId());
             Map<String, Object> mapping = request.toMap();
-
             //Sends the request
             db.collection("requests")
-                    .document(ref.getId())
+                    .document(request.getId())
                     .set(mapping, SetOptions.merge())
                     .addOnSuccessListener(documentReference -> {
                         onRequestUpdated.onRequestUpdated(new Result.Success<>(request));
