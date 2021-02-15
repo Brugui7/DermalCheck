@@ -12,6 +12,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.brugui.dermalcheck.data.Result;
 import com.brugui.dermalcheck.data.interfaces.OnDataFetched;
 import com.brugui.dermalcheck.data.interfaces.OnRequestCreated;
+import com.brugui.dermalcheck.data.interfaces.OnRequestUpdated;
 import com.brugui.dermalcheck.data.model.Request;
 import com.brugui.dermalcheck.data.model.Rol;
 import com.brugui.dermalcheck.data.model.Status;
@@ -27,6 +28,7 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.firebase.storage.FirebaseStorage;
@@ -56,129 +58,6 @@ public class RequestDetailDataSource {
 
     public RequestDetailDataSource() {
         db = FirebaseFirestore.getInstance();
-    }
-
-    public void sendRequest(Request request, ArrayList<Uri> images, OnRequestCreated onRequestCreated) {
-        try {
-            DocumentReference ref = db.collection("requests").document();
-            request.setId(ref.getId());
-            Map<String, Object> mapping = request.toMap();
-            mapping.put("creationDate", FieldValue.serverTimestamp());
-            Log.d(TAG, mapping.toString());
-
-
-            //Sends the request
-            db.collection("requests")
-                    .document(ref.getId())
-                    .set(mapping)
-                    .addOnSuccessListener(documentReference -> {
-                        result = new Result.Success<>(request);
-
-                        if (images != null) {
-                            //this should always be true, but just to ensure
-                            this.uploadImages(request, images);
-                            this.updateStatistics();
-                            Result result = new Result.Success(prepareNotification(request));
-                            onRequestCreated.OnRequestCreated(result);
-                        }
-
-                    })
-                    .addOnFailureListener(e -> {
-                        Log.e(TAG, e.getMessage(), e);
-                        onRequestCreated.OnRequestCreated(new Result.Error(new IOException("Error creating Request", e)));
-                    });
-
-        } catch (Exception e) {
-            Log.e(TAG, e.getMessage(), e);
-            result = new Result.Error(new IOException("Error creating Request", e));
-            onRequestCreated.OnRequestCreated(result);
-        }
-    }
-
-    private void updateStatistics() {
-        FirebaseFirestore.getInstance()
-                .document("statistics/0")
-                .get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (!documentSnapshot.exists()) {
-                        //this must never happen
-                        return;
-                    }
-
-                    Map<String, Object> mapping = new HashMap<>();
-                    mapping.put("requestsCreated", ((long) documentSnapshot.get("pendingRequests")) + 1);
-
-                    FirebaseFirestore.getInstance()
-                            .document("statistics/0")
-                            .update(mapping);
-
-                });
-    }
-
-    private void uploadImages(Request request, ArrayList<Uri> images) {
-        StorageReference storageReference = FirebaseStorage.getInstance().getReference();
-        for (Uri image : images) {
-            StorageReference imageRef = storageReference.child("images/" + request.getId() + "/" + image.getLastPathSegment());
-            UploadTask uploadTask = imageRef.putFile(image);
-            uploadTask.addOnSuccessListener(result -> {
-                Task<Uri> downloadUrl = imageRef.getDownloadUrl();
-                downloadUrl.addOnSuccessListener(url -> {
-                    Log.d(TAG, "Url: " + url.toString());
-                    updateImageDatabase(request, url.toString());
-                });
-            });
-            uploadTask.addOnFailureListener(e -> {
-                Log.e(TAG, e.getMessage(), e);
-            });
-        }
-    }
-
-    private void updateImageDatabase(Request request, String url) {
-        Map<String, String> document = new HashMap<>();
-        document.put("remoteUri", url);
-        db.collection("requests")
-                .document(request.getId())
-                .collection("images")
-                .add(document);
-
-    }
-
-    /**
-     * @param request Request
-     * @return request notification http request
-     */
-    private JsonObjectRequest prepareNotification(Request request) {
-        String title = "Nueva consulta recibida";
-        String message = "Te han asignado una nueva consulta.";
-
-        JSONObject notification = new JSONObject();
-        JSONObject notifcationBody = new JSONObject();
-        try {
-            Gson gson = new Gson();
-            notifcationBody
-                    .put("title", title)
-                    .put("message", message)
-                    .put("request", gson.toJson(request));
-
-            notification.put("to", "/topics/" + request.getReceiver());
-            notification.put("data", notifcationBody);
-        } catch (JSONException e) {
-            Log.e(TAG, "onCreate: " + e.getMessage());
-        }
-
-        return new JsonObjectRequest(
-                "https://fcm.googleapis.com/fcm/send",
-                notification,
-                response -> Log.i(TAG, "onResponse: " + response.toString()),
-                error -> Log.e(TAG, error.getMessage() + " " + error.getMessage(), error)) {
-            @Override
-            public Map<String, String> getHeaders() {
-                Map<String, String> params = new HashMap<>();
-                params.put("Authorization", "Bearer " + PrivateConstants.CM_SERVER_KEY);
-                params.put("Content-Type", "application/json");
-                return params;
-            }
-        };
     }
 
     public void fetchImages(String requestId, OnDataFetched callback) {
@@ -248,5 +127,35 @@ public class RequestDetailDataSource {
                             .update(mapping);
 
                 });
+    }
+
+
+    /**
+     *
+     * @param request Request
+     * @param onRequestUpdated OnRequestUpdated
+     */
+    public void updateRequest(Request request, OnRequestUpdated onRequestUpdated){
+        try {
+            DocumentReference ref = db.collection("requests").document();
+            request.setId(ref.getId());
+            Map<String, Object> mapping = request.toMap();
+
+            //Sends the request
+            db.collection("requests")
+                    .document(ref.getId())
+                    .set(mapping, SetOptions.merge())
+                    .addOnSuccessListener(documentReference -> {
+                        onRequestUpdated.onRequestUpdated(new Result.Success<>(request));
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e(TAG, e.getMessage(), e);
+                        onRequestUpdated.onRequestUpdated(new Result.Error(new IOException("Error updating request", e)));
+                    });
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage(), e);
+            result = new Result.Error(new IOException("Error updating Request", e));
+            onRequestUpdated.onRequestUpdated(result);
+        }
     }
 }

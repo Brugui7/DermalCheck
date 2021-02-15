@@ -5,7 +5,7 @@ import com.brugui.dermalcheck.data.Result;
 public interface OnRequestCreated {
     /**
      * Method called when a new Request is created
-     * @param result
+     * @param result Result
      */
-    void OnRequestCreated(Result result);
+    void onRequestCreated(Result result);
 }

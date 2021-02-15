@@ -51,15 +51,12 @@ public class RequestDetailActivity extends AppCompatActivity {
     private Request request;
     private DonutProgressView dpvChart;
     private ConstraintLayout clContainer;
-    private Button btnSendRequest, btnCancel, btnDiagnose;
+    private Button btnDiagnose;
     private EditText etPhototype, etPatientId, etNotes, etAge;
     private RadioGroup rgSex;
     private CheckBox chPersonalAntecedents, chFamiliarAntecedents;
     private ImageView ivImage;
     private RequestDetailViewModel requestDetailViewModel;
-
-    //For creation
-    private ArrayList<Uri> images;
 
     //For visualization
     private List<String> imageUrls;
@@ -72,8 +69,6 @@ public class RequestDetailActivity extends AppCompatActivity {
         setTitle(R.string.request_detail);
         clContainer = findViewById(R.id.clContainer);
 
-        btnSendRequest = findViewById(R.id.btnSendRequest);
-        btnCancel = findViewById(R.id.btnCancel);
         btnDiagnose = findViewById(R.id.btnDiagnose);
         dpvChart = findViewById(R.id.dpvChart);
         tvEstimatedProbability = findViewById(R.id.tvEstimatedProbability);
@@ -99,33 +94,29 @@ public class RequestDetailActivity extends AppCompatActivity {
 
         request = (Request) bundle.getSerializable(REQUEST);
 
-        if (bundle.getSerializable(IMAGES_ARRAY) != null) {
-            //Creation
-            images = bundle.getParcelableArrayList(IMAGES_ARRAY);
-            setUpCreationUI();
-        } else {
-            requestDetailViewModel.fetchImages(request.getId());
-            requestDetailViewModel.getImages().observe(this, images -> {
-                imageUrls = images;
-                Glide.with(this).load(imageUrls.get(0)).into(ivImage);
-                ivImage.setOnClickListener(listenerIvImageFromUrl);
-            });
+        requestDetailViewModel.fetchImages(request.getId());
+        requestDetailViewModel.getImages().observe(this, images -> {
+            imageUrls = images;
+            if (imageUrls == null || imageUrls.size() == 0) {
+                return;
+            }
+            Glide.with(this).load(imageUrls.get(0)).into(ivImage);
+            ivImage.setOnClickListener(listenerIvImageFromUrl);
+        });
 
-            LoggedInUser loggedInUser = requestDetailViewModel.getUserLogged();
-            if (loggedInUser != null && loggedInUser.getRole() != null) {
-                if (loggedInUser.getRole().equalsIgnoreCase(Rol.SPECIALIST_ROL)) {
-                    setUpDiagnosticUI();
-                }
+        LoggedInUser loggedInUser = requestDetailViewModel.getUserLogged();
+        if (loggedInUser != null && loggedInUser.getRole() != null) {
+            if (loggedInUser.getRole().equalsIgnoreCase(Rol.SPECIALIST_ROL)) {
+                setUpDiagnosticUI();
             }
         }
+
 
         setFormValues();
         setChartValues();
 
         dataSource = new RequestDetailDataSource();
     }
-
-
 
 
     //########## Init Functions ##########
@@ -144,94 +135,37 @@ public class RequestDetailActivity extends AppCompatActivity {
         dpvChart.submitData(new ArrayList<>(Collections.singleton(section)));
     }
 
-    private void setFormValues(){
+    private void setFormValues() {
         chFamiliarAntecedents.setChecked(request.isFamiliarAntecedents());
         chPersonalAntecedents.setChecked(request.isPersonalAntecedents());
-        etPhototype.setText(String.valueOf(request.getPhototype()));
-        etAge.setText(String.valueOf(request.getAge()));
+        if (request.getPhototype() != -1){
+            etPhototype.setText(String.valueOf(request.getPhototype()));
+        }
+
+        if (request.getAge() != -1){
+            etAge.setText(String.valueOf(request.getAge()));
+        }
+
         etPatientId.setText(request.getPatientId());
         etNotes.setText(request.getNotes());
-        if (request.getSex().equals("male")){
-            rgSex.check(R.id.rbMale);
-        } else {
-            rgSex.check(R.id.rbFemale);
+        if (request.getSex() != null){
+            if (request.getSex().equals("male")) {
+                rgSex.check(R.id.rbMale);
+            } else {
+                rgSex.check(R.id.rbFemale);
+            }
         }
 
-        if (request.getLabel() != 0){
+        if (request.getLabel() != 0) {
             tvLabel.setText(getString(request.getLabel()));
         }
-        if (images != null && images.size() > 0){
-            ivImage.setImageURI(images.get(0));
-            ivImage.setOnClickListener(listenerIvImageFromUri);
-        }
     }
 
-    private void setUpCreationUI(){
-
-        btnCancel.setOnClickListener(view -> finish());
-        btnSendRequest.setOnClickListener(listenerBtnSendRequest);
-        btnSendRequest.setVisibility(View.VISIBLE);
-        btnCancel.setVisibility(View.VISIBLE);
-    }
-
-    private void setUpDiagnosticUI(){
+    private void setUpDiagnosticUI() {
         btnDiagnose.setVisibility(View.VISIBLE);
     }
 
     //########## Listeners ##########
-
-
-    private final OnRequestCreated onRequestCreated = result -> {
-        if (result instanceof Result.Error) {
-            btnSendRequest.setEnabled(true);
-            CustomSnackbar.make(clContainer, getString(R.string.error_creating_request),
-                    Snackbar.LENGTH_SHORT,
-                    null,
-                    R.drawable.ic_error_outline,
-                    null,
-                    getColor(R.color.accent)
-            ).show();
-            return;
-        }
-
-        //Sends the notification to the receiver
-        /*NotificationRequestsQueue
-                .getInstance(getApplicationContext())
-                .addToRequestQueue(((Result.Success<JsonObjectRequest>) result).getData());*/
-
-
-        Objects.requireNonNull(CustomSnackbar.make(clContainer,
-                getString(R.string.request_created_successfully),
-                BaseTransientBottomBar.LENGTH_SHORT,
-                null,
-                R.drawable.ic_check_circle_outline,
-                null,
-                getColor(R.color.success)
-        ))
-                .addCallback(new BaseTransientBottomBar.BaseCallback<CustomSnackbar>() {
-                    @Override
-                    public void onDismissed(CustomSnackbar transientBottomBar, int event) {
-                        super.onDismissed(transientBottomBar, event);
-                        Intent intent = new Intent(RequestDetailActivity.this, MainActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(intent);
-                    }
-                })
-                .show();
-
-    };
-
-    private final View.OnClickListener listenerBtnSendRequest = view -> {
-        btnSendRequest.setEnabled(false);
-        dataSource.sendRequest(request, images, onRequestCreated);
-    };
-
-    private final View.OnClickListener listenerIvImageFromUri = view -> {
-        Intent intent = new Intent(RequestDetailActivity.this, ImageDetailActivity.class);
-        intent.putExtra(ImageDetailActivity.IMAGE_URI, images.get(0));
-        startActivity(intent);
-    };
 
     private final View.OnClickListener listenerIvImageFromUrl = view -> {
         Intent intent = new Intent(RequestDetailActivity.this, ImageDetailActivity.class);

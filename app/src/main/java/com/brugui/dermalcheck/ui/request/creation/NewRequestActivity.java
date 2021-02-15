@@ -25,10 +25,13 @@ import android.widget.TextView;
 
 import com.brugui.dermalcheck.BuildConfig;
 import com.brugui.dermalcheck.R;
+import com.brugui.dermalcheck.data.Result;
+import com.brugui.dermalcheck.data.interfaces.OnRequestCreated;
 import com.brugui.dermalcheck.data.model.ImageProbability;
 import com.brugui.dermalcheck.data.model.LoggedInUser;
 import com.brugui.dermalcheck.data.model.Request;
 import com.brugui.dermalcheck.data.model.Status;
+import com.brugui.dermalcheck.ui.MainActivity;
 import com.brugui.dermalcheck.ui.adapters.ImageProbabilityAdapter;
 import com.brugui.dermalcheck.ui.components.snackbar.CustomSnackbar;
 import com.brugui.dermalcheck.ui.request.detail.RequestDetailActivity;
@@ -62,6 +65,7 @@ public class NewRequestActivity extends AppCompatActivity {
     private ImageProbability imageProbability;
     private Request newRequest;
     private EditText etPatientId;
+    private Button btnSendRequest;
     private ImageView ivImage;
     private DonutProgressView dpvChart;
     private TextView tvEstimatedProbability, tvLabel;
@@ -77,7 +81,7 @@ public class NewRequestActivity extends AppCompatActivity {
         setContentView(R.layout.activity_new_request);
         setTitle(R.string.new_request);
         FloatingActionButton fabAddImage = findViewById(R.id.fabAddImage);
-        Button btnAnalyze = findViewById(R.id.btnAnalyze);
+        btnSendRequest = findViewById(R.id.btnSendRequest);
         clContainer = findViewById(R.id.clContainer);
         dpvChart = findViewById(R.id.dpvChart);
         tvEstimatedProbability = findViewById(R.id.tvEstimatedProbability);
@@ -90,7 +94,7 @@ public class NewRequestActivity extends AppCompatActivity {
 
         fabAddImage.setOnClickListener(listenerFabAddImage);
         images = new ArrayList<>();
-        btnAnalyze.setOnClickListener(listenerBtnAnalyze);
+        btnSendRequest.setOnClickListener(listenerBtnSendRequest);
         newRequestViewModel = new NewRequestViewModel();
         newRequestViewModel.getRequestNumber().observe(this, requestNumber -> {
             etPatientId.setText(String.valueOf(requestNumber));
@@ -134,8 +138,11 @@ public class NewRequestActivity extends AppCompatActivity {
         }
 
         Uri uri = null;
+        Log.d(TAG, "1");
         if (requestCode == REQUEST_IMAGE_PICK) {
-            if (data.getClipData() == null) {
+            Log.d(TAG, "2");
+            if (data.getData() != null) {
+                Log.d(TAG, "3");
                 //single img
                 uri = data.getData();
             }
@@ -200,7 +207,6 @@ public class NewRequestActivity extends AppCompatActivity {
                 }
 
                 if (currentPhotoUri != null) {
-                    //aquí
                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, currentPhotoUri);
                     startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
                     return;
@@ -224,38 +230,6 @@ public class NewRequestActivity extends AppCompatActivity {
 
     private final View.OnClickListener listenerFabAddImage = view -> {
         dispatchPictureIntent();
-    };
-
-    private final View.OnClickListener listenerBtnAnalyze = view -> {
-
-        if (!validateInput()) {
-            return;
-        }
-
-        newRequest = new Request(
-                imageProbability.getEstimatedProbability(),
-                -1,
-                null,
-                false,
-                false,
-                -1,
-                null,
-                etPatientId.getText().toString(),
-                userLogged.getUserId(),
-                null, //automatically assigned before sending
-                Status.PENDING_STATUS_NAME,
-                Calendar.getInstance().getTime(),
-                imageProbability.getLabel()
-        );
-
-
-        Intent intent = new Intent(NewRequestActivity.this, RequestDetailActivity.class);
-        intent.putExtra(REQUEST, newRequest);
-        //Por si hay que poder pasar más de una foto en algún momento
-        ArrayList<Uri> imagesTmp = new ArrayList<>();
-        imagesTmp.add(imageProbability.getImageUri());
-        intent.putExtra(IMAGES_ARRAY, imagesTmp);
-        startActivity(intent);
     };
 
 
@@ -301,4 +275,72 @@ public class NewRequestActivity extends AppCompatActivity {
         dpvChart.submitData(new ArrayList<>(Collections.singleton(section)));
     }
 
+    private final OnRequestCreated onRequestCreated = result -> {
+        if (result instanceof Result.Error) {
+            btnSendRequest.setEnabled(true);
+            CustomSnackbar.make(clContainer, getString(R.string.error_creating_request),
+                    Snackbar.LENGTH_SHORT,
+                    null,
+                    R.drawable.ic_error_outline,
+                    null,
+                    getColor(R.color.accent)
+            ).show();
+            return;
+        }
+
+        //Sends the notification to the receiver
+        /*NotificationRequestsQueue
+                .getInstance(getApplicationContext())
+                .addToRequestQueue(((Result.Success<JsonObjectRequest>) result).getData());*/
+
+
+        Objects.requireNonNull(CustomSnackbar.make(clContainer,
+                getString(R.string.request_created_successfully),
+                BaseTransientBottomBar.LENGTH_SHORT,
+                null,
+                R.drawable.ic_check_circle_outline,
+                null,
+                getColor(R.color.success)
+        ))
+                .addCallback(new BaseTransientBottomBar.BaseCallback<CustomSnackbar>() {
+                    @Override
+                    public void onDismissed(CustomSnackbar transientBottomBar, int event) {
+                        super.onDismissed(transientBottomBar, event);
+                        Intent intent = new Intent(NewRequestActivity.this, MainActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                    }
+                })
+                .show();
+
+    };
+
+    private final View.OnClickListener listenerBtnSendRequest = view -> {
+        if (!validateInput()) {
+            return;
+        }
+
+        newRequest = new Request(
+                imageProbability.getEstimatedProbability(),
+                -1,
+                null,
+                false,
+                false,
+                -1,
+                null,
+                etPatientId.getText().toString(),
+                userLogged.getUserId(),
+                null, //automatically assigned before sending
+                Status.PENDING_STATUS_NAME,
+                Calendar.getInstance().getTime(),
+                imageProbability.getLabel()
+        );
+
+        //Por si hay que poder pasar más de una foto en algún momento
+        ArrayList<Uri> imagesTmp = new ArrayList<>();
+        imagesTmp.add(imageProbability.getImageUri());
+        btnSendRequest.setEnabled(false);
+        newRequestViewModel.sendRequest(newRequest, imagesTmp, onRequestCreated);
+    };
 }
