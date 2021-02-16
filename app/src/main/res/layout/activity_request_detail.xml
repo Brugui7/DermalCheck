@@ -157,6 +157,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <Spinner
+        android:id="@+id/spDiagnostics"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:spinnerMode="dialog"
+        android:layout_weight="1"
+        android:entries="@array/labels_select"
+        tools:layout_editor_absoluteY="617dp"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
     <app.futured.donut.DonutProgressView
         android:id="@+id/dpvChart"
         android:layout_width="150dp"

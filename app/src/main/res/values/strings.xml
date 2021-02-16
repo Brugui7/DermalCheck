@@ -64,6 +64,7 @@
     <string name="female">Mujer</string>
     <string name="diagnose">Diagnosticar</string>
     <string name="update_data">Actualizar Datos</string>
+    <string name="select_a_diagnostic">Seleccione el diagnóstico</string>
 
 
 </resources>

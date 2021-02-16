@@ -7,12 +7,16 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -51,6 +55,7 @@ public class RequestDetailActivity extends AppCompatActivity {
     private TextView tvEstimatedProbability, tvLabel;
     private Request request;
     private DonutProgressView dpvChart;
+    private Spinner spDiagnostics;
     private ConstraintLayout clContainer;
     private Button btnDiagnose, btnUpdateData;
     private EditText etPhototype, etPatientId, etNotes, etAge;
@@ -70,6 +75,7 @@ public class RequestDetailActivity extends AppCompatActivity {
         setTitle(R.string.request_detail);
         clContainer = findViewById(R.id.clContainer);
 
+        spDiagnostics = findViewById(R.id.spDiagnostics);
         btnDiagnose = findViewById(R.id.btnDiagnose);
         btnUpdateData = findViewById(R.id.btnUpdateData);
         dpvChart = findViewById(R.id.dpvChart);
@@ -115,6 +121,8 @@ public class RequestDetailActivity extends AppCompatActivity {
         }
 
         btnUpdateData.setOnClickListener(listenerBtnUpdateData);
+        spDiagnostics.setOnItemSelectedListener(listenerSpDiagnostics);
+        btnDiagnose.setOnClickListener(view -> spDiagnostics.performClick());
 
         setFormValues();
         setChartValues();
@@ -213,7 +221,19 @@ public class RequestDetailActivity extends AppCompatActivity {
         startActivity(intent);
     };
 
-    private View.OnClickListener listenerBtnUpdateData = view -> {
+    private final AdapterView.OnItemSelectedListener listenerSpDiagnostics = new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+            Log.d(TAG, "selected " + i);
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> adapterView) {
+            Log.d(TAG, "Nothing selected");
+        }
+    };
+
+    private final View.OnClickListener listenerBtnUpdateData = view -> {
         if (!validateInput()) {
             return;
         }

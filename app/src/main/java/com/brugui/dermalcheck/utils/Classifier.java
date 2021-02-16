@@ -37,10 +37,10 @@ public class Classifier {
             };
 
     /**
-     * @param context
-     * @param imageUri
-     * @return
-     * @throws IOException
+     * @param context Context
+     * @param imageUri Uri
+     * @return float[] probabilities
+     * @throws IOException Exception
      */
     private static float[] predict(Context context, Uri imageUri) throws IOException {
         Bitmap bitmap;
