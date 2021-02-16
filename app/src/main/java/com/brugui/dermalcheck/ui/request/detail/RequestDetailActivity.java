@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.brugui.dermalcheck.R;
+import com.brugui.dermalcheck.data.interfaces.OnRequestUpdated;
 import com.brugui.dermalcheck.data.model.Status;
 import com.brugui.dermalcheck.data.request.RequestDetailDataSource;
 import com.brugui.dermalcheck.data.Result;
@@ -31,6 +32,7 @@ import com.brugui.dermalcheck.data.model.Rol;
 import com.brugui.dermalcheck.ui.MainActivity;
 import com.brugui.dermalcheck.ui.components.ImageDetailActivity;
 import com.brugui.dermalcheck.ui.components.snackbar.CustomSnackbar;
+import com.brugui.dermalcheck.utils.Classifier;
 import com.brugui.dermalcheck.utils.NotificationRequestsQueue;
 import com.bumptech.glide.Glide;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
@@ -57,9 +59,10 @@ public class RequestDetailActivity extends AppCompatActivity {
     private DonutProgressView dpvChart;
     private Spinner spDiagnostics;
     private ConstraintLayout clContainer;
-    private Button btnDiagnose, btnUpdateData;
+    private Button btnDiagnose;
     private EditText etPhototype, etPatientId, etNotes, etAge;
     private RadioGroup rgSex;
+    private TextView tvSpecialistDiagnostic;
     private CheckBox chPersonalAntecedents, chFamiliarAntecedents;
     private ImageView ivImage;
     private RequestDetailViewModel requestDetailViewModel;
@@ -77,7 +80,7 @@ public class RequestDetailActivity extends AppCompatActivity {
 
         spDiagnostics = findViewById(R.id.spDiagnostics);
         btnDiagnose = findViewById(R.id.btnDiagnose);
-        btnUpdateData = findViewById(R.id.btnUpdateData);
+        Button btnUpdateData = findViewById(R.id.btnUpdateData);
         dpvChart = findViewById(R.id.dpvChart);
         tvEstimatedProbability = findViewById(R.id.tvEstimatedProbability);
         tvLabel = findViewById(R.id.tvLabel);
@@ -90,6 +93,7 @@ public class RequestDetailActivity extends AppCompatActivity {
         etNotes = findViewById(R.id.etNotes);
         etAge = findViewById(R.id.etAge);
         rgSex = findViewById(R.id.rgSex);
+        tvSpecialistDiagnostic = findViewById(R.id.tvSpecialistDiagnostic);
 
         requestDetailViewModel = new RequestDetailViewModel();
         requestDetailViewModel.loadUserData(this);
@@ -125,13 +129,15 @@ public class RequestDetailActivity extends AppCompatActivity {
         btnDiagnose.setOnClickListener(view -> spDiagnostics.performClick());
 
         setFormValues();
-        setChartValues();
+        if (request.getDiagnosedLabelIndex() != -1){
+            setEstimatedDiagnosticValues();
+        }
     }
 
 
     //########## Init Functions ##########
 
-    private void setChartValues() {
+    private void setEstimatedDiagnosticValues() {
         float estimatedProbability = (float) request.getEstimatedProbability();
         tvEstimatedProbability.setText(estimatedProbability + "%");
         int color = Color.parseColor("#f44336");
@@ -143,6 +149,12 @@ public class RequestDetailActivity extends AppCompatActivity {
         DonutSection section = new DonutSection("", color, estimatedProbability);
         dpvChart.setCap(100f);
         dpvChart.submitData(new ArrayList<>(Collections.singleton(section)));
+        if (request.getLabel() != 0) {
+            tvLabel.setText(getString(request.getLabel()));
+        }
+        tvLabel.setVisibility(View.VISIBLE);
+        dpvChart.setVisibility(View.VISIBLE);
+        tvEstimatedProbability.setVisibility(View.VISIBLE);
     }
 
     private void setFormValues() {
@@ -166,8 +178,8 @@ public class RequestDetailActivity extends AppCompatActivity {
             }
         }
 
-        if (request.getLabel() != 0) {
-            tvLabel.setText(getString(request.getLabel()));
+        if (request.getDiagnosedLabelIndex() != -1){
+            tvSpecialistDiagnostic.setText(getString(Classifier.labels[request.getDiagnosedLabelIndex()]));
         }
     }
 
@@ -221,10 +233,41 @@ public class RequestDetailActivity extends AppCompatActivity {
         startActivity(intent);
     };
 
+    private final OnRequestUpdated onRequestUpdated = result -> {
+        if (result instanceof Result.Error) {
+            CustomSnackbar.make(clContainer, getString(R.string.error_creating_request),
+                    Snackbar.LENGTH_SHORT,
+                    null,
+                    R.drawable.ic_error_outline,
+                    null,
+                    getColor(R.color.accent)
+            ).show();
+            return;
+        }
+
+        CustomSnackbar.make(clContainer, getString(R.string.request_updated_successfully),
+                Snackbar.LENGTH_SHORT,
+                null,
+                R.drawable.ic_check_circle_outline,
+                null,
+                getColor(R.color.success)
+        ).show();
+
+    };
+
+
     private final AdapterView.OnItemSelectedListener listenerSpDiagnostics = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-            Log.d(TAG, "selected " + i);
+            if (i == 0){
+                return;
+            }
+            request.setDiagnosedLabelIndex(i - 1);
+            tvSpecialistDiagnostic.setText(getString(Classifier.labels[request.getDiagnosedLabelIndex()]));
+            requestDetailViewModel.updateRequest(request, result -> {
+                onRequestUpdated.onRequestUpdated(result);
+                setEstimatedDiagnosticValues();
+            });
         }
 
         @Override
@@ -255,45 +298,7 @@ public class RequestDetailActivity extends AppCompatActivity {
         request.setPersonalAntecedents(chPersonalAntecedents.isChecked());
         request.setNotes(etNotes.getText().toString());
 
-        requestDetailViewModel.updateRequest(request, result -> {
-            if (result instanceof Result.Error) {
-                CustomSnackbar.make(clContainer, getString(R.string.error_creating_request),
-                        Snackbar.LENGTH_SHORT,
-                        null,
-                        R.drawable.ic_error_outline,
-                        null,
-                        getColor(R.color.accent)
-                ).show();
-                return;
-            }
-
-            CustomSnackbar.make(clContainer, getString(R.string.request_updated_successfully),
-                    Snackbar.LENGTH_SHORT,
-                    null,
-                    R.drawable.ic_check_circle_outline,
-                    null,
-                    getColor(R.color.success)
-            ).show();
-
-        });
-
-        /*
-         newRequest = new Request(
-                imageSelected.getEstimatedProbability(),
-                Integer.parseInt(etAge.getText().toString()),
-                sex,
-                chFamiliarAntecedents.isChecked(),
-                chPersonalAntecedents.isChecked(),
-                Integer.parseInt(etPhototype.getText().toString()),
-                etNotes.getText().toString(),
-                etPatientId.getText().toString(),
-                userLogged.getUserId(),
-                userLogged.getUserId(), //TODO receiver
-                null, //automatically assigned before sending
-                Status.PENDING_STATUS_NAME,
-                Calendar.getInstance().getTime(),
-                imageSelected.getLabel()
-        );
-        * */
+        requestDetailViewModel.updateRequest(request, onRequestUpdated);
     };
+
 }
