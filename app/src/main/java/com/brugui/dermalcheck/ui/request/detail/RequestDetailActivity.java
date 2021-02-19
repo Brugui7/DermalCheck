@@ -2,6 +2,7 @@ package com.brugui.dermalcheck.ui.request.detail;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -30,6 +31,7 @@ import com.brugui.dermalcheck.data.model.LoggedInUser;
 import com.brugui.dermalcheck.data.model.Request;
 import com.brugui.dermalcheck.data.model.Rol;
 import com.brugui.dermalcheck.ui.MainActivity;
+import com.brugui.dermalcheck.ui.adapters.PhototypeAdapter;
 import com.brugui.dermalcheck.ui.components.ImageDetailActivity;
 import com.brugui.dermalcheck.ui.components.snackbar.CustomSnackbar;
 import com.brugui.dermalcheck.utils.Classifier;
@@ -60,12 +62,13 @@ public class RequestDetailActivity extends AppCompatActivity {
     private Spinner spDiagnostics;
     private ConstraintLayout clContainer;
     private Button btnDiagnose;
-    private EditText etPhototype, etPatientId, etNotes, etAge;
+    private EditText etPatientId, etNotes, etAge;
     private RadioGroup rgSex;
     private TextView tvSpecialistDiagnostic;
     private CheckBox chPersonalAntecedents, chFamiliarAntecedents;
     private ImageView ivImage;
     private RequestDetailViewModel requestDetailViewModel;
+    private RecyclerView rvPhototype;
 
     //For visualization
     private List<String> imageUrls;
@@ -85,15 +88,17 @@ public class RequestDetailActivity extends AppCompatActivity {
         tvEstimatedProbability = findViewById(R.id.tvEstimatedProbability);
         tvLabel = findViewById(R.id.tvLabel);
         ivImage = findViewById(R.id.ivImage);
+        rvPhototype = findViewById(R.id.rvPhototype);
 
         chFamiliarAntecedents = findViewById(R.id.chFamiliarAntecedents);
         chPersonalAntecedents = findViewById(R.id.chPersonalAntecedents);
-        etPhototype = findViewById(R.id.etPhototype);
         etPatientId = findViewById(R.id.etPatientId);
         etNotes = findViewById(R.id.etNotes);
         etAge = findViewById(R.id.etAge);
         rgSex = findViewById(R.id.rgSex);
         tvSpecialistDiagnostic = findViewById(R.id.tvSpecialistDiagnostic);
+
+        rvPhototype.setAdapter(new PhototypeAdapter());
 
         requestDetailViewModel = new RequestDetailViewModel();
         requestDetailViewModel.loadUserData(this);
@@ -161,7 +166,7 @@ public class RequestDetailActivity extends AppCompatActivity {
         chFamiliarAntecedents.setChecked(request.isFamiliarAntecedents());
         chPersonalAntecedents.setChecked(request.isPersonalAntecedents());
         if (request.getPhototype() != -1) {
-            etPhototype.setText(String.valueOf(request.getPhototype()));
+            ((PhototypeAdapter) rvPhototype.getAdapter()).setPositionSelected(request.getPhototype() - 1);
         }
 
         if (request.getAge() != -1) {
@@ -190,7 +195,7 @@ public class RequestDetailActivity extends AppCompatActivity {
     //TODO formstate y al viewmodel
     private boolean validateInput() {
         etPatientId.setError(null);
-        etPhototype.setError(null);
+       // etPhototype.setError(null);
         etAge.setError(null);
 
         if (etPatientId.getText().toString().trim().length() == 0) {
@@ -204,22 +209,6 @@ public class RequestDetailActivity extends AppCompatActivity {
             etAge.setError(getString(R.string.required_field));
             etAge.requestFocus();
             return false;
-        }
-
-        String stringPhototype = etPhototype.getText().toString().trim();
-        if (stringPhototype.length() > 0) {
-            try {
-                int phototype = Integer.parseInt(stringPhototype);
-                if (phototype < 1 || phototype > 5) {
-                    etPhototype.setError(getString(R.string.invalid_phototype));
-                    etPhototype.requestFocus();
-                    return false;
-                }
-            } catch (NumberFormatException e) {
-                etPhototype.setError(getString(R.string.invalid_phototype));
-                etPhototype.requestFocus();
-                return false;
-            }
         }
 
         return true;
@@ -290,8 +279,9 @@ public class RequestDetailActivity extends AppCompatActivity {
             request.setSex(rgSex.getCheckedRadioButtonId() == R.id.rbMale ? "male" : "female");
         }
 
-        if (etPhototype.getText().toString().length() > 0) {
-            request.setPhototype(Integer.parseInt(etPhototype.getText().toString()));
+        int phototypeIndex = ((PhototypeAdapter) rvPhototype.getAdapter()).getPositionSelected();
+        if (phototypeIndex != -1) {
+            request.setPhototype(phototypeIndex + 1);
         }
 
         request.setFamiliarAntecedents(chFamiliarAntecedents.isChecked());
