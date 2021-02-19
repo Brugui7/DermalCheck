@@ -12,6 +12,8 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.SetOptions;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -59,5 +61,53 @@ public class RequestListDataSource {
         }
     }
 
+
+    /**
+     * Assigns a pending request to the given user
+     *
+     * @param loggedInUser the user logged, will be always a specialist
+     * @param callback     OnDataFetched
+     */
+    public void getNewRequest(LoggedInUser loggedInUser, OnDataFetched callback) {
+        try {
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            db.collection("requests")
+                    .whereEqualTo("status", Status.PENDING_STATUS_NAME)
+                    .whereEqualTo("receiver", null)
+
+                    .orderBy("estimatedProbability", Query.Direction.DESCENDING)
+                    .limit(1)
+                    .get()
+                    .addOnSuccessListener(queryDocumentSnapshots -> {
+                        if (queryDocumentSnapshots.size() == 0) {
+                            result = new Result.Error(new IOException("No pending requests"));
+                            callback.OnDataFetched(result);
+                            return;
+                        }
+
+                        Request request = queryDocumentSnapshots.iterator().next().toObject(Request.class);
+                        request.setReceiver(loggedInUser.getUserId());
+                        db.collection("requests")
+                                .document(request.getId())
+                                .set(request.toMap(), SetOptions.merge())
+                                .addOnSuccessListener(documentReference -> {
+                                    callback.OnDataFetched(new Result.Success<>(request));
+                                })
+                                .addOnFailureListener(e -> {
+                                    Log.e(TAG, e.getMessage(), e);
+                                    callback.OnDataFetched(new Result.Error(new IOException("Error updating request", e)));
+                                });
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e(TAG, e.getMessage(), e);
+                        result = new Result.Error(new IOException("Error retrieving requests"));
+                        callback.OnDataFetched(result);
+                    });
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage(), e);
+            callback.OnDataFetched(new Result.Error(new IOException("Error", e)));
+
+        }
+    }
 
 }

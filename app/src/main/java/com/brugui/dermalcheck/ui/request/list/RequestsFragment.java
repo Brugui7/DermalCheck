@@ -10,19 +10,24 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import com.brugui.dermalcheck.R;
+import com.brugui.dermalcheck.data.Result;
 import com.brugui.dermalcheck.data.interfaces.OnItemClick;
 import com.brugui.dermalcheck.data.model.LoggedInUser;
 import com.brugui.dermalcheck.data.model.Request;
 import com.brugui.dermalcheck.data.model.Rol;
+import com.brugui.dermalcheck.ui.components.snackbar.CustomSnackbar;
 import com.brugui.dermalcheck.ui.request.creation.NewRequestActivity;
 import com.brugui.dermalcheck.ui.adapters.RequestAdapter;
 import com.brugui.dermalcheck.ui.request.detail.RequestDetailActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,8 +38,8 @@ import java.util.List;
  * create an instance of this fragment.
  */
 public class RequestsFragment extends Fragment {
-    private FloatingActionButton fabNewRequest;
-    private ConstraintLayout clEmptyList;
+    private FloatingActionButton fabNewRequest, fabGetRequest;
+    private ConstraintLayout clEmptyList, clContainer;
     private RecyclerView rvRequests;
     private List<Request> requests;
     private RequestAdapter adapter;
@@ -69,7 +74,9 @@ public class RequestsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_requests, container, false);
         fabNewRequest = view.findViewById(R.id.fabNewRequest);
+        fabGetRequest = view.findViewById(R.id.fabGetRequest);
         rvRequests = view.findViewById(R.id.rvRequests);
+        clContainer = view.findViewById(R.id.clContainer);
         clEmptyList = view.findViewById(R.id.clEmptyList);
         srLayout = view.findViewById(R.id.srLayout);
         fabNewRequest.setOnClickListener(listenerFabNewRequest);
@@ -78,6 +85,8 @@ public class RequestsFragment extends Fragment {
         if (loggedInUser != null && loggedInUser.getRole() != null) {
             if (loggedInUser.getRole().equalsIgnoreCase(Rol.SPECIALIST_ROL)) {
                 fabNewRequest.setVisibility(View.GONE);
+                fabGetRequest.setVisibility(View.VISIBLE);
+                fabGetRequest.setOnClickListener(listenerFabGetRequest);
             }
         }
 
@@ -106,6 +115,26 @@ public class RequestsFragment extends Fragment {
     private final View.OnClickListener listenerFabNewRequest = view -> {
         Intent intent = new Intent(getActivity(), NewRequestActivity.class);
         startActivity(intent);
+    };
+
+    private final View.OnClickListener listenerFabGetRequest = view -> {
+        requestsViewModel.getNewRequest(result -> {
+            if (result instanceof Result.Error) {
+                Log.d(TAG, "no hay");
+                CustomSnackbar.make(
+                        clContainer,
+                        getString(R.string.no_pending_requests),
+                        Snackbar.LENGTH_SHORT,
+                        null,
+                        R.drawable.ic_error_outline,
+                        null,
+                        getContext().getColor(R.color.accent)
+                ).show();
+                return;
+            }
+            Log.d(TAG, "hay");
+            requestsViewModel.fetchRequests();
+        });
     };
 
     private void showEmptyListMessage(boolean show) {

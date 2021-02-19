@@ -5,6 +5,8 @@ import android.content.Context;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.brugui.dermalcheck.data.interfaces.OnDataFetched;
+import com.brugui.dermalcheck.data.interfaces.OnRequestUpdated;
 import com.brugui.dermalcheck.data.request.RequestListDataSource;
 import com.brugui.dermalcheck.data.Result;
 import com.brugui.dermalcheck.data.SharedPreferencesRepository;
@@ -38,6 +40,11 @@ public class RequestsViewModel  extends ViewModel {
                 requests.setValue(((Result.Success<List<Request>>) result).getData());
             }
         });
+    }
+
+
+    public void getNewRequest(OnDataFetched listener){
+        dataSource.getNewRequest(userLogged, listener);
     }
 
     public MutableLiveData<List<Request>> getRequests() {
