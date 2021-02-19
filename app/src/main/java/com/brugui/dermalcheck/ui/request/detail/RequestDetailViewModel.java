@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.brugui.dermalcheck.data.interfaces.OnRequestUpdated;
 import com.brugui.dermalcheck.data.model.Request;
+import com.brugui.dermalcheck.data.model.Status;
 import com.brugui.dermalcheck.data.request.RequestDetailDataSource;
 import com.brugui.dermalcheck.data.Result;
 import com.brugui.dermalcheck.data.SharedPreferencesRepository;
@@ -14,6 +15,7 @@ import com.brugui.dermalcheck.data.model.LoggedInUser;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.Calendar;
 import java.util.List;
 
 //TODO implement
@@ -58,6 +60,12 @@ public class RequestDetailViewModel extends ViewModel {
      */
     public void updateRequest(Request request, OnRequestUpdated onRequestUpdated){
         dataSource.updateRequest(request, onRequestUpdated);
+    }
+
+    public void diagnose(Request request, OnRequestUpdated onRequestUpdated){
+        request.setStatus(Status.DIAGNOSED_STATUS_NAME);
+        request.setDiagnosticDate(Calendar.getInstance().getTime());
+        dataSource.diagnose(request, onRequestUpdated);
     }
 
 

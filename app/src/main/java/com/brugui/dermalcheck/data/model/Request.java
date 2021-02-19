@@ -21,7 +21,7 @@ public class Request implements Serializable {
     private int phototype, label, age, diagnosedLabelIndex;
     private String notes, patientId, status, sex;
     private String sender, receiver;
-    private Date creationDate;
+    private Date creationDate, diagnosticDate;
     private ArrayList<String> imageUrls;
 
     public Request(double estimatedProbability, int age, String sex, boolean familiarAntecedents, boolean personalAntecedents,
@@ -42,6 +42,7 @@ public class Request implements Serializable {
         this.age = age;
         this.sex = sex;
         this.diagnosedLabelIndex = -1;
+        this.diagnosticDate = null;
     }
 
     public Request() {}
@@ -57,6 +58,7 @@ public class Request implements Serializable {
         map.put("receiver", this.receiver);
         map.put("status", this.status);
         map.put("creationDate", this.creationDate);
+        map.put("diagnosticDate", this.diagnosticDate);
         map.put("id", this.id);
         map.put("patientId", this.patientId);
         map.put("label", this.label);
@@ -209,5 +211,13 @@ public class Request implements Serializable {
 
     public void setDiagnosedLabelIndex(int diagnosedLabelIndex) {
         this.diagnosedLabelIndex = diagnosedLabelIndex;
+    }
+
+    public Date getDiagnosticDate() {
+        return diagnosticDate;
+    }
+
+    public void setDiagnosticDate(Date diagnosticDate) {
+        this.diagnosticDate = diagnosticDate;
     }
 }

@@ -252,9 +252,8 @@ public class RequestDetailActivity extends AppCompatActivity {
                 return;
             }
             request.setDiagnosedLabelIndex(i - 1);
-            request.setStatus(Status.DIAGNOSED_STATUS_NAME);
             tvSpecialistDiagnostic.setText(getString(Classifier.labels[request.getDiagnosedLabelIndex()]));
-            requestDetailViewModel.updateRequest(request, result -> {
+            requestDetailViewModel.diagnose(request, result -> {
                 onRequestUpdated.onRequestUpdated(result);
                 setEstimatedDiagnosticValues();
             });

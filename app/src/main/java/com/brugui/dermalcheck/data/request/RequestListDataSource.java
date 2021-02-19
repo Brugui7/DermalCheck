@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class RequestListDataSource {
     private static final String TAG = "Logger RequestListDS";
@@ -92,6 +93,7 @@ public class RequestListDataSource {
                                 .set(request.toMap(), SetOptions.merge())
                                 .addOnSuccessListener(documentReference -> {
                                     callback.OnDataFetched(new Result.Success<>(request));
+                                    updateUserRequestsAssigned(loggedInUser);
                                 })
                                 .addOnFailureListener(e -> {
                                     Log.e(TAG, e.getMessage(), e);
@@ -110,4 +112,35 @@ public class RequestListDataSource {
         }
     }
 
+
+    /**
+     * Increments by 1 the number of requests the given user had has assigned from the beginning of the times
+     * @param loggedInUser Logged user
+     */
+    private void updateUserRequestsAssigned(LoggedInUser loggedInUser){
+        FirebaseFirestore.getInstance()
+                .collection("users")
+                .document(loggedInUser.getUserId())
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (!documentSnapshot.exists()) {
+                        //this must never happen
+                        return;
+                    }
+
+                    long actualValue = 0;
+                    if (documentSnapshot.contains("requestsAssigned")){
+                        actualValue = (long) documentSnapshot.get("requestsAssigned");
+                    }
+
+                    Map<String, Object> mapping = new HashMap<>();
+                    mapping.put("requestsAssigned", actualValue + 1);
+
+                    FirebaseFirestore.getInstance()
+                            .collection("users")
+                            .document(loggedInUser.getUserId())
+                            .update(mapping);
+
+                });
+    }
 }

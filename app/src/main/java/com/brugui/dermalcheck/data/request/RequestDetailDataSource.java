@@ -129,13 +129,22 @@ public class RequestDetailDataSource {
                 });
     }
 
+    /**
+     * Sets the specialist's diagnostic and updates the general statistics
+     *
+     * @param request          Request
+     * @param onRequestUpdated Callback
+     */
+    public void diagnose(Request request, OnRequestUpdated onRequestUpdated) {
+        this.updateRequest(request, onRequestUpdated);
+        this.updateRequestsDiagnosedStatistic();
+    }
 
     /**
-     *
-     * @param request Request
+     * @param request          Request
      * @param onRequestUpdated OnRequestUpdated
      */
-    public void updateRequest(Request request, OnRequestUpdated onRequestUpdated){
+    public void updateRequest(Request request, OnRequestUpdated onRequestUpdated) {
         try {
             Map<String, Object> mapping = request.toMap();
             //Sends the request
@@ -155,4 +164,30 @@ public class RequestDetailDataSource {
             onRequestUpdated.onRequestUpdated(result);
         }
     }
+
+    private void updateRequestsDiagnosedStatistic() {
+        FirebaseFirestore.getInstance()
+                .document("statistics/0")
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (!documentSnapshot.exists()) {
+                        //this must never happen
+                        return;
+                    }
+
+                    long actualValue = 0;
+                    if (documentSnapshot.contains("requestsDiagnosed")) {
+                        actualValue = (long) documentSnapshot.get("requestsDiagnosed");
+                    }
+
+                    Map<String, Object> mapping = new HashMap<>();
+                    mapping.put("requestsDiagnosed", actualValue + 1);
+
+                    FirebaseFirestore.getInstance()
+                            .document("statistics/0")
+                            .update(mapping);
+
+                });
+    }
+
 }

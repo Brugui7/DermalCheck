@@ -118,7 +118,7 @@ public class LoginDataSource {
                     FirebaseFirestore.getInstance()
                             .collection("users")
                             .document(user.getUid())
-                            .set(map, SetOptions.merge());
+                            .update(map);
                 });
 
     }
