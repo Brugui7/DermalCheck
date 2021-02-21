@@ -14,6 +14,7 @@
     <string name="profile">Perfil</string>
     <string name="requests">Consultas</string>
     <string name="phototype">Fototipo</string>
+    <string name="stain_localization">Localización de la mancha</string>
     <string name="personal_atecedents">Antecedentes personales</string>
     <string name="familiar_antecedents">Antecedentes familiares</string>
     <string name="send_request">Enviar consulta</string>
@@ -48,7 +49,7 @@
     <string name="age">Edad</string>
     <string name="no_pending_requests">No hay consultas pendientes de asignación</string>
 
-    <!-- LABELS -->
+    <!-- DIAGNOSTIC LABELS -->
     <string name="label1">Queratosis actinica</string>
     <string name="label2">Carcinoma basocelular</string>
     <string name="label3">Lesiones similares a la queratosis benigna</string>
@@ -58,7 +59,25 @@
     <string name="label7">Lesiones vasculares cutaneas</string>
     <string name="label8">Carcinoma de células escamosas</string>
     <string name="label9">Desconocido</string>
-    <!-- END LABELS -->
+    <!-- END DIAGNOSTIC LABELS -->
+
+
+    <!-- BODY PARTS LABELS -->
+    <string name="back">Espalda</string>
+    <string name="lower_extremity">Extremidad inferior</string>
+    <string name="trunk">Tronco</string>
+    <string name="upper_extremity">Extremidad superior</string>
+    <string name="abdomen">Abdomen</string>
+    <string name="chest">Pecho</string>
+    <string name="unknown">Desconocido</string>
+    <string name="scalp">Cuero cabelludo</string>
+    <string name="face">Cara</string>
+    <string name="ear">Oreja</string>
+    <string name="neck">Cuello</string>
+    <string name="hand">Mano</string>
+    <string name="foot">Pie</string>
+    <string name="genital">Genitales</string>
+    <!-- BODY PARTS -->
 
     <string name="review">Revisar</string>
     <string name="male">Hombre</string>
@@ -68,6 +87,7 @@
     <string name="select_a_diagnostic">Seleccione el diagnóstico</string>
     <string name="specialist_diagnostic">Diagnóstico del especialista</string>
     <string name="diagnostic_pending">Pendiente de diagnosticar</string>
+    <string name="select_a_body_part">Selecciona una parte del cuerpo</string>
 
 
 </resources>

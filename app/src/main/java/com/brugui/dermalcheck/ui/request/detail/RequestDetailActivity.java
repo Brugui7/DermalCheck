@@ -6,12 +6,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -20,32 +18,23 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.brugui.dermalcheck.R;
 import com.brugui.dermalcheck.data.interfaces.OnRequestUpdated;
-import com.brugui.dermalcheck.data.model.Status;
-import com.brugui.dermalcheck.data.request.RequestDetailDataSource;
 import com.brugui.dermalcheck.data.Result;
-import com.brugui.dermalcheck.data.interfaces.OnRequestCreated;
 import com.brugui.dermalcheck.data.model.LoggedInUser;
 import com.brugui.dermalcheck.data.model.Request;
 import com.brugui.dermalcheck.data.model.Rol;
-import com.brugui.dermalcheck.ui.MainActivity;
 import com.brugui.dermalcheck.ui.adapters.PhototypeAdapter;
 import com.brugui.dermalcheck.ui.components.ImageDetailActivity;
 import com.brugui.dermalcheck.ui.components.snackbar.CustomSnackbar;
 import com.brugui.dermalcheck.utils.Classifier;
-import com.brugui.dermalcheck.utils.NotificationRequestsQueue;
 import com.bumptech.glide.Glide;
-import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 import app.futured.donut.DonutProgressView;
 import app.futured.donut.DonutSection;
@@ -59,7 +48,7 @@ public class RequestDetailActivity extends AppCompatActivity {
     private TextView tvEstimatedProbability, tvLabel;
     private Request request;
     private DonutProgressView dpvChart;
-    private Spinner spDiagnostics;
+    private Spinner spDiagnostics, spLocalization;
     private ConstraintLayout clContainer;
     private Button btnDiagnose;
     private EditText etPatientId, etNotes, etAge;
@@ -82,6 +71,7 @@ public class RequestDetailActivity extends AppCompatActivity {
         clContainer = findViewById(R.id.clContainer);
 
         spDiagnostics = findViewById(R.id.spDiagnostics);
+        spLocalization = findViewById(R.id.spLocalization);
         btnDiagnose = findViewById(R.id.btnDiagnose);
         Button btnUpdateData = findViewById(R.id.btnUpdateData);
         dpvChart = findViewById(R.id.dpvChart);
@@ -134,7 +124,7 @@ public class RequestDetailActivity extends AppCompatActivity {
         btnDiagnose.setOnClickListener(view -> spDiagnostics.performClick());
 
         setFormValues();
-        if (request.getDiagnosedLabelIndex() != -1){
+        if (request.getDiagnosedLabelIndex() != -1) {
             setEstimatedDiagnosticValues();
         }
     }
@@ -183,9 +173,10 @@ public class RequestDetailActivity extends AppCompatActivity {
             }
         }
 
-        if (request.getDiagnosedLabelIndex() != -1){
-            tvSpecialistDiagnostic.setText(getString(Classifier.labels[request.getDiagnosedLabelIndex()]));
+        if (request.getDiagnosedLabelIndex() != -1) {
+            tvSpecialistDiagnostic.setText(getString(Classifier.LABELS[request.getDiagnosedLabelIndex()]));
         }
+        spLocalization.setSelection(request.getLocalizationIndex());
     }
 
     private void setUpDiagnosticUI() {
@@ -195,7 +186,7 @@ public class RequestDetailActivity extends AppCompatActivity {
     //TODO formstate y al viewmodel
     private boolean validateInput() {
         etPatientId.setError(null);
-       // etPhototype.setError(null);
+        // etPhototype.setError(null);
         etAge.setError(null);
 
         if (etPatientId.getText().toString().trim().length() == 0) {
@@ -248,11 +239,11 @@ public class RequestDetailActivity extends AppCompatActivity {
     private final AdapterView.OnItemSelectedListener listenerSpDiagnostics = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-            if (i == 0){
+            if (i == 0) {
                 return;
             }
             request.setDiagnosedLabelIndex(i - 1);
-            tvSpecialistDiagnostic.setText(getString(Classifier.labels[request.getDiagnosedLabelIndex()]));
+            tvSpecialistDiagnostic.setText(getString(Classifier.LABELS[request.getDiagnosedLabelIndex()]));
             requestDetailViewModel.diagnose(request, result -> {
                 onRequestUpdated.onRequestUpdated(result);
                 setEstimatedDiagnosticValues();
@@ -278,6 +269,9 @@ public class RequestDetailActivity extends AppCompatActivity {
         if (rgSex.getCheckedRadioButtonId() != -1) {
             request.setSex(rgSex.getCheckedRadioButtonId() == R.id.rbMale ? "male" : "female");
         }
+
+        request.setLocalizationIndex(spLocalization.getSelectedItemPosition());
+
 
         int phototypeIndex = ((PhototypeAdapter) rvPhototype.getAdapter()).getPositionSelected();
         if (phototypeIndex != -1) {

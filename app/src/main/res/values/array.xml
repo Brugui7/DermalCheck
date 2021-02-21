@@ -24,4 +24,42 @@
         <item>7</item>
         <item>8</item>
     </string-array>
+
+
+
+    <string-array name="body_parts_select">
+        <item>@string/select_a_body_part</item>
+        <item>@string/back</item>
+        <item>@string/lower_extremity</item>
+        <item>@string/trunk</item>
+        <item>@string/upper_extremity</item>
+        <item>@string/abdomen</item>
+        <item>@string/chest</item>
+        <item>@string/unknown</item>
+        <item>@string/scalp</item>
+        <item>@string/face</item>
+        <item>@string/ear</item>
+        <item>@string/neck</item>
+        <item>@string/hand</item>
+        <item>@string/foot</item>
+        <item>@string/genital</item>
+    </string-array>
+
+    <string-array name="body_parts_select_values">
+        <item>-1</item>
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+        <item>13</item>
+    </string-array>
 </resources>

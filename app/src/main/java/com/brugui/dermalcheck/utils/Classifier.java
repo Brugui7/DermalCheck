@@ -23,7 +23,7 @@ import java.nio.MappedByteBuffer;
 
 public class Classifier {
 
-    public static final int[] labels =
+    public static final int[] LABELS =
             new int[]{
                     R.string.label1,
                     R.string.label2,
@@ -36,8 +36,25 @@ public class Classifier {
                     R.string.label9,
             };
 
+    public static final int[] BODY_PARTS = new int[]{
+            R.string.back,
+            R.string.lower_extremity,
+            R.string.trunk,
+            R.string.upper_extremity,
+            R.string.abdomen,
+            R.string.chest,
+            R.string.unknown,
+            R.string.scalp,
+            R.string.face,
+            R.string.ear,
+            R.string.neck,
+            R.string.hand,
+            R.string.foot,
+            R.string.genital,
+    };
+
     /**
-     * @param context Context
+     * @param context  Context
      * @param imageUri Uri
      * @return float[] probabilities
      * @throws IOException Exception
@@ -96,7 +113,7 @@ public class Classifier {
             }
         }
 
-        return new ImageProbability(labels[largestIndex],
+        return new ImageProbability(LABELS[largestIndex],
                 ((int) ((largestValue + 0.005f) * 10000)) / 100f,
                 imageUri
         );
