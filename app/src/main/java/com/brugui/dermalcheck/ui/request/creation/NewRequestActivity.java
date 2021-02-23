@@ -330,7 +330,7 @@ public class NewRequestActivity extends AppCompatActivity {
                 -1,
                 null,
                 etPatientId.getText().toString(),
-                userLogged.getUserId(),
+                userLogged.getUid(),
                 null, //automatically assigned before sending
                 Status.PENDING_STATUS_NAME,
                 Calendar.getInstance().getTime(),

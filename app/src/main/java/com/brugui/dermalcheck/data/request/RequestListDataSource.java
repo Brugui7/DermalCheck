@@ -37,9 +37,9 @@ public class RequestListDataSource {
                     .whereEqualTo("status", Status.PENDING_STATUS_NAME);
 
             if (loggedInUser.getRole().equalsIgnoreCase(Rol.SPECIALIST_ROL)) {
-                query = query.whereEqualTo("receiver", loggedInUser.getUserId());
+                query = query.whereEqualTo("receiver", loggedInUser.getUid());
             } else {
-                query = query.whereEqualTo("sender", loggedInUser.getUserId());
+                query = query.whereEqualTo("sender", loggedInUser.getUid());
             }
 
             query.orderBy("estimatedProbability", Query.Direction.DESCENDING)
@@ -87,7 +87,7 @@ public class RequestListDataSource {
                         }
 
                         Request request = queryDocumentSnapshots.iterator().next().toObject(Request.class);
-                        request.setReceiver(loggedInUser.getUserId());
+                        request.setReceiver(loggedInUser.getUid());
                         db.collection("requests")
                                 .document(request.getId())
                                 .set(request.toMap(), SetOptions.merge())
@@ -120,7 +120,7 @@ public class RequestListDataSource {
     private void updateUserRequestsAssigned(LoggedInUser loggedInUser){
         FirebaseFirestore.getInstance()
                 .collection("users")
-                .document(loggedInUser.getUserId())
+                .document(loggedInUser.getUid())
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (!documentSnapshot.exists()) {
@@ -138,7 +138,7 @@ public class RequestListDataSource {
 
                     FirebaseFirestore.getInstance()
                             .collection("users")
-                            .document(loggedInUser.getUserId())
+                            .document(loggedInUser.getUid())
                             .update(mapping);
 
                 });

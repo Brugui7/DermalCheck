@@ -1,22 +1,24 @@
 package com.brugui.dermalcheck.data.model;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Data class that captures user information for logged in users retrieved from LoginRepository
  */
 public class LoggedInUser implements Serializable {
 
-    private String userId;
+    private String uid;
     private String displayName, role, email;
 
-    public LoggedInUser(String userId, String email) {
-        this.userId = userId;
+    public LoggedInUser(String uid, String email) {
+        this.uid = uid;
         this.email = email;
     }
 
-    public LoggedInUser(String userId, String email, String displayName, String role) {
-        this.userId = userId;
+    public LoggedInUser(String uid, String email, String displayName, String role) {
+        this.uid = uid;
         this.displayName = displayName;
         this.role = role;
     }
@@ -24,8 +26,8 @@ public class LoggedInUser implements Serializable {
     public LoggedInUser() {
     }
 
-    public String getUserId() {
-        return userId;
+    public String getUid() {
+        return uid;
     }
 
     public String getDisplayName() {
@@ -40,8 +42,8 @@ public class LoggedInUser implements Serializable {
         return role;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 
     public void setDisplayName(String displayName) {
@@ -59,10 +61,16 @@ public class LoggedInUser implements Serializable {
     @Override
     public String toString() {
         return "LoggedInUser{" +
-                "userId='" + userId + '\'' +
+                "uid='" + uid + '\'' +
                 ", displayName='" + displayName + '\'' +
                 ", role='" + role + '\'' +
                 ", email='" + email + '\'' +
                 '}';
+    }
+
+    public Map<String, Object> toMap(){
+        Map<String, Object> map = new HashMap<>();
+        map.put("displayName", this.displayName);
+        return map;
     }
 }

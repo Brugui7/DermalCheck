@@ -38,7 +38,7 @@ public class SharedPreferencesRepository {
     public void saveUserLogged(LoggedInUser user) {
         sharedPreferences
                 .edit()
-                .putString(PREF_USER_UID, user.getUserId())
+                .putString(PREF_USER_UID, user.getUid())
                 .putString(PREF_USER_EMAIL, user.getEmail())
                 .putString(PREF_USER_NAME, user.getDisplayName())
                 .putString(PREF_USER_ROL, user.getRole())
@@ -47,8 +47,8 @@ public class SharedPreferencesRepository {
 
     public LoggedInUser getUserLogged() {
         LoggedInUser user = new LoggedInUser();
-        user.setUserId(this.getString(PREF_USER_UID));
-        if (user.getUserId() == null) {
+        user.setUid(this.getString(PREF_USER_UID));
+        if (user.getUid() == null) {
             return null;
         }
         user.setEmail(this.getString(PREF_USER_EMAIL));

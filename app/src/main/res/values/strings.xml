@@ -30,6 +30,8 @@
     <string name="new_request">Nueva consulta</string>
     <string name="request_created_successfully">Consulta creada correctamente</string>
     <string name="request_updated_successfully">Consulta actualizada correctamente</string>
+    <string name="data_updated_successfully">Datos actualizados correctamente</string>
+    <string name="error_updating_data">Ocurrió un error al actualizar la información. Por favor, inténtelo de nuevo más tarde</string>
     <string name="error_taking_photo">Ocurrió un error al intentar hacer la foto</string>
     <string name="estimated_probability">Probabilidad estimada</string>
 
@@ -88,6 +90,8 @@
     <string name="specialist_diagnostic">Diagnóstico del especialista</string>
     <string name="diagnostic_pending">Pendiente de diagnosticar</string>
     <string name="select_a_body_part">Selecciona una parte del cuerpo</string>
+    <string name="my_data">Mis datos</string>
+    <string name="name">Nombre</string>
 
 
 </resources>

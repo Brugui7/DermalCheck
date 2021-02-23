@@ -83,12 +83,12 @@ public class LoginDataSource {
         // TODO: revoke authentication
     }
 
-    private void subscribeToNotification(String userId) {
+    private void subscribeToNotification(String uid) {
         // The user subscribes to its own notification channel
         FirebaseMessaging firebaseMessaging = FirebaseMessaging.getInstance();
 
         //for new Requests
-        firebaseMessaging.subscribeToTopic("/topics/" + userId);
+        firebaseMessaging.subscribeToTopic("/topics/" + uid);
 
         //for general purposes
         firebaseMessaging.subscribeToTopic("/topics/dermalcheck");
