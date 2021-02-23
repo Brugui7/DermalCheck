@@ -188,22 +188,44 @@ public class RequestDetailDataSource {
                     long hoursDiff = request.getDiagnosticDate().getTime() - request.getCreationDate().getTime();
                     hoursDiff /= (60 * 60 * 1000);
 
-                    double averageDiagnoseHours = 0;
+                    double oldAverageDiagnoseHours = 0;
+
                     if (documentSnapshot.contains("averageDiagnoseHours")) {
-                        averageDiagnoseHours = (long) documentSnapshot.get("averageDiagnoseHours");
+                        oldAverageDiagnoseHours = (double) documentSnapshot.get("averageDiagnoseHours");
                     }
-                    averageDiagnoseHours = (averageDiagnoseHours * (requestsDiagnosed - 1) + hoursDiff) / requestsDiagnosed;
+                    double averageDiagnoseHours = (oldAverageDiagnoseHours * (requestsDiagnosed - 1) + hoursDiff) / requestsDiagnosed;
+
+                    //Standard Deviation diagnose time in hours
+                    double stdDiagnoseHours = 0;
+                    if (documentSnapshot.contains("stdDiagnoseHours")) {
+                        stdDiagnoseHours = (double) documentSnapshot.get("stdDiagnoseHours");
+                    }
+
+                    stdDiagnoseHours = getNewStd(hoursDiff, requestsDiagnosed, stdDiagnoseHours, oldAverageDiagnoseHours, averageDiagnoseHours);
 
 
                     Map<String, Object> mapping = new HashMap<>();
                     mapping.put("requestsDiagnosed", requestsDiagnosed);
                     mapping.put("averageDiagnoseHours", averageDiagnoseHours);
+                    mapping.put("stdDiagnoseHours", stdDiagnoseHours);
 
                     FirebaseFirestore.getInstance()
                             .document("statistics/0")
                             .update(mapping);
 
                 });
+    }
+
+    /**
+     * https://www.johndcook.com/blog/standard_deviation/
+     * @param x new value
+     * @param oldStd old std
+     * @param oldMean old mean
+     * @param newMean new mean
+     * @return new Standart Deviation
+     */
+    private double getNewStd(double x, long n, double oldStd, double oldMean, double newMean){
+        return Math.sqrt((oldStd + (x - oldMean) * (x - newMean)) / (n - 1));
     }
 
 }
