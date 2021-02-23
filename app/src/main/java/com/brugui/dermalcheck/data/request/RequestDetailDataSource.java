@@ -137,7 +137,7 @@ public class RequestDetailDataSource {
      */
     public void diagnose(Request request, OnRequestUpdated onRequestUpdated) {
         this.updateRequest(request, onRequestUpdated);
-        this.updateRequestsDiagnosedStatistic();
+        this.updateRequestsDiagnosedStatistic(request);
     }
 
     /**
@@ -165,7 +165,7 @@ public class RequestDetailDataSource {
         }
     }
 
-    private void updateRequestsDiagnosedStatistic() {
+    private void updateRequestsDiagnosedStatistic(Request request) {
         FirebaseFirestore.getInstance()
                 .document("statistics/0")
                 .get()
@@ -175,13 +175,29 @@ public class RequestDetailDataSource {
                         return;
                     }
 
-                    long actualValue = 0;
+
+                    //Requests diagnosed
+                    long requestsDiagnosed = 0;
                     if (documentSnapshot.contains("requestsDiagnosed")) {
-                        actualValue = (long) documentSnapshot.get("requestsDiagnosed");
+                        requestsDiagnosed = (long) documentSnapshot.get("requestsDiagnosed");
                     }
+                    requestsDiagnosed++;
+
+
+                    //Average diagnose time in hours
+                    long hoursDiff = request.getDiagnosticDate().getTime() - request.getCreationDate().getTime();
+                    hoursDiff /= (60 * 60 * 1000);
+
+                    double averageDiagnoseHours = 0;
+                    if (documentSnapshot.contains("averageDiagnoseHours")) {
+                        averageDiagnoseHours = (long) documentSnapshot.get("averageDiagnoseHours");
+                    }
+                    averageDiagnoseHours = (averageDiagnoseHours * (requestsDiagnosed - 1) + hoursDiff) / requestsDiagnosed;
+
 
                     Map<String, Object> mapping = new HashMap<>();
-                    mapping.put("requestsDiagnosed", actualValue + 1);
+                    mapping.put("requestsDiagnosed", requestsDiagnosed);
+                    mapping.put("averageDiagnoseHours", averageDiagnoseHours);
 
                     FirebaseFirestore.getInstance()
                             .document("statistics/0")
