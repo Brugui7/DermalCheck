@@ -121,12 +121,14 @@ public class RequestDetailActivity extends AppCompatActivity {
 
         btnUpdateData.setOnClickListener(listenerBtnUpdateData);
         spDiagnostics.setOnItemSelectedListener(listenerSpDiagnostics);
-        btnDiagnose.setOnClickListener(view -> spDiagnostics.performClick());
 
         setFormValues();
         if (request.getDiagnosedLabelIndex() != -1) {
             setEstimatedDiagnosticValues();
+            btnDiagnose.setVisibility(View.GONE);
         }
+        btnDiagnose.setOnClickListener(view -> spDiagnostics.performClick());
+
     }
 
 
@@ -242,6 +244,7 @@ public class RequestDetailActivity extends AppCompatActivity {
             if (i == 0) {
                 return;
             }
+            btnDiagnose.setEnabled(false);
             request.setDiagnosedLabelIndex(i - 1);
             tvSpecialistDiagnostic.setText(getString(Classifier.LABELS[request.getDiagnosedLabelIndex()]));
             requestDetailViewModel.diagnose(request, result -> {
