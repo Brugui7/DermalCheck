@@ -175,7 +175,7 @@ public class RequestDetailDataSource {
                         return;
                     }
 
-
+                    Map<String, Object> mapping = new HashMap<>();
                     //Requests diagnosed
                     long requestsDiagnosed = 0;
                     if (documentSnapshot.contains("requestsDiagnosed")) {
@@ -183,6 +183,14 @@ public class RequestDetailDataSource {
                     }
                     requestsDiagnosed++;
 
+                    //Matching diagnostics
+                    if (request.getDiagnosedLabelIndex() == request.getPathologistDiagnosticLabelIndex()) {
+                        long matchingDiagnostics = 0;
+                        if (documentSnapshot.contains("matchingDiagnostics")) {
+                            matchingDiagnostics = (long) documentSnapshot.get("matchingDiagnostics");
+                        }
+                        mapping.put("matchingDiagnostics", matchingDiagnostics + 1);
+                    }
 
                     //Average diagnose time in hours
                     long hoursDiff = request.getDiagnosticDate().getTime() - request.getCreationDate().getTime();
@@ -204,7 +212,6 @@ public class RequestDetailDataSource {
                     stdDiagnoseHours = getNewStd(hoursDiff, requestsDiagnosed, stdDiagnoseHours, oldAverageDiagnoseHours, averageDiagnoseHours);
 
 
-                    Map<String, Object> mapping = new HashMap<>();
                     mapping.put("requestsDiagnosed", requestsDiagnosed);
                     mapping.put("averageDiagnoseHours", averageDiagnoseHours);
                     mapping.put("stdDiagnoseHours", stdDiagnoseHours);
@@ -218,13 +225,14 @@ public class RequestDetailDataSource {
 
     /**
      * https://www.johndcook.com/blog/standard_deviation/
-     * @param x new value
-     * @param oldStd old std
+     *
+     * @param x       new value
+     * @param oldStd  old std
      * @param oldMean old mean
      * @param newMean new mean
      * @return new Standart Deviation
      */
-    private double getNewStd(double x, long n, double oldStd, double oldMean, double newMean){
+    private double getNewStd(double x, long n, double oldStd, double oldMean, double newMean) {
         return Math.sqrt((oldStd + (x - oldMean) * (x - newMean)) / (n - 1));
     }
 
