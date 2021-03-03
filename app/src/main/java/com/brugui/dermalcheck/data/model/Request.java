@@ -18,7 +18,7 @@ public class Request implements Serializable {
     private String id;
     private double estimatedProbability;
     private boolean familiarAntecedents, personalAntecedents;
-    private int phototype, label, age, diagnosedLabelIndex, localizationIndex;
+    private int phototype, label, age, diagnosedLabelIndex, localizationIndex, pathologistDiagnosticLabelIndex;
     private String notes, patientId, status, sex;
     private String sender, receiver;
     private Date creationDate, diagnosticDate;
@@ -44,6 +44,7 @@ public class Request implements Serializable {
         this.diagnosedLabelIndex = -1;
         this.localizationIndex = -1;
         this.diagnosticDate = null;
+        this.pathologistDiagnosticLabelIndex = -1;
     }
 
     public Request() {}
@@ -67,6 +68,7 @@ public class Request implements Serializable {
         map.put("sex", this.sex);
         map.put("diagnosedLabelIndex", this.diagnosedLabelIndex);
         map.put("localizationIndex", this.localizationIndex);
+        map.put("pathologistDiagnosticLabelIndex", this.pathologistDiagnosticLabelIndex);
         return map;
     }
 
@@ -229,5 +231,13 @@ public class Request implements Serializable {
 
     public void setLocalizationIndex(int localizationIndex) {
         this.localizationIndex = localizationIndex;
+    }
+
+    public int getPathologistDiagnosticLabelIndex() {
+        return pathologistDiagnosticLabelIndex;
+    }
+
+    public void setPathologistDiagnosticLabelIndex(int pathologistDiagnosticLabelIndex) {
+        this.pathologistDiagnosticLabelIndex = pathologistDiagnosticLabelIndex;
     }
 }

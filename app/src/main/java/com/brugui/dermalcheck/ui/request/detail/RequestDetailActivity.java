@@ -48,7 +48,7 @@ public class RequestDetailActivity extends AppCompatActivity {
     private TextView tvEstimatedProbability, tvLabel;
     private Request request;
     private DonutProgressView dpvChart;
-    private Spinner spDiagnostics, spLocalization;
+    private Spinner spDiagnostics, spLocalization, spPathologistDiagnostic;
     private ConstraintLayout clContainer;
     private Button btnDiagnose;
     private EditText etPatientId, etNotes, etAge;
@@ -70,6 +70,7 @@ public class RequestDetailActivity extends AppCompatActivity {
         setTitle(R.string.request_detail);
         clContainer = findViewById(R.id.clContainer);
 
+        spPathologistDiagnostic = findViewById(R.id.spPathologistDiagnostic);
         spDiagnostics = findViewById(R.id.spDiagnostics);
         spLocalization = findViewById(R.id.spLocalization);
         btnDiagnose = findViewById(R.id.btnDiagnose);
@@ -178,6 +179,11 @@ public class RequestDetailActivity extends AppCompatActivity {
         if (request.getDiagnosedLabelIndex() != -1) {
             tvSpecialistDiagnostic.setText(getString(Classifier.LABELS[request.getDiagnosedLabelIndex()]));
         }
+
+        // In theory this should work without the if, but to ensure...
+        if (request.getPathologistDiagnosticLabelIndex() != -1) {
+            spPathologistDiagnostic.setSelection(request.getPathologistDiagnosticLabelIndex() + 1);
+        }
         spLocalization.setSelection(request.getLocalizationIndex());
     }
 
@@ -273,7 +279,11 @@ public class RequestDetailActivity extends AppCompatActivity {
             request.setSex(rgSex.getCheckedRadioButtonId() == R.id.rbMale ? "male" : "female");
         }
 
+        request.setPathologistDiagnosticLabelIndex(spPathologistDiagnostic.getSelectedItemPosition() - 1);
+
         request.setLocalizationIndex(spLocalization.getSelectedItemPosition());
+
+
 
 
         int phototypeIndex = ((PhototypeAdapter) rvPhototype.getAdapter()).getPositionSelected();

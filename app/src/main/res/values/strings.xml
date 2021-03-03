@@ -19,6 +19,7 @@
     <string name="familiar_antecedents">Antecedentes familiares</string>
     <string name="send_request">Enviar consulta</string>
     <string name="additional_data">Datos adicionales</string>
+    <string name="pathologist_diagnostic">Diagnóstico del patólogo</string>
     <string name="analyze_image">Analizar imagen</string>
     <string name="image">Imagen</string>
     <string name="images">Imágenes</string>

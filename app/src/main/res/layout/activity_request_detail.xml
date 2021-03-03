@@ -23,7 +23,6 @@
             android:orientation="vertical">
 
 
-
             <TextView
                 android:id="@+id/textView4"
                 android:layout_width="match_parent"
@@ -87,12 +86,12 @@
 
                 <RadioButton
                     android:id="@+id/rbFemale"
-                    android:textSize="24sp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight=".5"
                     android:buttonTint="@color/accent"
-                    android:text="@string/female" />
+                    android:text="@string/female"
+                    android:textSize="24sp" />
             </RadioGroup>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -135,18 +134,20 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:textSize="24sp"
-                    android:text="@string/phototype"
                     android:padding="8dp"
+                    android:text="@string/phototype"
+                    android:textColor="@color/main"
+                    android:textSize="24sp"
                     android:textStyle="bold" />
+
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvPhototype"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    android:orientation="horizontal"
-                    android:layout_gravity="center"
-                    tools:listitem="@layout/simple_selectable_list_item"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:orientation="horizontal"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:listitem="@layout/simple_selectable_list_item" />
             </LinearLayout>
 
 
@@ -155,50 +156,69 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textSize="24sp"
                 android:buttonTint="@color/accent"
                 android:checked="false"
-                android:paddingTop="8dp"
-                android:text="@string/familiar_antecedents" />
+                android:padding="16dp"
+                android:text="@string/familiar_antecedents"
+                android:textSize="24sp" />
 
             <CheckBox
                 android:id="@+id/chPersonalAntecedents"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textSize="24sp"
                 android:buttonTint="@color/accent"
-                android:paddingTop="8dp"
+                android:padding="16dp"
                 android:text="@string/personal_atecedents"
-                android:textAllCaps="false" />
+                android:textAllCaps="false"
+                android:textSize="24sp" />
 
-            <LinearLayout
-                android:padding="8dp"
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textColor="@color/main"
+                android:padding="16dp"
+                android:text="@string/stain_localization"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <Spinner
+                android:id="@+id/spLocalization"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal">
+                android:layout_weight="1"
+                android:entries="@array/body_parts_select"
+                android:spinnerMode="dialog"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:layout_editor_absoluteY="617dp" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:padding="8dp"
-                    android:text="@string/stain_localization"
-                    android:textStyle="bold" />
 
-                <Spinner
-                    android:id="@+id/spLocalization"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:entries="@array/body_parts_select"
-                    android:spinnerMode="dialog"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:layout_editor_absoluteY="617dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:padding="16dp"
+                android:textColor="@color/main"
+                android:text="@string/pathologist_diagnostic"
+                android:textSize="24sp"
+                android:textStyle="bold" />
 
-            </LinearLayout>
+            <Spinner
+                android:id="@+id/spPathologistDiagnostic"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:entries="@array/labels_select"
+                android:spinnerMode="dialog"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:layout_editor_absoluteY="617dp" />
+
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
@@ -239,15 +259,14 @@
         android:id="@+id/spDiagnostics"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:spinnerMode="dialog"
         android:layout_weight="1"
         android:entries="@array/labels_select"
-        tools:layout_editor_absoluteY="617dp"
+        android:spinnerMode="dialog"
         android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        />
+        tools:layout_editor_absoluteY="617dp" />
 
     <app.futured.donut.DonutProgressView
         android:id="@+id/dpvChart"
