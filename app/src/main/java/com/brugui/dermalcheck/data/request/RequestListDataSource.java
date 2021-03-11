@@ -33,8 +33,8 @@ public class RequestListDataSource {
                 callback.OnDataFetched(new Result.Error(new IOException("User with no rol")));
                 return;
             }
-            Query query = db.collection("requests")
-                    .whereEqualTo("status", Status.PENDING_STATUS_NAME);
+            Query query = db.collection("requests");
+            //.whereEqualTo("status", Status.PENDING_STATUS_NAME);
 
             if (loggedInUser.getRole().equalsIgnoreCase(Rol.SPECIALIST_ROL)) {
                 query = query.whereEqualTo("receiver", loggedInUser.getUid());
@@ -42,7 +42,8 @@ public class RequestListDataSource {
                 query = query.whereEqualTo("sender", loggedInUser.getUid());
             }
 
-            query.orderBy("estimatedProbability", Query.Direction.DESCENDING)
+            query.orderBy("status", Query.Direction.DESCENDING)
+                    .orderBy("estimatedProbability", Query.Direction.DESCENDING)
                     .limit(30)
                     .get()
                     .addOnSuccessListener(queryDocumentSnapshots -> {
@@ -115,9 +116,10 @@ public class RequestListDataSource {
 
     /**
      * Increments by 1 the number of requests the given user had has assigned from the beginning of the times
+     *
      * @param loggedInUser Logged user
      */
-    private void updateUserRequestsAssigned(LoggedInUser loggedInUser){
+    private void updateUserRequestsAssigned(LoggedInUser loggedInUser) {
         FirebaseFirestore.getInstance()
                 .collection("users")
                 .document(loggedInUser.getUid())
@@ -129,7 +131,7 @@ public class RequestListDataSource {
                     }
 
                     long actualValue = 0;
-                    if (documentSnapshot.contains("requestsAssigned")){
+                    if (documentSnapshot.contains("requestsAssigned")) {
                         actualValue = (long) documentSnapshot.get("requestsAssigned");
                     }
 
