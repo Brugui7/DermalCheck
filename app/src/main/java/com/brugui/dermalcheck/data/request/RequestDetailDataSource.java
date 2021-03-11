@@ -230,7 +230,7 @@ public class RequestDetailDataSource {
      * @param oldStd  old std
      * @param oldMean old mean
      * @param newMean new mean
-     * @return new Standart Deviation
+     * @return new Standard Deviation
      */
     private double getNewStd(double x, long n, double oldStd, double oldMean, double newMean) {
         return Math.sqrt((oldStd + (x - oldMean) * (x - newMean)) / (n - 1));

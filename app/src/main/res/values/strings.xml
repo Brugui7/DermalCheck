@@ -89,6 +89,7 @@
     <string name="update_data">Actualizar Datos</string>
     <string name="select_a_diagnostic">Seleccione el diagnóstico</string>
     <string name="specialist_diagnostic">Diagnóstico del especialista</string>
+    <string name="estimated_diagnostic">Diagnóstico estimado</string>
     <string name="diagnostic_pending">Pendiente de diagnosticar</string>
     <string name="select_a_body_part">Selecciona una parte del cuerpo</string>
     <string name="my_data">Mis datos</string>
