@@ -2,9 +2,11 @@ package com.brugui.dermalcheck.ui.request.detail;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.widget.ImageViewCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -52,10 +54,10 @@ public class RequestDetailActivity extends AppCompatActivity {
     private ConstraintLayout clContainer;
     private Button btnDiagnose;
     private EditText etPatientId, etNotes, etAge;
-    private RadioGroup rgSex;
+    private String selectedGender = null;
     private TextView tvSpecialistDiagnostic;
     private CheckBox chPersonalAntecedents, chFamiliarAntecedents;
-    private ImageView ivImage;
+    private ImageView ivImage, ivGenderMale, ivGenderFemale;
     private RequestDetailViewModel requestDetailViewModel;
     private RecyclerView rvPhototype;
 
@@ -86,8 +88,11 @@ public class RequestDetailActivity extends AppCompatActivity {
         etPatientId = findViewById(R.id.etPatientId);
         etNotes = findViewById(R.id.etNotes);
         etAge = findViewById(R.id.etAge);
-        rgSex = findViewById(R.id.rgSex);
         tvSpecialistDiagnostic = findViewById(R.id.tvSpecialistDiagnostic);
+        ivGenderMale = findViewById(R.id.ivGenderMale);
+        ivGenderFemale = findViewById(R.id.ivGenderFemale);
+        ivGenderMale.setOnClickListener(listenerIvGender);
+        ivGenderFemale.setOnClickListener(listenerIvGender);
 
         rvPhototype.setAdapter(new PhototypeAdapter());
 
@@ -169,10 +174,11 @@ public class RequestDetailActivity extends AppCompatActivity {
         etPatientId.setText(request.getPatientId());
         etNotes.setText(request.getNotes());
         if (request.getSex() != null) {
-            if (request.getSex().equals("male")) {
-                rgSex.check(R.id.rbMale);
+            selectedGender = request.getSex();
+            if (selectedGender.equals("male")) {
+                ivGenderMale.performClick();
             } else {
-                rgSex.check(R.id.rbFemale);
+                ivGenderFemale.performClick();
             }
         }
 
@@ -275,15 +281,13 @@ public class RequestDetailActivity extends AppCompatActivity {
             request.setAge(Integer.parseInt(etAge.getText().toString()));
         }
 
-        if (rgSex.getCheckedRadioButtonId() != -1) {
-            request.setSex(rgSex.getCheckedRadioButtonId() == R.id.rbMale ? "male" : "female");
+        if (selectedGender != null) {
+            request.setSex(selectedGender);
         }
 
         request.setPathologistDiagnosticLabelIndex(spPathologistDiagnostic.getSelectedItemPosition() - 1);
 
         request.setLocalizationIndex(spLocalization.getSelectedItemPosition());
-
-
 
 
         int phototypeIndex = ((PhototypeAdapter) rvPhototype.getAdapter()).getPositionSelected();
@@ -296,6 +300,18 @@ public class RequestDetailActivity extends AppCompatActivity {
         request.setNotes(etNotes.getText().toString());
 
         requestDetailViewModel.updateRequest(request, onRequestUpdated);
+    };
+
+    private final View.OnClickListener listenerIvGender = view -> {
+        if (view.getId() == R.id.ivGenderFemale){
+            ImageViewCompat.setImageTintList(ivGenderFemale, ColorStateList.valueOf(getColor(R.color.accent)));
+            ImageViewCompat.setImageTintList(ivGenderMale, ColorStateList.valueOf(getColor(R.color.white)));
+            selectedGender = "female";
+            return;
+        }
+        ImageViewCompat.setImageTintList(ivGenderMale, ColorStateList.valueOf(getColor(R.color.accent)));
+        ImageViewCompat.setImageTintList(ivGenderFemale, ColorStateList.valueOf(getColor(R.color.white)));
+        selectedGender = "male";
     };
 
 }
