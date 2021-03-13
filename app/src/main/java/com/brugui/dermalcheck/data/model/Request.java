@@ -18,7 +18,7 @@ public class Request implements Serializable {
     private String id;
     private double estimatedProbability;
     private boolean familiarAntecedents, personalAntecedents;
-    private int phototype, label, age, diagnosedLabelIndex, localizationIndex, pathologistDiagnosticLabelIndex;
+    private int phototype, labelIndex, age, diagnosedLabelIndex, localizationIndex, pathologistDiagnosticLabelIndex;
     private String notes, patientId, status, sex;
     private String sender, receiver;
     private Date creationDate, diagnosticDate;
@@ -26,7 +26,7 @@ public class Request implements Serializable {
 
     public Request(double estimatedProbability, int age, String sex, boolean familiarAntecedents, boolean personalAntecedents,
                    int phototype, String notes, String patientId, String sender, String receiver,
-                   String status, Date creationDate, int label
+                   String status, Date creationDate, int labelIndex
     ) {
         this.estimatedProbability = estimatedProbability;
         this.familiarAntecedents = familiarAntecedents;
@@ -38,7 +38,7 @@ public class Request implements Serializable {
         this.receiver = receiver;
         this.status = status;
         this.creationDate = creationDate;
-        this.label = label;
+        this.labelIndex = labelIndex;
         this.age = age;
         this.sex = sex;
         this.diagnosedLabelIndex = -1;
@@ -63,7 +63,7 @@ public class Request implements Serializable {
         map.put("diagnosticDate", this.diagnosticDate);
         map.put("id", this.id);
         map.put("patientId", this.patientId);
-        map.put("label", this.label);
+        map.put("labelIndex", this.labelIndex);
         map.put("age", this.age);
         map.put("sex", this.sex);
         map.put("diagnosedLabelIndex", this.diagnosedLabelIndex);
@@ -185,12 +185,12 @@ public class Request implements Serializable {
         this.receiver = receiver;
     }
 
-    public int getLabel() {
-        return label;
+    public int getLabelIndex() {
+        return labelIndex;
     }
 
-    public void setLabel(int label) {
-        this.label = label;
+    public void setLabelIndex(int labelIndex) {
+        this.labelIndex = labelIndex;
     }
 
     public int getAge() {

@@ -115,7 +115,8 @@ public class Classifier {
 
         return new ImageProbability(LABELS[largestIndex],
                 ((int) ((largestValue + 0.005f) * 10000)) / 100f,
-                imageUri
+                imageUri,
+                largestIndex
         );
     }
 

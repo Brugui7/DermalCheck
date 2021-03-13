@@ -136,11 +136,8 @@ public class NewRequestActivity extends AppCompatActivity {
         }
 
         Uri uri = null;
-        Log.d(TAG, "1");
         if (requestCode == REQUEST_IMAGE_PICK) {
-            Log.d(TAG, "2");
             if (data.getData() != null) {
-                Log.d(TAG, "3");
                 //single img
                 uri = data.getData();
             }
@@ -332,7 +329,7 @@ public class NewRequestActivity extends AppCompatActivity {
                 null, //automatically assigned before sending
                 Status.PENDING_STATUS_NAME,
                 Calendar.getInstance().getTime(),
-                imageProbability.getLabel()
+                imageProbability.getLabelIndex()
         );
 
         //Por si hay que poder pasar más de una foto en algún momento

@@ -154,8 +154,8 @@ public class RequestDetailActivity extends AppCompatActivity {
         DonutSection section = new DonutSection("", color, estimatedProbability);
         dpvChart.setCap(100f);
         dpvChart.submitData(new ArrayList<>(Collections.singleton(section)));
-        if (request.getLabel() != 0) {
-            tvLabel.setText(getString(request.getLabel()));
+        if (request.getLabelIndex() != -1) {
+            tvLabel.setText(Classifier.LABELS[request.getLabelIndex()]);
         }
         tvLabel.setVisibility(View.VISIBLE);
         dpvChart.setVisibility(View.VISIBLE);

@@ -3,14 +3,22 @@ package com.brugui.dermalcheck.data.model;
 import android.net.Uri;
 
 public class ImageProbability {
-    private int label;
+    private int label, labelIndex;
     private float estimatedProbability;
     private Uri imageUri;
 
-    public ImageProbability(int label, float estimatedProbability, Uri imageUri) {
+    /**
+     *
+     * @param label int reference to the label on the strings.xml file
+     * @param estimatedProbability
+     * @param imageUri
+     * @param labelIndex Index of the label on the possible labels array
+     */
+    public ImageProbability(int label, float estimatedProbability, Uri imageUri, int labelIndex) {
         this.label = label;
         this.estimatedProbability = estimatedProbability;
         this.imageUri = imageUri;
+        this.labelIndex = labelIndex;
     }
 
     public ImageProbability() {
@@ -38,5 +46,13 @@ public class ImageProbability {
 
     public void setImageUri(Uri imageUri) {
         this.imageUri = imageUri;
+    }
+
+    public int getLabelIndex() {
+        return labelIndex;
+    }
+
+    public void setLabelIndex(int labelIndex) {
+        this.labelIndex = labelIndex;
     }
 }
