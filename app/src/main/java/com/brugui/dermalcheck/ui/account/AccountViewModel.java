@@ -58,6 +58,10 @@ public class AccountViewModel extends ViewModel {
         dataSource.updateUserData(loggedInUser, onDataUpdated);
     }
 
+    public void closeSession(){
+        FirebaseAuth.getInstance().signOut();
+    }
+
     public LoggedInUser getUserLogged() {
         return userLogged;
     }

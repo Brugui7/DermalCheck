@@ -61,7 +61,6 @@ public class NewRequestActivity extends AppCompatActivity {
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
     static final int REQUEST_IMAGE_PICK = 2;
-    private ArrayList<Uri> images;
     private ImageProbability imageProbability;
     private Request newRequest;
     private EditText etPatientId;
@@ -93,7 +92,6 @@ public class NewRequestActivity extends AppCompatActivity {
         userLogged = new LoggedInUser(userTmp.getUid(), userTmp.getDisplayName());
 
         fabAddImage.setOnClickListener(listenerFabAddImage);
-        images = new ArrayList<>();
         btnSendRequest.setOnClickListener(listenerBtnSendRequest);
         newRequestViewModel = new NewRequestViewModel();
         newRequestViewModel.getRequestNumber().observe(this, requestNumber -> {

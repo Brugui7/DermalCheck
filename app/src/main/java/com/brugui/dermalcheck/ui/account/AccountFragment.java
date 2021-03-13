@@ -1,6 +1,7 @@
 package com.brugui.dermalcheck.ui.account;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -17,7 +18,9 @@ import com.brugui.dermalcheck.R;
 import com.brugui.dermalcheck.data.Result;
 import com.brugui.dermalcheck.data.SharedPreferencesRepository;
 import com.brugui.dermalcheck.data.model.LoggedInUser;
+import com.brugui.dermalcheck.ui.MainActivity;
 import com.brugui.dermalcheck.ui.components.snackbar.CustomSnackbar;
+import com.brugui.dermalcheck.ui.login.LoginActivity;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.Objects;
@@ -56,12 +59,20 @@ public class AccountFragment extends Fragment {
         etDisplayName = view.findViewById(R.id.etDisplayName);
         clContainer = view.findViewById(R.id.clContainer);
         Button btnUpdateData = view.findViewById(R.id.btnUpdateData);
+        Button btnCloseSession = view.findViewById(R.id.btnCloseSession);
 
 
         viewModel.getUserData().observe(getViewLifecycleOwner(), loggedInUser -> {
             etDisplayName.setText(loggedInUser.getDisplayName());
         });
         btnUpdateData.setOnClickListener(listenerBtnUpdateData);
+        btnCloseSession.setOnClickListener(view1 -> {
+            viewModel.closeSession();
+            Intent intent = new Intent(getContext(), LoginActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        });
         return view;
     }
 

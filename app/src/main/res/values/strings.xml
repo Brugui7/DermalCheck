@@ -95,6 +95,7 @@
     <string name="select_a_body_part">Selecciona una parte del cuerpo</string>
     <string name="my_data">Mis datos</string>
     <string name="name">Nombre</string>
+    <string name="close_session">Cerrar sesión</string>
 
 
 </resources>
