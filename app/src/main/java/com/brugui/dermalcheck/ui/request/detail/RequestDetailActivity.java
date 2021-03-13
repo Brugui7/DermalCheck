@@ -55,9 +55,10 @@ public class RequestDetailActivity extends AppCompatActivity {
     private Button btnDiagnose;
     private EditText etPatientId, etNotes, etAge;
     private String selectedGender = null;
+    private boolean familiarAntecedents = false;
+    private boolean personalAntecedents = false;
     private TextView tvSpecialistDiagnostic;
-    private CheckBox chPersonalAntecedents, chFamiliarAntecedents;
-    private ImageView ivImage, ivGenderMale, ivGenderFemale;
+    private ImageView ivImage, ivGenderMale, ivGenderFemale, ivPersonalAntecedents, ivFamiliarAntecedents;
     private RequestDetailViewModel requestDetailViewModel;
     private RecyclerView rvPhototype;
 
@@ -82,9 +83,6 @@ public class RequestDetailActivity extends AppCompatActivity {
         tvLabel = findViewById(R.id.tvLabel);
         ivImage = findViewById(R.id.ivImage);
         rvPhototype = findViewById(R.id.rvPhototype);
-
-        chFamiliarAntecedents = findViewById(R.id.chFamiliarAntecedents);
-        chPersonalAntecedents = findViewById(R.id.chPersonalAntecedents);
         etPatientId = findViewById(R.id.etPatientId);
         etNotes = findViewById(R.id.etNotes);
         etAge = findViewById(R.id.etAge);
@@ -93,6 +91,10 @@ public class RequestDetailActivity extends AppCompatActivity {
         ivGenderFemale = findViewById(R.id.ivGenderFemale);
         ivGenderMale.setOnClickListener(listenerIvGender);
         ivGenderFemale.setOnClickListener(listenerIvGender);
+        ivPersonalAntecedents = findViewById(R.id.ivPersonalAntecedents);
+        ivFamiliarAntecedents = findViewById(R.id.ivFamiliarAntecedents);
+        ivPersonalAntecedents.setOnClickListener(listenerIvPersonalAntecedents);
+        ivFamiliarAntecedents.setOnClickListener(listenerIvFamiliarAntecedents);
 
         rvPhototype.setAdapter(new PhototypeAdapter());
 
@@ -160,9 +162,18 @@ public class RequestDetailActivity extends AppCompatActivity {
         tvEstimatedProbability.setVisibility(View.VISIBLE);
     }
 
+    /**
+     * Sets the form values based on the request obtained
+     */
     private void setFormValues() {
-        chFamiliarAntecedents.setChecked(request.isFamiliarAntecedents());
-        chPersonalAntecedents.setChecked(request.isPersonalAntecedents());
+        if (request.isFamiliarAntecedents()) {
+            ivFamiliarAntecedents.performClick();
+        }
+
+        if (request.isPersonalAntecedents()) {
+            ivPersonalAntecedents.performClick();
+        }
+
         if (request.getPhototype() != -1) {
             ((PhototypeAdapter) rvPhototype.getAdapter()).setPositionSelected(request.getPhototype() - 1);
         }
@@ -295,15 +306,15 @@ public class RequestDetailActivity extends AppCompatActivity {
             request.setPhototype(phototypeIndex + 1);
         }
 
-        request.setFamiliarAntecedents(chFamiliarAntecedents.isChecked());
-        request.setPersonalAntecedents(chPersonalAntecedents.isChecked());
+        request.setFamiliarAntecedents(familiarAntecedents);
+        request.setPersonalAntecedents(personalAntecedents);
         request.setNotes(etNotes.getText().toString());
 
         requestDetailViewModel.updateRequest(request, onRequestUpdated);
     };
 
     private final View.OnClickListener listenerIvGender = view -> {
-        if (view.getId() == R.id.ivGenderFemale){
+        if (view.getId() == R.id.ivGenderFemale) {
             ImageViewCompat.setImageTintList(ivGenderFemale, ColorStateList.valueOf(getColor(R.color.accent)));
             ImageViewCompat.setImageTintList(ivGenderMale, ColorStateList.valueOf(getColor(R.color.white)));
             selectedGender = "female";
@@ -312,6 +323,26 @@ public class RequestDetailActivity extends AppCompatActivity {
         ImageViewCompat.setImageTintList(ivGenderMale, ColorStateList.valueOf(getColor(R.color.accent)));
         ImageViewCompat.setImageTintList(ivGenderFemale, ColorStateList.valueOf(getColor(R.color.white)));
         selectedGender = "male";
+    };
+
+    private final View.OnClickListener listenerIvPersonalAntecedents = view -> {
+        if (!personalAntecedents) {
+            personalAntecedents = true;
+            ImageViewCompat.setImageTintList(ivPersonalAntecedents, ColorStateList.valueOf(getColor(R.color.accent)));
+            return;
+        }
+        personalAntecedents = false;
+        ImageViewCompat.setImageTintList(ivPersonalAntecedents, ColorStateList.valueOf(getColor(R.color.white)));
+    };
+
+    private final View.OnClickListener listenerIvFamiliarAntecedents = view -> {
+        if (!familiarAntecedents) {
+            familiarAntecedents = true;
+            ImageViewCompat.setImageTintList(ivFamiliarAntecedents, ColorStateList.valueOf(getColor(R.color.accent)));
+            return;
+        }
+        familiarAntecedents = false;
+        ImageViewCompat.setImageTintList(ivFamiliarAntecedents, ColorStateList.valueOf(getColor(R.color.white)));
     };
 
 }
