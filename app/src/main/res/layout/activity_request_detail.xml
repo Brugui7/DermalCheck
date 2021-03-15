@@ -236,9 +236,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    app:tint="@color/white"
                     android:contentDescription="@string/male"
-                    app:srcCompat="@drawable/ic_person" />
+                    app:srcCompat="@drawable/ic_person"
+                    app:tint="@color/white" />
 
                 <ImageView
                     android:id="@+id/ivFamiliarAntecedents"
@@ -261,17 +261,140 @@
                 android:textSize="24sp"
                 android:textStyle="bold" />
 
-            <Spinner
-                android:id="@+id/spLocalization"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/body_parts"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:entries="@array/body_parts_select"
-                android:spinnerMode="dialog"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:layout_editor_absoluteY="617dp" />
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/imageView7"
+                    android:layout_width="191dp"
+                    android:layout_height="482dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/frente" />
+
+
+                <ImageView
+                    android:id="@+id/ivNeck"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_marginEnd="86dp"
+                    app:layout_constraintBottom_toTopOf="@+id/imageView7"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:srcCompat="@drawable/neck" />
+
+                <ImageView
+                    android:id="@+id/ivFace"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_marginStart="82dp"
+                    app:layout_constraintBottom_toTopOf="@+id/imageView7"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:srcCompat="@drawable/face" />
+
+                <ImageView
+                    android:id="@+id/ivAbdomen"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_marginStart="30dp"
+                    app:layout_constraintEnd_toStartOf="@+id/imageView7"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/ivChest"
+                    app:srcCompat="@drawable/abdomen" />
+
+                <ImageView
+                    android:id="@+id/ivBack"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_marginEnd="30dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/imageView7"
+                    app:layout_constraintTop_toBottomOf="@+id/ivUpperExtremity"
+                    app:srcCompat="@drawable/back" />
+
+                <ImageView
+                    android:id="@+id/ivChest"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_marginStart="30dp"
+                    app:layout_constraintEnd_toStartOf="@+id/imageView7"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/ivEar"
+                    app:srcCompat="@drawable/chest" />
+
+                <ImageView
+                    android:id="@+id/ivEar"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_marginStart="30dp"
+                    app:layout_constraintEnd_toStartOf="@+id/imageView7"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/ivFace"
+                    app:srcCompat="@drawable/ear" />
+
+                <ImageView
+                    android:id="@+id/ivFoot"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_marginStart="165dp"
+                    android:layout_marginEnd="166dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/imageView7"
+                    app:srcCompat="@drawable/foot" />
+
+                <ImageView
+                    android:id="@+id/ivGenitals"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_marginEnd="30dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/imageView7"
+                    app:layout_constraintTop_toBottomOf="@+id/ivBack"
+                    app:srcCompat="@drawable/genital" />
+
+                <ImageView
+                    android:id="@+id/ivHand"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_marginStart="30dp"
+                    app:layout_constraintEnd_toStartOf="@+id/imageView7"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/ivAbdomen"
+                    app:srcCompat="@drawable/hand" />
+
+                <ImageView
+                    android:id="@+id/ivLowerExtremity"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_marginEnd="30dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/imageView7"
+                    app:layout_constraintTop_toBottomOf="@+id/ivGenitals"
+                    app:srcCompat="@drawable/lower_extremity" />
+
+                <ImageView
+                    android:id="@+id/ivScalp"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_marginStart="3dp"
+                    app:layout_constraintBottom_toTopOf="@+id/imageView7"
+                    app:layout_constraintEnd_toStartOf="@+id/ivNeck"
+                    app:layout_constraintStart_toEndOf="@+id/ivFace"
+                    app:srcCompat="@drawable/scalp" />
+
+                <ImageView
+                    android:id="@+id/ivUpperExtremity"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    app:layout_constraintStart_toEndOf="@+id/imageView7"
+                    app:layout_constraintTop_toBottomOf="@+id/ivNeck"
+                    app:srcCompat="@drawable/upper_extremity" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
 
             <com.google.android.material.textfield.TextInputLayout

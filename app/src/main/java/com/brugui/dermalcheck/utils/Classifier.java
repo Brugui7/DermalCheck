@@ -37,13 +37,12 @@ public class Classifier {
             };
 
     public static final int[] BODY_PARTS = new int[]{
+            R.string.unknown,
             R.string.back,
             R.string.lower_extremity,
-            R.string.trunk,
             R.string.upper_extremity,
             R.string.abdomen,
             R.string.chest,
-            R.string.unknown,
             R.string.scalp,
             R.string.face,
             R.string.ear,

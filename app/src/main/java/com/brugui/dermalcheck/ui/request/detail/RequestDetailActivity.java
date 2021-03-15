@@ -13,10 +13,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -35,6 +33,7 @@ import com.google.android.material.snackbar.Snackbar;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -50,15 +49,18 @@ public class RequestDetailActivity extends AppCompatActivity {
     private TextView tvEstimatedProbability, tvLabel;
     private Request request;
     private DonutProgressView dpvChart;
-    private Spinner spDiagnostics, spLocalization, spPathologistDiagnostic;
+    private Spinner spDiagnostics, spPathologistDiagnostic;
     private ConstraintLayout clContainer;
     private Button btnDiagnose;
     private EditText etPatientId, etNotes, etAge;
     private String selectedGender = null;
+    private int selectedBodyPartIndex = 0;
     private boolean familiarAntecedents = false;
     private boolean personalAntecedents = false;
     private TextView tvSpecialistDiagnostic;
     private ImageView ivImage, ivGenderMale, ivGenderFemale, ivPersonalAntecedents, ivFamiliarAntecedents;
+    private ImageView ivNeck, ivFace, ivAbdomen, ivBack, ivChest, ivEar, ivFoot, ivGenitals, ivHand, ivLowerExtremity, ivScalp, ivUpperExtremity;
+    private ArrayList<ImageView> bodyParts;
     private RequestDetailViewModel requestDetailViewModel;
     private RecyclerView rvPhototype;
 
@@ -71,11 +73,15 @@ public class RequestDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_request_detail);
         setTitle(R.string.request_detail);
-        clContainer = findViewById(R.id.clContainer);
+        Bundle bundle = getIntent().getExtras();
+        if (bundle == null) {
+            finish();
+            return;
+        }
 
+        clContainer = findViewById(R.id.clContainer);
         spPathologistDiagnostic = findViewById(R.id.spPathologistDiagnostic);
         spDiagnostics = findViewById(R.id.spDiagnostics);
-        spLocalization = findViewById(R.id.spLocalization);
         btnDiagnose = findViewById(R.id.btnDiagnose);
         Button btnUpdateData = findViewById(R.id.btnUpdateData);
         dpvChart = findViewById(R.id.dpvChart);
@@ -96,17 +102,27 @@ public class RequestDetailActivity extends AppCompatActivity {
         ivPersonalAntecedents.setOnClickListener(listenerIvPersonalAntecedents);
         ivFamiliarAntecedents.setOnClickListener(listenerIvFamiliarAntecedents);
 
-        rvPhototype.setAdapter(new PhototypeAdapter());
+        // Body parts
+        ivNeck = findViewById(R.id.ivNeck);
+        ivFace = findViewById(R.id.ivFace);
+        ivAbdomen = findViewById(R.id.ivAbdomen);
+        ivBack = findViewById(R.id.ivBack);
+        ivChest = findViewById(R.id.ivChest);
+        ivEar = findViewById(R.id.ivEar);
+        ivFoot = findViewById(R.id.ivFoot);
+        ivGenitals = findViewById(R.id.ivGenitals);
+        ivHand = findViewById(R.id.ivHand);
+        ivLowerExtremity = findViewById(R.id.ivLowerExtremity);
+        ivScalp = findViewById(R.id.ivScalp);
+        ivUpperExtremity = findViewById(R.id.ivUpperExtremity);
+        bodyParts = new ArrayList<>(Arrays.asList(ivBack, ivLowerExtremity, ivUpperExtremity, ivAbdomen, ivChest, ivScalp, ivFace, ivEar, ivNeck, ivHand, ivFoot, ivGenitals));
+        for (ImageView part : bodyParts) {
+            part.setOnClickListener(listenerBodyParts);
+        }
 
+        rvPhototype.setAdapter(new PhototypeAdapter());
         requestDetailViewModel = new RequestDetailViewModel();
         requestDetailViewModel.loadUserData(this);
-
-
-        Bundle bundle = getIntent().getExtras();
-        if (bundle == null) {
-            finish();
-            return;
-        }
 
         request = (Request) bundle.getSerializable(REQUEST);
 
@@ -201,7 +217,9 @@ public class RequestDetailActivity extends AppCompatActivity {
         if (request.getPathologistDiagnosticLabelIndex() != -1) {
             spPathologistDiagnostic.setSelection(request.getPathologistDiagnosticLabelIndex() + 1);
         }
-        spLocalization.setSelection(request.getLocalizationIndex());
+        if (request.getLocalizationIndex() != 0) {
+            bodyParts.get(request.getLocalizationIndex()).performClick();
+        }
     }
 
     private void setUpDiagnosticUI() {
@@ -297,9 +315,7 @@ public class RequestDetailActivity extends AppCompatActivity {
         }
 
         request.setPathologistDiagnosticLabelIndex(spPathologistDiagnostic.getSelectedItemPosition() - 1);
-
-        request.setLocalizationIndex(spLocalization.getSelectedItemPosition());
-
+        request.setLocalizationIndex(selectedBodyPartIndex);
 
         int phototypeIndex = ((PhototypeAdapter) rvPhototype.getAdapter()).getPositionSelected();
         if (phototypeIndex != -1) {
@@ -343,6 +359,16 @@ public class RequestDetailActivity extends AppCompatActivity {
         }
         familiarAntecedents = false;
         ImageViewCompat.setImageTintList(ivFamiliarAntecedents, ColorStateList.valueOf(getColor(R.color.white)));
+    };
+
+    private View.OnClickListener listenerBodyParts = view -> {
+        for (ImageView part : bodyParts) {
+            ImageViewCompat.setImageTintList(part, ColorStateList.valueOf(getColor(R.color.black)));
+        }
+        selectedBodyPartIndex = bodyParts.indexOf((ImageView) view);
+        ImageViewCompat.setImageTintList((ImageView) view, ColorStateList.valueOf(getColor(R.color.accent)));
+
+
     };
 
 }

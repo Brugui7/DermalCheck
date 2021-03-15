@@ -67,13 +67,13 @@
 
 
     <!-- BODY PARTS LABELS -->
+    <string name="unknown">Desconocido</string>
     <string name="back">Espalda</string>
     <string name="lower_extremity">Extremidad inferior</string>
     <string name="trunk">Tronco</string>
     <string name="upper_extremity">Extremidad superior</string>
     <string name="abdomen">Abdomen</string>
     <string name="chest">Pecho</string>
-    <string name="unknown">Desconocido</string>
     <string name="scalp">Cuero cabelludo</string>
     <string name="face">Cara</string>
     <string name="ear">Oreja</string>
