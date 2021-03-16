@@ -42,6 +42,15 @@ public class SharedPreferencesRepository {
                 .putString(PREF_USER_EMAIL, user.getEmail())
                 .putString(PREF_USER_NAME, user.getDisplayName())
                 .putString(PREF_USER_ROL, user.getRole())
+                .putString(PREF_USER_PASSWORD, user.getPassword())
+                .apply();
+    }
+
+
+    public void clearUserPassword() {
+        sharedPreferences
+                .edit()
+                .putString(PREF_USER_PASSWORD, null)
                 .apply();
     }
 
@@ -57,6 +66,7 @@ public class SharedPreferencesRepository {
         }
         user.setDisplayName(this.getString(PREF_USER_NAME));
         user.setRole(this.getString(PREF_USER_ROL));
+        user.setPassword(this.getString(PREF_USER_PASSWORD));
         return user;
     }
 }

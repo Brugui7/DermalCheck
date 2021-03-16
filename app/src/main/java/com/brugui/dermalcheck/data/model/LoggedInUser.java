@@ -10,7 +10,7 @@ import java.util.Map;
 public class LoggedInUser implements Serializable {
 
     private String uid;
-    private String displayName, role, email;
+    private String displayName, role, email, password;
 
     public LoggedInUser(String uid, String email) {
         this.uid = uid;
@@ -58,6 +58,14 @@ public class LoggedInUser implements Serializable {
         this.email = email;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     @Override
     public String toString() {
         return "LoggedInUser{" +
@@ -68,7 +76,7 @@ public class LoggedInUser implements Serializable {
                 '}';
     }
 
-    public Map<String, Object> toMap(){
+    public Map<String, Object> toMap() {
         Map<String, Object> map = new HashMap<>();
         map.put("displayName", this.displayName);
         return map;

@@ -68,6 +68,8 @@ public class AccountFragment extends Fragment {
         btnUpdateData.setOnClickListener(listenerBtnUpdateData);
         btnCloseSession.setOnClickListener(view1 -> {
             viewModel.closeSession();
+            SharedPreferencesRepository sharedPreferencesRepository = new SharedPreferencesRepository(getActivity());
+            sharedPreferencesRepository.clearUserPassword();
             Intent intent = new Intent(getContext(), LoginActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

@@ -19,6 +19,7 @@ public class LoginViewModel extends ViewModel {
     private MutableLiveData<LoginFormState> loginFormState = new MutableLiveData<>();
     private MutableLiveData<LoginResult> loginResult = new MutableLiveData<>();
     private LoginRepository loginRepository;
+    private String password;
 
     LoginViewModel(LoginRepository loginRepository) {
         this.loginRepository = loginRepository;
@@ -33,6 +34,7 @@ public class LoginViewModel extends ViewModel {
     }
 
     public void login(String username, String password) {
+        this.password = password;
         loginRepository.login(username, password, onLoginFinished);
     }
 
@@ -74,17 +76,14 @@ public class LoginViewModel extends ViewModel {
     }
 
     public void persistUserData(Context context, LoggedInUser user){
+        user.setPassword(this.password);
         SharedPreferencesRepository sharedPreferencesRepository = new SharedPreferencesRepository(context);
         sharedPreferencesRepository.saveUserLogged(user);
     }
 
-    public String getPersistedUserEmail(Context context){
+    public LoggedInUser getPersistedUserEmail(Context context){
         SharedPreferencesRepository sharedPreferencesRepository = new SharedPreferencesRepository(context);
         LoggedInUser loggedInUser = sharedPreferencesRepository.getUserLogged();
-        if (loggedInUser != null) {
-            return loggedInUser.getEmail();
-        }
-
-        return null;
+        return loggedInUser;
     }
 }

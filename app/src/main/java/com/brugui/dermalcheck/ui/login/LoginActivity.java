@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import com.brugui.dermalcheck.R;
 //import com.brugui.dermalcheck.ui.components.snackbar.CustomSnackbar;
+import com.brugui.dermalcheck.data.model.LoggedInUser;
 import com.brugui.dermalcheck.ui.MainActivity;
 import com.brugui.dermalcheck.ui.components.snackbar.CustomSnackbar;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
@@ -37,6 +38,8 @@ public class LoginActivity extends AppCompatActivity {
     private LoginViewModel loginViewModel;
     private ConstraintLayout container;
     private static final String TAG = "Logger Login";
+    private EditText usernameEditText;
+    private ProgressBar loadingProgressBar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -45,14 +48,11 @@ public class LoginActivity extends AppCompatActivity {
         loginViewModel = new ViewModelProvider(this, new LoginViewModelFactory())
                 .get(LoginViewModel.class);
 
-        final EditText usernameEditText = findViewById(R.id.username);
+        usernameEditText = findViewById(R.id.username);
         final EditText passwordEditText = findViewById(R.id.password);
         final Button loginButton = findViewById(R.id.login);
-        final ProgressBar loadingProgressBar = findViewById(R.id.loading);
+        loadingProgressBar = findViewById(R.id.loading);
         container = findViewById(R.id.container);
-
-        usernameEditText.setText(loginViewModel.getPersistedUserEmail(this));
-
         loginViewModel.getLoginFormState().observe(this, loginFormState -> {
             if (loginFormState == null) {
                 return;
@@ -121,6 +121,9 @@ public class LoginActivity extends AppCompatActivity {
             loginViewModel.login(usernameEditText.getText().toString(),
                     passwordEditText.getText().toString());
         });
+
+        tryRememberedLogin();
+
     }
 
     private void showLoginFailed(@StringRes Integer errorString) {
@@ -131,5 +134,22 @@ public class LoginActivity extends AppCompatActivity {
                 null,
                 getColor(R.color.accent)
         ).show();
+    }
+
+    /**
+     * Puts the username in the editText and tries to do a login with the remembered email and password
+     *
+     */
+    private void tryRememberedLogin() {
+        LoggedInUser userData = loginViewModel.getPersistedUserEmail(this);
+        if (userData != null) {
+            usernameEditText.setText(userData.getEmail());
+            if (userData.getPassword() != null) {
+                loadingProgressBar.setVisibility(View.VISIBLE);
+                loginViewModel.login(userData.getEmail(), userData.getPassword());
+
+            }
+        }
+
     }
 }

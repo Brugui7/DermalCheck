@@ -59,7 +59,6 @@ public class RequestDetailActivity extends AppCompatActivity {
     private boolean personalAntecedents = false;
     private TextView tvSpecialistDiagnostic;
     private ImageView ivImage, ivGenderMale, ivGenderFemale, ivPersonalAntecedents, ivFamiliarAntecedents;
-    private ImageView ivNeck, ivFace, ivAbdomen, ivBack, ivChest, ivEar, ivFoot, ivGenitals, ivHand, ivLowerExtremity, ivScalp, ivUpperExtremity;
     private ArrayList<ImageView> bodyParts;
     private RequestDetailViewModel requestDetailViewModel;
     private RecyclerView rvPhototype;
@@ -103,18 +102,18 @@ public class RequestDetailActivity extends AppCompatActivity {
         ivFamiliarAntecedents.setOnClickListener(listenerIvFamiliarAntecedents);
 
         // Body parts
-        ivNeck = findViewById(R.id.ivNeck);
-        ivFace = findViewById(R.id.ivFace);
-        ivAbdomen = findViewById(R.id.ivAbdomen);
-        ivBack = findViewById(R.id.ivBack);
-        ivChest = findViewById(R.id.ivChest);
-        ivEar = findViewById(R.id.ivEar);
-        ivFoot = findViewById(R.id.ivFoot);
-        ivGenitals = findViewById(R.id.ivGenitals);
-        ivHand = findViewById(R.id.ivHand);
-        ivLowerExtremity = findViewById(R.id.ivLowerExtremity);
-        ivScalp = findViewById(R.id.ivScalp);
-        ivUpperExtremity = findViewById(R.id.ivUpperExtremity);
+        ImageView ivNeck = findViewById(R.id.ivNeck);
+        ImageView ivFace = findViewById(R.id.ivFace);
+        ImageView ivAbdomen = findViewById(R.id.ivAbdomen);
+        ImageView ivBack = findViewById(R.id.ivBack);
+        ImageView ivChest = findViewById(R.id.ivChest);
+        ImageView ivEar = findViewById(R.id.ivEar);
+        ImageView ivFoot = findViewById(R.id.ivFoot);
+        ImageView ivGenitals = findViewById(R.id.ivGenitals);
+        ImageView ivHand = findViewById(R.id.ivHand);
+        ImageView ivLowerExtremity = findViewById(R.id.ivLowerExtremity);
+        ImageView ivScalp = findViewById(R.id.ivScalp);
+        ImageView ivUpperExtremity = findViewById(R.id.ivUpperExtremity);
         bodyParts = new ArrayList<>(Arrays.asList(ivBack, ivLowerExtremity, ivUpperExtremity, ivAbdomen, ivChest, ivScalp, ivFace, ivEar, ivNeck, ivHand, ivFoot, ivGenitals));
         for (ImageView part : bodyParts) {
             part.setOnClickListener(listenerBodyParts);
