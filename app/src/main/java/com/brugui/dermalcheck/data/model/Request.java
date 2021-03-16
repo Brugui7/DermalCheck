@@ -42,7 +42,7 @@ public class Request implements Serializable {
         this.age = age;
         this.sex = sex;
         this.diagnosedLabelIndex = -1;
-        this.localizationIndex = -1;
+        this.localizationIndex = 0;
         this.diagnosticDate = null;
         this.pathologistDiagnosticLabelIndex = -1;
     }
