@@ -114,8 +114,9 @@ public class RequestDetailActivity extends AppCompatActivity {
         ImageView ivLowerExtremity = findViewById(R.id.ivLowerExtremity);
         ImageView ivScalp = findViewById(R.id.ivScalp);
         ImageView ivUpperExtremity = findViewById(R.id.ivUpperExtremity);
-        bodyParts = new ArrayList<>(Arrays.asList(ivBack, ivLowerExtremity, ivUpperExtremity, ivAbdomen, ivChest, ivScalp, ivFace, ivEar, ivNeck, ivHand, ivFoot, ivGenitals));
+        bodyParts = new ArrayList<>(Arrays.asList(null, ivBack, ivLowerExtremity, ivUpperExtremity, ivAbdomen, ivChest, ivScalp, ivFace, ivEar, ivNeck, ivHand, ivFoot, ivGenitals));
         for (ImageView part : bodyParts) {
+            if (part == null) continue;
             part.setOnClickListener(listenerBodyParts);
         }
 
@@ -214,7 +215,7 @@ public class RequestDetailActivity extends AppCompatActivity {
 
         // In theory this should work without the if, but to ensure...
         if (request.getPathologistDiagnosticLabelIndex() != -1) {
-            spPathologistDiagnostic.setSelection(request.getPathologistDiagnosticLabelIndex() + 1);
+            spPathologistDiagnostic.setSelection(request.getPathologistDiagnosticLabelIndex());
         }
         if (request.getLocalizationIndex() != 0) {
             bodyParts.get(request.getLocalizationIndex()).performClick();
@@ -360,8 +361,9 @@ public class RequestDetailActivity extends AppCompatActivity {
         ImageViewCompat.setImageTintList(ivFamiliarAntecedents, ColorStateList.valueOf(getColor(R.color.white)));
     };
 
-    private View.OnClickListener listenerBodyParts = view -> {
+    private final View.OnClickListener listenerBodyParts = view -> {
         for (ImageView part : bodyParts) {
+            if (part == null) continue;
             ImageViewCompat.setImageTintList(part, ColorStateList.valueOf(getColor(R.color.black)));
         }
         selectedBodyPartIndex = bodyParts.indexOf((ImageView) view);
