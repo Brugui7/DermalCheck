@@ -95,7 +95,7 @@
                 android:text="@string/additional_data"
                 android:textAlignment="center"
                 android:textColor="@color/main"
-                android:textSize="24sp"
+                android:textSize="18sp"
                 android:textStyle="bold" />
 
             <com.google.android.material.textfield.TextInputLayout
@@ -115,8 +115,30 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/diagnostic_security"
+                android:textAlignment="center"
+                android:textColor="@color/main"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <RatingBar
+                android:id="@+id/rbSecurity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:numStars="4"
+                android:progressTint="@color/accent"
+                android:rating="1"
+                android:stepSize="1" />
+
         </LinearLayout>
     </ScrollView>
+
+
 
     <Button
         android:id="@+id/btnSendRequest"

@@ -16,7 +16,7 @@ import java.util.Map;
 
 public class Request implements Serializable {
     private String id;
-    private double estimatedProbability;
+    private double estimatedProbability, diagnosticSecurity;
     private boolean familiarAntecedents, personalAntecedents;
     private int phototype, labelIndex, age, diagnosedLabelIndex, localizationIndex, pathologistDiagnosticLabelIndex;
     private String notes, patientId, status, sex;
@@ -69,6 +69,7 @@ public class Request implements Serializable {
         map.put("diagnosedLabelIndex", this.diagnosedLabelIndex);
         map.put("localizationIndex", this.localizationIndex);
         map.put("pathologistDiagnosticLabelIndex", this.pathologistDiagnosticLabelIndex);
+        map.put("diagnosticSecurity", this.diagnosticSecurity);
         return map;
     }
 
@@ -239,5 +240,13 @@ public class Request implements Serializable {
 
     public void setPathologistDiagnosticLabelIndex(int pathologistDiagnosticLabelIndex) {
         this.pathologistDiagnosticLabelIndex = pathologistDiagnosticLabelIndex;
+    }
+
+    public double getDiagnosticSecurity() {
+        return diagnosticSecurity;
+    }
+
+    public void setDiagnosticSecurity(double diagnosticSecurity) {
+        this.diagnosticSecurity = diagnosticSecurity;
     }
 }

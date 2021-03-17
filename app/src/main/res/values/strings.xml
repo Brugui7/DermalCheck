@@ -96,6 +96,7 @@
     <string name="my_data">Mis datos</string>
     <string name="name">Nombre</string>
     <string name="close_session">Cerrar sesión</string>
+    <string name="diagnostic_security">Seguridad del diagnóstico</string>
 
 
 </resources>

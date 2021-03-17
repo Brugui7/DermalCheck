@@ -21,6 +21,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.brugui.dermalcheck.BuildConfig;
@@ -73,6 +74,7 @@ public class NewRequestActivity extends AppCompatActivity {
     private Uri currentPhotoUri;
     private static final String TAG = "Logger NewRequestAc";
     private NewRequestViewModel newRequestViewModel;
+    private RatingBar rbSecurity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +89,7 @@ public class NewRequestActivity extends AppCompatActivity {
         tvLabel = findViewById(R.id.tvLabel);
         ivImage = findViewById(R.id.ivImage);
         etPatientId = findViewById(R.id.etPatientId);
+        rbSecurity = findViewById(R.id.rbSecurity);
 
         FirebaseUser userTmp = FirebaseAuth.getInstance().getCurrentUser();
         userLogged = new LoggedInUser(userTmp.getUid(), userTmp.getDisplayName());
@@ -331,6 +334,8 @@ public class NewRequestActivity extends AppCompatActivity {
                 Calendar.getInstance().getTime(),
                 imageProbability.getLabelIndex()
         );
+
+        newRequest.setDiagnosticSecurity(rbSecurity.getRating() / rbSecurity.getNumStars());
 
         //Por si hay que poder pasar más de una foto en algún momento
         ArrayList<Uri> imagesTmp = new ArrayList<>();
