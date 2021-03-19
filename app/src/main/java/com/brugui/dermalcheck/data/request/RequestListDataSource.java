@@ -37,9 +37,10 @@ public class RequestListDataSource {
             //.whereEqualTo("status", Status.PENDING_STATUS_NAME);
 
             if (loggedInUser.getRole().equalsIgnoreCase(Rol.SPECIALIST_ROL)) {
-                query = query.whereEqualTo("receiver", loggedInUser.getUid());
-            } else {
                 query = query.whereEqualTo("sender", loggedInUser.getUid());
+            } else {
+                // TODO
+                query = query.whereEqualTo("receiver", loggedInUser.getUid());
             }
 
             query.orderBy("status", Query.Direction.DESCENDING)

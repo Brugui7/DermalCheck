@@ -22,6 +22,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.RatingBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.brugui.dermalcheck.BuildConfig;
@@ -75,6 +76,7 @@ public class NewRequestActivity extends AppCompatActivity {
     private static final String TAG = "Logger NewRequestAc";
     private NewRequestViewModel newRequestViewModel;
     private RatingBar rbSecurity;
+    private Spinner spDiagnostics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +92,7 @@ public class NewRequestActivity extends AppCompatActivity {
         ivImage = findViewById(R.id.ivImage);
         etPatientId = findViewById(R.id.etPatientId);
         rbSecurity = findViewById(R.id.rbSecurity);
+        spDiagnostics = findViewById(R.id.spDiagnostics);
 
         FirebaseUser userTmp = FirebaseAuth.getInstance().getCurrentUser();
         userLogged = new LoggedInUser(userTmp.getUid(), userTmp.getDisplayName());
@@ -246,6 +249,17 @@ public class NewRequestActivity extends AppCompatActivity {
             return false;
         }
 
+        if (spDiagnostics.getSelectedItemPosition() == 0){
+            CustomSnackbar.Companion.make(clContainer, getString(R.string.error_no_diagnostic),
+                    Snackbar.LENGTH_SHORT,
+                    null,
+                    R.drawable.ic_error_outline,
+                    null,
+                    getColor(R.color.accent)
+            ).show();
+            return false;
+        }
+
         if (etPatientId.getText().toString().trim().length() == 0) {
             etPatientId.setError(getString(R.string.required_field));
             etPatientId.requestFocus();
@@ -260,7 +274,7 @@ public class NewRequestActivity extends AppCompatActivity {
      * @param image ImageProbability
      */
     private void setChartValues(ImageProbability image) {
-        float estimatedProbability = (float) image.getEstimatedProbability();
+        float estimatedProbability = image.getEstimatedProbability();
         tvEstimatedProbability.setText(estimatedProbability + "%");
         int color = Color.parseColor("#f44336");
         if (estimatedProbability < 30) {
@@ -335,6 +349,7 @@ public class NewRequestActivity extends AppCompatActivity {
                 imageProbability.getLabelIndex()
         );
 
+        newRequest.setDiagnosedLabelIndex(spDiagnostics.getSelectedItemPosition() - 1);
         newRequest.setDiagnosticSecurity(rbSecurity.getRating() / rbSecurity.getNumStars());
 
         //Por si hay que poder pasar más de una foto en algún momento

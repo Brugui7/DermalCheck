@@ -14,13 +14,14 @@
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="32dp"
         android:clickable="true"
-        android:visibility="gone"
+        android:focusable="true"
         android:src="@drawable/ic_baseline_arrow_downward"
+        android:visibility="gone"
         app:backgroundTint="@color/main_dark"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:tint="@color/white"
-        android:focusable="true" />
+        tools:visibility="visible" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabNewRequest"
@@ -29,12 +30,14 @@
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="32dp"
         android:clickable="true"
+        android:focusable="true"
         android:src="@drawable/ic_baseline_add"
+        android:visibility="gone"
         app:backgroundTint="@color/main_dark"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:tint="@color/white"
-        android:focusable="true" />
+        tools:visibility="visible" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/srLayout"

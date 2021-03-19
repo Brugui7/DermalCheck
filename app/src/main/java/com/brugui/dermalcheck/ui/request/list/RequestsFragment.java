@@ -38,7 +38,6 @@ import java.util.List;
  * create an instance of this fragment.
  */
 public class RequestsFragment extends Fragment {
-    private FloatingActionButton fabNewRequest, fabGetRequest;
     private ConstraintLayout clEmptyList, clContainer;
     private RecyclerView rvRequests;
     private List<Request> requests;
@@ -79,20 +78,20 @@ public class RequestsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_requests, container, false);
-        fabNewRequest = view.findViewById(R.id.fabNewRequest);
-        fabGetRequest = view.findViewById(R.id.fabGetRequest);
+        FloatingActionButton fabNewRequest = view.findViewById(R.id.fabNewRequest);
+        FloatingActionButton fabGetRequest = view.findViewById(R.id.fabGetRequest);
         rvRequests = view.findViewById(R.id.rvRequests);
         clContainer = view.findViewById(R.id.clContainer);
         clEmptyList = view.findViewById(R.id.clEmptyList);
         srLayout = view.findViewById(R.id.srLayout);
         fabNewRequest.setOnClickListener(listenerFabNewRequest);
+        fabGetRequest.setOnClickListener(listenerFabGetRequest);
 
         LoggedInUser loggedInUser = requestsViewModel.getUserLogged();
         if (loggedInUser != null && loggedInUser.getRole() != null) {
             if (loggedInUser.getRole().equalsIgnoreCase(Rol.SPECIALIST_ROL)) {
-                fabNewRequest.setVisibility(View.GONE);
-                fabGetRequest.setVisibility(View.VISIBLE);
-                fabGetRequest.setOnClickListener(listenerFabGetRequest);
+                fabNewRequest.setVisibility(View.VISIBLE);
+                fabGetRequest.setVisibility(View.GONE);
             }
         }
 
