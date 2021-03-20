@@ -99,6 +99,7 @@
     <string name="close_session">Cerrar sesión</string>
     <string name="diagnostic_security">Seguridad del diagnóstico</string>
     <string name="diagnostic">Diagnóstico</string>
+    <string name="diagnostics">Diagnósticos</string>
 
 
 </resources>

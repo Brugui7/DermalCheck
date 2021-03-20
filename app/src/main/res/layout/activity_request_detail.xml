@@ -12,6 +12,8 @@
         android:id="@+id/scrollView3"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         app:layout_constraintBottom_toTopOf="@+id/btnUpdateData"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -28,7 +30,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="18dp"
-                android:text="@string/estimated_diagnostic"
+                android:text="@string/diagnostics"
                 android:textAlignment="center"
                 android:textColor="@color/main"
                 android:textSize="18sp" />
@@ -41,50 +43,45 @@
                 android:textAlignment="center"
                 android:textColor="@color/accent"
                 android:textSize="24sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/textView4"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="18dp"
-                android:text="@string/specialist_diagnostic"
-                android:textAlignment="center"
-                android:textColor="@color/main"
-                android:textSize="18sp" />
+                android:textStyle="bold"
+                app:drawableStartCompat="@drawable/robot_24" />
 
             <TextView
                 android:id="@+id/tvSpecialistDiagnostic"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="center"
                 android:text="@string/diagnostic_pending"
-                android:textAlignment="center"
                 android:textColor="@color/accent"
                 android:textSize="24sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                app:drawableStartCompat="@drawable/doctor_24" />
 
-            <TextView
-                android:id="@+id/textView5"
-                android:layout_width="match_parent"
+            <LinearLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="18dp"
-                android:text="@string/pathologist_diagnostic"
-                android:textAlignment="center"
-                android:textColor="@color/main"
-                android:textSize="18sp" />
+                android:orientation="horizontal">
 
-            <Spinner
-                android:id="@+id/spPathologistDiagnostic"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:entries="@array/labels_select"
-                android:padding="10dp"
-                android:spinnerMode="dialog"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:layout_editor_absoluteY="617dp" />
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center"
+                    app:srcCompat="@drawable/microscope" />
+
+                <Spinner
+                    android:id="@+id/spPathologistDiagnostic"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:entries="@array/labels_select"
+                    android:padding="10dp"
+                    android:spinnerMode="dialog"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:layout_editor_absoluteY="617dp" />
+            </LinearLayout>
+
 
             <TextView
                 android:id="@+id/textView3"
