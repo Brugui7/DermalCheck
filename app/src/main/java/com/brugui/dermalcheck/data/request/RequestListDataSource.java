@@ -71,14 +71,15 @@ public class RequestListDataSource {
      * @param loggedInUser the user logged, will be always a specialist
      * @param callback     OnDataFetched
      */
-    public void getNewRequest(LoggedInUser loggedInUser, OnDataFetched callback) {
+    public void getNewRequest(LoggedInUser loggedInUser, String offsetId, OnDataFetched callback) {
         try {
+            Log.d(TAG, "OFFSET DE " + offsetId);
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             db.collection("requests")
-                    .whereEqualTo("status", Status.PENDING_STATUS_NAME)
                     .whereEqualTo("receiver", null)
-                    .whereNotIn("id", loggedInUser.getRequestsDiagnosed())
-                    .limit(1)
+                    .orderBy("id")
+                    .startAfter(offsetId)
+                    .limit(10)
                     .get()
                     .addOnSuccessListener(queryDocumentSnapshots -> {
                         if (queryDocumentSnapshots.size() == 0) {
@@ -87,13 +88,31 @@ public class RequestListDataSource {
                             return;
                         }
 
-                        Request request = queryDocumentSnapshots.iterator().next().toObject(Request.class);
+                        Request request = null;
+                        String lastId = null;
+                        Log.d(TAG, "A ver " + queryDocumentSnapshots.iterator().next().getId());
+                        for (QueryDocumentSnapshot queryDocumentSnapshot : queryDocumentSnapshots) {
+                            Log.d(TAG, "Soy " + queryDocumentSnapshot.getId());
+                            lastId = queryDocumentSnapshot.getId();
+                            if (!loggedInUser.getRequestsDiagnosed().contains(queryDocumentSnapshot.getId())) {
+                                request = queryDocumentSnapshot.toObject(Request.class);
+                                break;
+                            }
+                        }
+
+                        if (request == null) {
+                            Log.d(TAG, "nada");
+                            this.getNewRequest(loggedInUser, lastId, callback);
+                            return;
+                        }
+
                         request.setReceiver(loggedInUser.getUid());
+                        Request finalRequest = request;
                         db.collection("requests")
-                                .document(request.getId())
-                                .set(request.toMap(), SetOptions.merge())
+                                .document(finalRequest.getId())
+                                .set(finalRequest.toMap(), SetOptions.merge())
                                 .addOnSuccessListener(documentReference -> {
-                                    callback.OnDataFetched(new Result.Success<>(request));
+                                    callback.OnDataFetched(new Result.Success<>(finalRequest));
                                     updateUserRequestsAssigned(loggedInUser);
                                 })
                                 .addOnFailureListener(e -> {
