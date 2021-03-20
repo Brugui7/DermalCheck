@@ -71,6 +71,7 @@ public class RequestsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        requestsViewModel.loadUserData(getContext());
         requestsViewModel.fetchRequests();
     }
 
@@ -91,7 +92,8 @@ public class RequestsFragment extends Fragment {
         if (loggedInUser != null && loggedInUser.getRole() != null) {
             if (loggedInUser.getRole().equalsIgnoreCase(Rol.SPECIALIST_ROL)) {
                 fabNewRequest.setVisibility(View.VISIBLE);
-                fabGetRequest.setVisibility(View.GONE);
+            } else if (loggedInUser.getRole().equalsIgnoreCase(Rol.GENERAL_ROL)) {
+                fabGetRequest.setVisibility(View.VISIBLE);
             }
         }
 
@@ -125,7 +127,6 @@ public class RequestsFragment extends Fragment {
     private final View.OnClickListener listenerFabGetRequest = view -> {
         requestsViewModel.getNewRequest(result -> {
             if (result instanceof Result.Error) {
-                Log.d(TAG, "no hay");
                 CustomSnackbar.make(
                         clContainer,
                         getString(R.string.no_pending_requests),

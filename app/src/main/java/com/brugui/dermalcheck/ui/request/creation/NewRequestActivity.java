@@ -351,6 +351,7 @@ public class NewRequestActivity extends AppCompatActivity {
 
         newRequest.setDiagnosedLabelIndex(spDiagnostics.getSelectedItemPosition() - 1);
         newRequest.setDiagnosticSecurity(rbSecurity.getRating() / rbSecurity.getNumStars());
+        newRequest.setDiagnosticDate(Calendar.getInstance().getTime());
 
         //Por si hay que poder pasar más de una foto en algún momento
         ArrayList<Uri> imagesTmp = new ArrayList<>();

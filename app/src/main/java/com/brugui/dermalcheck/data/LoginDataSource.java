@@ -19,6 +19,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -61,6 +62,10 @@ public class LoginDataSource {
                                             if (userDocument.contains("displayName")) {
                                                 loggedInUser.setDisplayName(userDocument.getString("displayName"));
                                             }
+
+                                            if (userDocument.contains("requestsDiagnosed")) {
+                                                loggedInUser.setRequestsDiagnosed((List<String>) userDocument.get("requestsDiagnosed"));
+                                            }
                                         }
                                     }
 
@@ -78,11 +83,6 @@ public class LoginDataSource {
         }
     }
 
-
-    public void logout() {
-        // TODO: revoke authentication
-    }
-
     private void subscribeToNotification(String uid) {
         // The user subscribes to its own notification channel
         FirebaseMessaging firebaseMessaging = FirebaseMessaging.getInstance();
@@ -98,7 +98,6 @@ public class LoginDataSource {
         Map<String, Object> map = new HashMap<>();
         map.put("email", user.getEmail());
         map.put("uid", user.getUid());
-
 
 
         // Updates the user data

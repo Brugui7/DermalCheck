@@ -13,6 +13,7 @@ import com.brugui.dermalcheck.data.Result;
 import com.brugui.dermalcheck.data.interfaces.OnDataFetched;
 import com.brugui.dermalcheck.data.interfaces.OnRequestCreated;
 import com.brugui.dermalcheck.data.interfaces.OnRequestUpdated;
+import com.brugui.dermalcheck.data.model.LoggedInUser;
 import com.brugui.dermalcheck.data.model.Request;
 import com.brugui.dermalcheck.data.model.Rol;
 import com.brugui.dermalcheck.data.model.Status;
@@ -130,14 +131,20 @@ public class RequestDetailDataSource {
     }
 
     /**
-     * Sets the specialist's diagnostic and updates the general statistics
+     * Adds the diagnosed request to the user diagnosed requests array
      *
-     * @param request          Request
-     * @param onRequestUpdated Callback
+     * @param user    LoggedInUser
      */
-    public void diagnose(Request request, OnRequestUpdated onRequestUpdated) {
-        this.updateRequest(request, onRequestUpdated);
-        this.updateRequestsDiagnosedStatistic(request);
+    public void updateUserData(LoggedInUser user) {
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("requestsDiagnosed", user.getRequestsDiagnosed());
+        map.put("matchingRequestsDiagnosed", user.getMatchingRequestsDiagnosed());
+
+        FirebaseFirestore.getInstance()
+                .collection("users")
+                .document(user.getUid())
+                .update(map);
+
     }
 
     /**

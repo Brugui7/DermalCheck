@@ -77,8 +77,7 @@ public class RequestListDataSource {
             db.collection("requests")
                     .whereEqualTo("status", Status.PENDING_STATUS_NAME)
                     .whereEqualTo("receiver", null)
-
-                    .orderBy("estimatedProbability", Query.Direction.DESCENDING)
+                    .whereNotIn("id", loggedInUser.getRequestsDiagnosed())
                     .limit(1)
                     .get()
                     .addOnSuccessListener(queryDocumentSnapshots -> {

@@ -1,7 +1,9 @@
 package com.brugui.dermalcheck.data.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -11,19 +13,24 @@ public class LoggedInUser implements Serializable {
 
     private String uid;
     private String displayName, role, email, password;
+    private int matchingRequestsDiagnosed;
+    private List<String> requestsDiagnosed;
 
     public LoggedInUser(String uid, String email) {
         this.uid = uid;
         this.email = email;
+        this.requestsDiagnosed = new ArrayList<>();
     }
 
     public LoggedInUser(String uid, String email, String displayName, String role) {
         this.uid = uid;
         this.displayName = displayName;
         this.role = role;
+        this.requestsDiagnosed = new ArrayList<>();
     }
 
     public LoggedInUser() {
+        this.requestsDiagnosed = new ArrayList<>();
     }
 
     public String getUid() {
@@ -64,6 +71,22 @@ public class LoggedInUser implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public List<String> getRequestsDiagnosed() {
+        return requestsDiagnosed;
+    }
+
+    public void setRequestsDiagnosed(List<String> requestsDiagnosed) {
+        this.requestsDiagnosed = requestsDiagnosed;
+    }
+
+    public int getMatchingRequestsDiagnosed() {
+        return matchingRequestsDiagnosed;
+    }
+
+    public void setMatchingRequestsDiagnosed(int matchingRequestsDiagnosed) {
+        this.matchingRequestsDiagnosed = matchingRequestsDiagnosed;
     }
 
     @Override

@@ -121,8 +121,8 @@ public class RequestDetailActivity extends AppCompatActivity {
         }
 
         rvPhototype.setAdapter(new PhototypeAdapter());
-        requestDetailViewModel = new RequestDetailViewModel();
-        requestDetailViewModel.loadUserData(this);
+        requestDetailViewModel = new RequestDetailViewModel(getApplication());
+        requestDetailViewModel.loadUserData();
 
         request = (Request) bundle.getSerializable(REQUEST);
 
@@ -138,7 +138,7 @@ public class RequestDetailActivity extends AppCompatActivity {
 
         LoggedInUser loggedInUser = requestDetailViewModel.getUserLogged();
         if (loggedInUser != null && loggedInUser.getRole() != null) {
-            if (loggedInUser.getRole().equalsIgnoreCase(Rol.SPECIALIST_ROL)) {
+            if (loggedInUser.getRole().equalsIgnoreCase(Rol.GENERAL_ROL)) {
                 setUpDiagnosticUI();
             }
         }
@@ -147,10 +147,6 @@ public class RequestDetailActivity extends AppCompatActivity {
         spDiagnostics.setOnItemSelectedListener(listenerSpDiagnostics);
 
         setFormValues();
-        if (request.getDiagnosedLabelIndex() != -1) {
-            setEstimatedDiagnosticValues();
-            btnDiagnose.setVisibility(View.GONE);
-        }
         btnDiagnose.setOnClickListener(view -> spDiagnostics.performClick());
 
     }
@@ -158,7 +154,7 @@ public class RequestDetailActivity extends AppCompatActivity {
 
     //########## Init Functions ##########
 
-    private void setEstimatedDiagnosticValues() {
+    private void setDiagnosticsValues() {
         float estimatedProbability = (float) request.getEstimatedProbability();
         tvEstimatedProbability.setText(estimatedProbability + "%");
         int color = Color.parseColor("#f44336");
@@ -176,6 +172,15 @@ public class RequestDetailActivity extends AppCompatActivity {
         tvLabel.setVisibility(View.VISIBLE);
         dpvChart.setVisibility(View.VISIBLE);
         tvEstimatedProbability.setVisibility(View.VISIBLE);
+
+        if (request.getDiagnosedLabelIndex() != -1) {
+            tvSpecialistDiagnostic.setText(getString(Classifier.LABELS[request.getDiagnosedLabelIndex()]));
+        }
+
+        // In theory this should work without the if, but to ensure...
+        if (request.getPathologistDiagnosticLabelIndex() != -1) {
+            spPathologistDiagnostic.setSelection(request.getPathologistDiagnosticLabelIndex());
+        }
     }
 
     /**
@@ -209,14 +214,7 @@ public class RequestDetailActivity extends AppCompatActivity {
             }
         }
 
-        if (request.getDiagnosedLabelIndex() != -1) {
-            tvSpecialistDiagnostic.setText(getString(Classifier.LABELS[request.getDiagnosedLabelIndex()]));
-        }
 
-        // In theory this should work without the if, but to ensure...
-        if (request.getPathologistDiagnosticLabelIndex() != -1) {
-            spPathologistDiagnostic.setSelection(request.getPathologistDiagnosticLabelIndex());
-        }
         if (request.getLocalizationIndex() != 0) {
             bodyParts.get(request.getLocalizationIndex()).performClick();
         }
@@ -286,12 +284,13 @@ public class RequestDetailActivity extends AppCompatActivity {
                 return;
             }
             btnDiagnose.setEnabled(false);
-            request.setDiagnosedLabelIndex(i - 1);
-            tvSpecialistDiagnostic.setText(getString(Classifier.LABELS[request.getDiagnosedLabelIndex()]));
-            requestDetailViewModel.diagnose(request, result -> {
-                onRequestUpdated.onRequestUpdated(result);
-                setEstimatedDiagnosticValues();
-            });
+            int generalMedicDiagnosticIndex = i - 1;
+            requestDetailViewModel.diagnose(request, request.getDiagnosedLabelIndex() == generalMedicDiagnosticIndex,
+                    result -> {
+                        onRequestUpdated.onRequestUpdated(result);
+                        setDiagnosticsValues();
+                        requestDetailViewModel.persistUserData();
+                    });
         }
 
         @Override
