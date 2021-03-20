@@ -1,12 +1,11 @@
 package com.brugui.dermalcheck.ui.request.detail;
 
 import android.app.Application;
-import android.content.Context;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
+import com.brugui.dermalcheck.R;
 import com.brugui.dermalcheck.data.interfaces.OnRequestUpdated;
 import com.brugui.dermalcheck.data.model.Request;
 import com.brugui.dermalcheck.data.model.Status;
@@ -14,10 +13,11 @@ import com.brugui.dermalcheck.data.request.RequestDetailDataSource;
 import com.brugui.dermalcheck.data.Result;
 import com.brugui.dermalcheck.data.SharedPreferencesRepository;
 import com.brugui.dermalcheck.data.model.LoggedInUser;
+import com.brugui.dermalcheck.data.request.RequestListDataSource;
+import com.brugui.dermalcheck.ui.request.SingleRequestResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import java.util.Calendar;
 import java.util.List;
 
 //TODO implement
@@ -25,6 +25,7 @@ public class RequestDetailViewModel extends AndroidViewModel {
     private static final String TAG = "Logger RequestDetVM";
     private LoggedInUser userLogged;
     private MutableLiveData<List<String>> images = new MutableLiveData<>();
+    public MutableLiveData<SingleRequestResult> nextRequest = new MutableLiveData<>();
     private RequestDetailDataSource dataSource;
 
 
@@ -43,7 +44,6 @@ public class RequestDetailViewModel extends AndroidViewModel {
         dataSource.fetchImages(requestId, result -> {
             if (result instanceof Result.Success) {
                 images.setValue(((Result.Success<List<String>>) result).getData());
-
             }
         });
     }
@@ -58,6 +58,18 @@ public class RequestDetailViewModel extends AndroidViewModel {
 
     public void persistUserData(){
         new SharedPreferencesRepository(getApplication()).saveUserLogged(userLogged);
+    }
+
+    public void getNewRequest(){
+        RequestListDataSource requestListDataSource = new RequestListDataSource();
+        requestListDataSource.getNewRequest(userLogged, "", result -> {
+            if (result instanceof Result.Success) {
+                Request data = ((Result.Success<Request>) result).getData();
+                nextRequest.setValue(new SingleRequestResult(data));
+            } else {
+                nextRequest.setValue(new SingleRequestResult(R.string.no_pending_requests));
+            }
+        });
     }
 
     /**

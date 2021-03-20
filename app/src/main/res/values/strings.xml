@@ -52,7 +52,12 @@
     <string name="select_new_images">Seleccionar nuevas imágenes</string>
     <string name="select_new_image">Seleccionar nueva imagen</string>
     <string name="age">Edad</string>
+    <string name="you_won">Acertaste</string>
+    <string name="you_lost">Fallaste</string>
+    <string name="next_request">Siguiente consulta</string>
     <string name="no_pending_requests">No hay consultas pendientes de asignación</string>
+    <string name="specialist_diagnostic_with_security"> El especialista dio su diagnóstico con un %1$d%% de seguridad.</string>
+
 
     <!-- DIAGNOSTIC LABELS -->
     <string name="label1">Queratosis actinica</string>

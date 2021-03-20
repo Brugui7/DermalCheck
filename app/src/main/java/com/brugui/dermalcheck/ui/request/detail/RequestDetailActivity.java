@@ -1,10 +1,12 @@
 package com.brugui.dermalcheck.ui.request.detail;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.widget.ImageViewCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
@@ -24,9 +26,11 @@ import com.brugui.dermalcheck.data.Result;
 import com.brugui.dermalcheck.data.model.LoggedInUser;
 import com.brugui.dermalcheck.data.model.Request;
 import com.brugui.dermalcheck.data.model.Rol;
+import com.brugui.dermalcheck.ui.MainActivity;
 import com.brugui.dermalcheck.ui.adapters.PhototypeAdapter;
 import com.brugui.dermalcheck.ui.components.ImageDetailActivity;
 import com.brugui.dermalcheck.ui.components.snackbar.CustomSnackbar;
+import com.brugui.dermalcheck.ui.login.LoginActivity;
 import com.brugui.dermalcheck.utils.Classifier;
 import com.bumptech.glide.Glide;
 import com.google.android.material.snackbar.Snackbar;
@@ -36,6 +40,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import app.futured.donut.DonutProgressView;
 import app.futured.donut.DonutSection;
@@ -224,10 +229,8 @@ public class RequestDetailActivity extends AppCompatActivity {
         btnDiagnose.setVisibility(View.VISIBLE);
     }
 
-    //TODO formstate y al viewmodel
     private boolean validateInput() {
         etPatientId.setError(null);
-        // etPhototype.setError(null);
         etAge.setError(null);
 
         if (etPatientId.getText().toString().trim().length() == 0) {
@@ -285,11 +288,19 @@ public class RequestDetailActivity extends AppCompatActivity {
             }
             btnDiagnose.setEnabled(false);
             int generalMedicDiagnosticIndex = i - 1;
-            requestDetailViewModel.diagnose(request, request.getDiagnosedLabelIndex() == generalMedicDiagnosticIndex,
+            boolean success = request.getDiagnosedLabelIndex() == generalMedicDiagnosticIndex;
+            requestDetailViewModel.diagnose(request, success,
                     result -> {
                         onRequestUpdated.onRequestUpdated(result);
                         setDiagnosticsValues();
                         requestDetailViewModel.persistUserData();
+                        AlertDialog.Builder builder = new AlertDialog.Builder(RequestDetailActivity.this);
+                        builder.setTitle(success ? R.string.you_won : R.string.you_lost)
+                                .setMessage(getString(R.string.specialist_diagnostic_with_security, Math.round(request.getDiagnosticSecurity() * 100)))
+                                .setPositiveButton(R.string.next_request, listenerNextRequest)
+                                .setNegativeButton(R.string.cancel, null)
+                                .show();
+
                     });
         }
 
@@ -298,6 +309,46 @@ public class RequestDetailActivity extends AppCompatActivity {
             Log.d(TAG, "Nothing selected");
         }
     };
+
+
+    /**
+     * Search for a new request and opens it if there exist one
+     * If not, it shows a message
+     */
+    private DialogInterface.OnClickListener listenerNextRequest = (dialogInterface, i1) -> {
+
+        requestDetailViewModel.nextRequest.observe(RequestDetailActivity.this, requestResult -> {
+            if (requestResult.getError() != null) {
+                Objects.requireNonNull(CustomSnackbar.make(clContainer,
+                        getString(requestResult.getError()),
+                        Snackbar.LENGTH_SHORT,
+                        null,
+                        R.drawable.ic_error_outline,
+                        null,
+                        getColor(R.color.accent)
+                )).show();
+                requestDetailViewModel.nextRequest.removeObservers(RequestDetailActivity.this);
+                return;
+            }
+
+            Intent intent = new Intent(RequestDetailActivity.this, RequestDetailActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.putExtra(RequestDetailActivity.REQUEST, requestResult.getSuccess());
+            startActivity(intent);
+        });
+        requestDetailViewModel.getNewRequest();
+    };
+
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(RequestDetailActivity.this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
 
     private final View.OnClickListener listenerBtnUpdateData = view -> {
         if (!validateInput()) {
