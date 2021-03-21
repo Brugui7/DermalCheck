@@ -11,6 +11,7 @@
     app:cardUseCompatPadding="true">
 
     <!-- Indicador de estado -->
+
     <View
         android:id="@+id/vStatusIndicator"
         android:layout_width="15dp"
@@ -29,28 +30,14 @@
         android:paddingRight="16dp"
         android:paddingBottom="8dp">
 
-        <TextView
-            android:id="@+id/tvEstimatedProbability"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:textColor="@color/black"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="80 %" />
-
         <View
             android:id="@+id/vertical_separator"
             android:layout_width="1dp"
             android:layout_height="match_parent"
-            android:layout_marginStart="32dp"
+            android:layout_marginStart="8dp"
             android:background="#E0E0E0"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toRightOf="@+id/tvEstimatedProbability"
-            app:layout_constraintStart_toEndOf="@+id/tvEstimatedProbability"
+            app:layout_constraintStart_toEndOf="@+id/dpvChart"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
@@ -74,6 +61,37 @@
             app:layout_constraintStart_toStartOf="@+id/tvPatientId"
             app:layout_constraintTop_toBottomOf="@id/tvPatientId"
             tools:text="23/12/2020 23:01" />
+
+        <TextView
+            android:id="@+id/tvEstimatedProbability"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="80%"
+            android:textAlignment="center"
+            android:textColor="#000000"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@+id/dpvChart"
+            app:layout_constraintEnd_toEndOf="@+id/dpvChart"
+            app:layout_constraintStart_toStartOf="@+id/dpvChart"
+            app:layout_constraintTop_toTopOf="@+id/dpvChart"
+            tools:visibility="visible" />
+
+        <app.futured.donut.DonutProgressView
+            android:id="@+id/dpvChart"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginStart="8dp"
+            android:visibility="visible"
+            app:donut_bgLineColor="@color/grey"
+            app:donut_gapAngle="270"
+            app:donut_gapWidth="20"
+            app:donut_strokeWidth="12dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

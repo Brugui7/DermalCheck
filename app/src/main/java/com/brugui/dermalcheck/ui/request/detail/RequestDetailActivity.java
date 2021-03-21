@@ -145,6 +145,8 @@ public class RequestDetailActivity extends AppCompatActivity {
         if (loggedInUser != null && loggedInUser.getRole() != null) {
             if (loggedInUser.getRole().equalsIgnoreCase(Rol.GENERAL_ROL)) {
                 setUpDiagnosticUI();
+            } else {
+                setDiagnosticsValues();
             }
         }
 
@@ -161,7 +163,7 @@ public class RequestDetailActivity extends AppCompatActivity {
 
     private void setDiagnosticsValues() {
         float estimatedProbability = (float) request.getEstimatedProbability();
-        tvEstimatedProbability.setText(estimatedProbability + "%");
+        tvEstimatedProbability.setText(Math.round(estimatedProbability) + "%");
         int color = Color.parseColor("#f44336");
         if (estimatedProbability < 30) {
             color = Color.parseColor("#4caf50");
