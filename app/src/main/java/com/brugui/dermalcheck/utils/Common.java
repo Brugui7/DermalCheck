@@ -4,20 +4,13 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Environment;
-
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.FileProvider;
-
 import org.jetbrains.annotations.NotNull;
-
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 
 public class Common {
     private static final String[] PERMISSIONS_CAMERA = {Manifest.permission.CAMERA};
@@ -43,6 +36,7 @@ public class Common {
 
     /**
      * Creates an image file on the pictures directory of the external storage
+     *
      * @param context Context
      * @return File the file created
      * @throws IOException if there is an error creating the file

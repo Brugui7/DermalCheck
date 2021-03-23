@@ -249,6 +249,17 @@ public class NewRequestActivity extends AppCompatActivity {
             return false;
         }
 
+        if (rbSecurity.getRating() == 0){
+            CustomSnackbar.Companion.make(clContainer, getString(R.string.error_no_stars),
+                    Snackbar.LENGTH_SHORT,
+                    null,
+                    R.drawable.ic_error_outline,
+                    null,
+                    getColor(R.color.accent)
+            ).show();
+            return false;
+        }
+
         if (spDiagnostics.getSelectedItemPosition() == 0){
             CustomSnackbar.Companion.make(clContainer, getString(R.string.error_no_diagnostic),
                     Snackbar.LENGTH_SHORT,
@@ -275,7 +286,7 @@ public class NewRequestActivity extends AppCompatActivity {
      */
     private void setChartValues(ImageProbability image) {
         float estimatedProbability = image.getEstimatedProbability();
-        tvEstimatedProbability.setText(estimatedProbability + "%");
+        tvEstimatedProbability.setText(Math.round(estimatedProbability) + "%");
         int color = Color.parseColor("#f44336");
         if (estimatedProbability < 30) {
             color = Color.parseColor("#4caf50");

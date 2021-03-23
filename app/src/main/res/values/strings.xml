@@ -40,6 +40,7 @@
     <string name="required_field">Este campo es obligatorio</string>
     <string name="invalid_phototype">Fototipo inválido</string>
     <string name="error_no_images">Se debe subir al menos una imagen</string>
+    <string name="error_no_stars">Se debe seleccionar al menos una estrella</string>
     <string name="error_no_diagnostic">El diagnóstico es obligatorio</string>
     <string name="error_no_images_selected">Se debe seleccionar al menos una imagen</string>
     <string name="error_no_sex">Seleccione un sexo.</string>

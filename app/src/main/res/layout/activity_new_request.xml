@@ -148,9 +148,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:numStars="4"
+                android:numStars="5"
                 android:progressTint="@color/accent"
-                android:rating="1"
+                android:rating="4"
+
                 android:stepSize="1" />
 
         </LinearLayout>
