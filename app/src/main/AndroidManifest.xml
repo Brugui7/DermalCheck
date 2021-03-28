@@ -6,9 +6,9 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        android:maxSdkVersion="28"
-        />
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28" />
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -21,6 +21,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.DermalCheck">
+        <activity android:name=".ui.registration.RegisterActivity"></activity>
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -52,9 +53,7 @@
             android:name=".ui.components.ImageDetailActivity"
             android:screenOrientation="portrait" />
         <activity android:name=".ui.request.creation.NewRequestActivity" />
-        <activity android:name=".ui.MainActivity">
-
-        </activity>
+        <activity android:name=".ui.MainActivity"></activity>
         <activity
             android:name=".ui.login.LoginActivity"
             android:label="@string/app_name">
@@ -63,7 +62,6 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
     </application>
 

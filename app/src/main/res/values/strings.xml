@@ -8,9 +8,13 @@
     <string name="welcome">"¡Bienvenido!"</string>
     <string name="invalid_username">Usuario inválido</string>
     <string name="invalid_password">La contraseña debe tener al menos 5 caracteres</string>
-    <string name="login_failed">"Usuario o contraseña incorrectos"</string>
+    <string name="registration_success">Registro realizado correctamente</string>
+    <string name="passwords_do_no_match">Las contraseñas no coinciden</string>
+    <string name="login_failed">Usuario o contraseña incorrectos</string>
+    <string name="email_already_registered">Email ya registrado</string>
     <string name="email">Email</string>
     <string name="password">Contraseña</string>
+    <string name="password_confirm">Confirmar contraseña</string>
     <string name="profile">Perfil</string>
     <string name="requests">Consultas</string>
     <string name="phototype">Fototipo</string>
@@ -102,10 +106,12 @@
     <string name="select_a_body_part">Selecciona una parte del cuerpo</string>
     <string name="my_data">Mis datos</string>
     <string name="name">Nombre</string>
+    <string name="nick">Alias</string>
     <string name="close_session">Cerrar sesión</string>
     <string name="diagnostic_security">Seguridad del diagnóstico</string>
     <string name="diagnostic">Diagnóstico</string>
     <string name="diagnostics">Diagnósticos</string>
+    <string name="action_register">Registarme</string>
 
 
 </resources>

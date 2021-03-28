@@ -30,6 +30,7 @@ import com.brugui.dermalcheck.R;
 import com.brugui.dermalcheck.data.model.LoggedInUser;
 import com.brugui.dermalcheck.ui.MainActivity;
 import com.brugui.dermalcheck.ui.components.snackbar.CustomSnackbar;
+import com.brugui.dermalcheck.ui.registration.RegisterActivity;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -51,6 +52,11 @@ public class LoginActivity extends AppCompatActivity {
         usernameEditText = findViewById(R.id.username);
         final EditText passwordEditText = findViewById(R.id.password);
         final Button loginButton = findViewById(R.id.login);
+        final Button btnRegister = findViewById(R.id.btnRegister);
+        btnRegister.setOnClickListener(view -> {
+            startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
+        });
+
         loadingProgressBar = findViewById(R.id.loading);
         container = findViewById(R.id.container);
         loginViewModel.getLoginFormState().observe(this, loginFormState -> {
