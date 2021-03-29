@@ -13,24 +13,20 @@ public class LoggedInUser implements Serializable {
 
     private String uid;
     private String displayName, role, email, password;
-    private int matchingRequestsDiagnosed;
-    private List<String> requestsDiagnosed;
+    private int matchingRequestsDiagnosed, requestsDiagnosed;
 
     public LoggedInUser(String uid, String email) {
         this.uid = uid;
         this.email = email;
-        this.requestsDiagnosed = new ArrayList<>();
     }
 
     public LoggedInUser(String uid, String email, String displayName, String role) {
         this.uid = uid;
         this.displayName = displayName;
         this.role = role;
-        this.requestsDiagnosed = new ArrayList<>();
     }
 
     public LoggedInUser() {
-        this.requestsDiagnosed = new ArrayList<>();
     }
 
     public String getUid() {
@@ -73,11 +69,11 @@ public class LoggedInUser implements Serializable {
         this.password = password;
     }
 
-    public List<String> getRequestsDiagnosed() {
+    public int getRequestsDiagnosed() {
         return requestsDiagnosed;
     }
 
-    public void setRequestsDiagnosed(List<String> requestsDiagnosed) {
+    public void setRequestsDiagnosed(int requestsDiagnosed) {
         this.requestsDiagnosed = requestsDiagnosed;
     }
 

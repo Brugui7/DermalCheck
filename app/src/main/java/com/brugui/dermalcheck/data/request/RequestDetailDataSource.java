@@ -54,8 +54,6 @@ public class RequestDetailDataSource {
     private Result<Request> result;
     private static final String TAG = "Logger RequestDetDS";
     private FirebaseFirestore db;
-    private static final int INCREASE = 1;
-    private static final int DECREASE = -1;
 
     public RequestDetailDataSource() {
         db = FirebaseFirestore.getInstance();
@@ -77,56 +75,6 @@ public class RequestDetailDataSource {
                     Log.e(TAG, e.getMessage(), e);
                     result = new Result.Error(new IOException("Error retrieving requests"));
                     callback.OnDataFetched(result);
-                });
-    }
-
-
-    /**
-     * Gets the user id with less pending requests assigned
-     */
-    private Task<QuerySnapshot> fetchOptimalReceiver() {
-        try {
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
-            return db.collection("users")
-                    .whereEqualTo("role", Rol.SPECIALIST_ROL)
-                    .orderBy("pendingRequests", Query.Direction.ASCENDING)
-                    .limit(1)
-                    .get();
-        } catch (Exception e) {
-            Log.e(TAG, e.getMessage(), e);
-        }
-        return null;
-    }
-
-    /**
-     * Increases by one the user pending requests
-     *
-     * @param receiverId String
-     * @param mode       INCREASE | DECREASE
-     */
-    private void updateReceiverPendingRequests(String receiverId, int mode) {
-
-        FirebaseFirestore.getInstance()
-                .collection("users")
-                .document(receiverId)
-                .get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (!documentSnapshot.exists()) {
-                        //this must never happen
-                        return;
-                    }
-                    long actualValue = 0;
-                    if (documentSnapshot.get("pendingRequests") != null) {
-                        actualValue = (long) documentSnapshot.get("pendingRequests");
-                    }
-
-                    Map<String, Object> mapping = new HashMap<>();
-                    mapping.put("pendingRequests", actualValue + mode);
-                    FirebaseFirestore.getInstance()
-                            .collection("users")
-                            .document(receiverId)
-                            .update(mapping);
-
                 });
     }
 

@@ -12,6 +12,7 @@ import java.util.Date;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Request implements Serializable {
@@ -23,6 +24,7 @@ public class Request implements Serializable {
     private String sender, receiver;
     private Date creationDate, diagnosticDate;
     private ArrayList<String> imageUrls;
+    private List<Integer> diagnostics;
 
     public Request(double estimatedProbability, int age, String sex, boolean familiarAntecedents, boolean personalAntecedents,
                    int phototype, String notes, String patientId, String sender, String receiver,
@@ -45,9 +47,12 @@ public class Request implements Serializable {
         this.localizationIndex = 0;
         this.diagnosticDate = null;
         this.pathologistDiagnosticLabelIndex = -1;
+        this.diagnostics = new ArrayList<>();
     }
 
-    public Request() {}
+    public Request() {
+        this.diagnostics = new ArrayList<>();
+    }
 
     public Map<String, Object> toMap(){
      Map<String, Object> map = new HashMap<>();
@@ -70,6 +75,7 @@ public class Request implements Serializable {
         map.put("localizationIndex", this.localizationIndex);
         map.put("pathologistDiagnosticLabelIndex", this.pathologistDiagnosticLabelIndex);
         map.put("diagnosticSecurity", this.diagnosticSecurity);
+        map.put("diagnostics", this.diagnostics);
         return map;
     }
 
@@ -248,5 +254,13 @@ public class Request implements Serializable {
 
     public void setDiagnosticSecurity(double diagnosticSecurity) {
         this.diagnosticSecurity = diagnosticSecurity;
+    }
+
+    public List<Integer> getDiagnostics() {
+        return diagnostics;
+    }
+
+    public void setDiagnostics(List<Integer> diagnostics) {
+        this.diagnostics = diagnostics;
     }
 }

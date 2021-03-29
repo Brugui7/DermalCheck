@@ -62,7 +62,7 @@ public class SharedPreferencesRepository {
                 .putString(PREF_USER_NAME, user.getDisplayName())
                 .putString(PREF_USER_ROL, user.getRole())
                 .putString(PREF_USER_PASSWORD, user.getPassword())
-                .putStringSet(PREF_DIAGNOSED_REQUESTS, new HashSet<>(user.getRequestsDiagnosed()))
+                .putInt(PREF_DIAGNOSED_REQUESTS, user.getRequestsDiagnosed())
                 .putInt(PREF_MATCHING_DIAGNOSED_REQUESTS, user.getMatchingRequestsDiagnosed())
                 .apply();
     }
@@ -89,9 +89,7 @@ public class SharedPreferencesRepository {
         user.setRole(this.getString(PREF_USER_ROL));
         user.setPassword(this.getString(PREF_USER_PASSWORD));
         user.setMatchingRequestsDiagnosed(this.getInt(PREF_MATCHING_DIAGNOSED_REQUESTS));
-
-        Set<String> set = this.getStringSet(PREF_DIAGNOSED_REQUESTS);
-        user.setRequestsDiagnosed(set != null ? new ArrayList<>(set) : null);
+        user.setRequestsDiagnosed(this.getInt(PREF_DIAGNOSED_REQUESTS));
         return user;
     }
 }

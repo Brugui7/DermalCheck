@@ -78,7 +78,7 @@ public class RequestListDataSource {
                     .whereEqualTo("receiver", null)
                     .orderBy("id")
                     .startAfter(offsetId)
-                    .limit(10)
+                    .limit(1)
                     .get()
                     .addOnSuccessListener(queryDocumentSnapshots -> {
                         if (queryDocumentSnapshots.size() == 0) {
@@ -87,28 +87,13 @@ public class RequestListDataSource {
                             return;
                         }
 
-                        Request request = null;
-                        String lastId = null;
-                        for (QueryDocumentSnapshot queryDocumentSnapshot : queryDocumentSnapshots) {
-                            lastId = queryDocumentSnapshot.getId();
-                            if (!loggedInUser.getRequestsDiagnosed().contains(queryDocumentSnapshot.getId())) {
-                                request = queryDocumentSnapshot.toObject(Request.class);
-                                break;
-                            }
-                        }
-
-                        if (request == null) {
-                            this.getNewRequest(loggedInUser, lastId, callback);
-                            return;
-                        }
-
+                        Request request = queryDocumentSnapshots.iterator().next().toObject(Request.class);
                         request.setReceiver(loggedInUser.getUid());
-                        Request finalRequest = request;
                         db.collection("requests")
-                                .document(finalRequest.getId())
-                                .set(finalRequest.toMap(), SetOptions.merge())
+                                .document(request.getId())
+                                .set(request.toMap(), SetOptions.merge())
                                 .addOnSuccessListener(documentReference -> {
-                                    callback.OnDataFetched(new Result.Success<>(finalRequest));
+                                    callback.OnDataFetched(new Result.Success<>(request));
                                     updateUserRequestsAssigned(loggedInUser);
                                 })
                                 .addOnFailureListener(e -> {

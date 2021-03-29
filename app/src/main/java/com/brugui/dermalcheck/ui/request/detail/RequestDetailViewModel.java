@@ -18,6 +18,7 @@ import com.brugui.dermalcheck.ui.request.SingleRequestResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.ArrayList;
 import java.util.List;
 
 //TODO implement
@@ -86,14 +87,19 @@ public class RequestDetailViewModel extends AndroidViewModel {
      * @param request          Request
      * @param onRequestUpdated callback
      */
-    public void diagnose(Request request, boolean success, OnRequestUpdated onRequestUpdated) {
+    public void diagnose(Request request, int diagnosticIndex, OnRequestUpdated onRequestUpdated) {
         request.setStatus(Status.DIAGNOSED_STATUS_NAME);
         request.setReceiver(null);
+        List<Integer> diagnostics = request.getDiagnostics();
+        if (diagnostics == null){
+            diagnostics = new ArrayList<>();
+        }
+        diagnostics.add(diagnosticIndex);
+        request.setDiagnostics(diagnostics);
 
-        List<String> requestsDiagnosed = userLogged.getRequestsDiagnosed();
-        requestsDiagnosed.add(request.getId());
-        userLogged.setRequestsDiagnosed(requestsDiagnosed);
-        if (success) {
+
+        userLogged.setRequestsDiagnosed(userLogged.getRequestsDiagnosed() + 1);
+        if (diagnosticIndex == request.getDiagnosedLabelIndex()) {
             userLogged.setMatchingRequestsDiagnosed(userLogged.getMatchingRequestsDiagnosed() + 1);
         }
         dataSource.updateUserData(userLogged);

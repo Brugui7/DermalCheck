@@ -291,7 +291,8 @@ public class RequestDetailActivity extends AppCompatActivity {
             btnDiagnose.setEnabled(false);
             int generalMedicDiagnosticIndex = i - 1;
             boolean success = request.getDiagnosedLabelIndex() == generalMedicDiagnosticIndex;
-            requestDetailViewModel.diagnose(request, success,
+            requestDetailViewModel.diagnose(request,
+                    generalMedicDiagnosticIndex,
                     result -> {
                         onRequestUpdated.onRequestUpdated(result);
                         setDiagnosticsValues();
@@ -317,7 +318,7 @@ public class RequestDetailActivity extends AppCompatActivity {
      * Search for a new request and opens it if there exist one
      * If not, it shows a message
      */
-    private DialogInterface.OnClickListener listenerNextRequest = (dialogInterface, i1) -> {
+    private final DialogInterface.OnClickListener listenerNextRequest = (dialogInterface, i1) -> {
 
         requestDetailViewModel.nextRequest.observe(RequestDetailActivity.this, requestResult -> {
             if (requestResult.getError() != null) {

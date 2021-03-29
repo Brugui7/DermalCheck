@@ -64,7 +64,11 @@ public class LoginDataSource {
                                             }
 
                                             if (userDocument.contains("requestsDiagnosed")) {
-                                                loggedInUser.setRequestsDiagnosed((List<String>) userDocument.get("requestsDiagnosed"));
+                                                loggedInUser.setRequestsDiagnosed(userDocument.getLong("requestsDiagnosed").intValue());
+                                            }
+
+                                            if (userDocument.contains("matchingRequestsDiagnosed")) {
+                                                loggedInUser.setMatchingRequestsDiagnosed(userDocument.getLong("matchingRequestsDiagnosed").intValue());
                                             }
                                         }
                                     }
