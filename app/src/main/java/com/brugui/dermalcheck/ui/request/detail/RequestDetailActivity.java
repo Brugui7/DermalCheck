@@ -17,6 +17,8 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.NumberPicker;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -54,7 +56,7 @@ public class RequestDetailActivity extends AppCompatActivity {
     private TextView tvEstimatedProbability, tvLabel;
     private Request request;
     private DonutProgressView dpvChart;
-    private Spinner spDiagnostics, spPathologistDiagnostic;
+    private Spinner spPathologistDiagnostic;
     private ConstraintLayout clContainer;
     private Button btnDiagnose;
     private EditText etPatientId, etNotes, etAge;
@@ -67,6 +69,7 @@ public class RequestDetailActivity extends AppCompatActivity {
     private ArrayList<ImageView> bodyParts;
     private RequestDetailViewModel requestDetailViewModel;
     private RecyclerView rvPhototype;
+    private NumberPicker npDiagnostics;
 
     //For visualization
     private List<String> imageUrls;
@@ -85,9 +88,9 @@ public class RequestDetailActivity extends AppCompatActivity {
 
         clContainer = findViewById(R.id.clContainer);
         spPathologistDiagnostic = findViewById(R.id.spPathologistDiagnostic);
-        spDiagnostics = findViewById(R.id.spDiagnostics);
         btnDiagnose = findViewById(R.id.btnDiagnose);
         Button btnUpdateData = findViewById(R.id.btnUpdateData);
+        LinearLayout llExtraData = findViewById(R.id.llExtraData);
         dpvChart = findViewById(R.id.dpvChart);
         tvEstimatedProbability = findViewById(R.id.tvEstimatedProbability);
         tvLabel = findViewById(R.id.tvLabel);
@@ -119,6 +122,7 @@ public class RequestDetailActivity extends AppCompatActivity {
         ImageView ivLowerExtremity = findViewById(R.id.ivLowerExtremity);
         ImageView ivScalp = findViewById(R.id.ivScalp);
         ImageView ivUpperExtremity = findViewById(R.id.ivUpperExtremity);
+        npDiagnostics = findViewById(R.id.npDiagnostics);
         bodyParts = new ArrayList<>(Arrays.asList(null, ivBack, ivLowerExtremity, ivUpperExtremity, ivAbdomen, ivChest, ivScalp, ivFace, ivEar, ivNeck, ivHand, ivFoot, ivGenitals));
         for (ImageView part : bodyParts) {
             if (part == null) continue;
@@ -144,6 +148,9 @@ public class RequestDetailActivity extends AppCompatActivity {
         LoggedInUser loggedInUser = requestDetailViewModel.getUserLogged();
         if (loggedInUser != null && loggedInUser.getRole() != null) {
             if (loggedInUser.getRole().equalsIgnoreCase(Rol.GENERAL_ROL)) {
+                llExtraData.setVisibility(View.GONE);
+                btnUpdateData.setVisibility(View.GONE);
+                spPathologistDiagnostic.setEnabled(false);
                 setUpDiagnosticUI();
             } else {
                 setDiagnosticsValues();
@@ -151,11 +158,9 @@ public class RequestDetailActivity extends AppCompatActivity {
         }
 
         btnUpdateData.setOnClickListener(listenerBtnUpdateData);
-        spDiagnostics.setOnItemSelectedListener(listenerSpDiagnostics);
 
         setFormValues();
-        btnDiagnose.setOnClickListener(view -> spDiagnostics.performClick());
-
+        btnDiagnose.setOnClickListener(listenerBtnDiagnose);
     }
 
 
@@ -229,6 +234,10 @@ public class RequestDetailActivity extends AppCompatActivity {
 
     private void setUpDiagnosticUI() {
         btnDiagnose.setVisibility(View.VISIBLE);
+        npDiagnostics.setMinValue(0);
+        npDiagnostics.setMaxValue(Classifier.LABELS.length);
+        npDiagnostics.setDisplayedValues(getResources().getStringArray(R.array.labels_select));
+        npDiagnostics.setVisibility(View.VISIBLE);
     }
 
     private boolean validateInput() {
@@ -282,38 +291,6 @@ public class RequestDetailActivity extends AppCompatActivity {
     };
 
 
-    private final AdapterView.OnItemSelectedListener listenerSpDiagnostics = new AdapterView.OnItemSelectedListener() {
-        @Override
-        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-            if (i == 0) {
-                return;
-            }
-            btnDiagnose.setEnabled(false);
-            int generalMedicDiagnosticIndex = i - 1;
-            boolean success = request.getDiagnosedLabelIndex() == generalMedicDiagnosticIndex;
-            requestDetailViewModel.diagnose(request,
-                    generalMedicDiagnosticIndex,
-                    result -> {
-                        onRequestUpdated.onRequestUpdated(result);
-                        setDiagnosticsValues();
-                        requestDetailViewModel.persistUserData();
-                        AlertDialog.Builder builder = new AlertDialog.Builder(RequestDetailActivity.this);
-                        builder.setTitle(success ? R.string.you_won : R.string.you_lost)
-                                .setMessage(getString(R.string.specialist_diagnostic_with_security, Math.round(request.getDiagnosticSecurity() * 100)))
-                                .setPositiveButton(R.string.next_request, listenerNextRequest)
-                                .setNegativeButton(R.string.cancel, null)
-                                .show();
-
-                    });
-        }
-
-        @Override
-        public void onNothingSelected(AdapterView<?> adapterView) {
-            Log.d(TAG, "Nothing selected");
-        }
-    };
-
-
     /**
      * Search for a new request and opens it if there exist one
      * If not, it shows a message
@@ -341,6 +318,37 @@ public class RequestDetailActivity extends AppCompatActivity {
             startActivity(intent);
         });
         requestDetailViewModel.getNewRequest();
+    };
+
+    private final View.OnClickListener listenerBtnDiagnose = view -> {
+        if (npDiagnostics.getValue() == 0) {
+            Objects.requireNonNull(CustomSnackbar.make(clContainer,
+                    getString(R.string.error_no_diagnostic),
+                    Snackbar.LENGTH_SHORT,
+                    null,
+                    R.drawable.ic_error_outline,
+                    null,
+                    getColor(R.color.accent)
+            )).show();
+            return;
+        }
+        btnDiagnose.setEnabled(false);
+        int generalMedicDiagnosticIndex = npDiagnostics.getValue() - 1;
+        boolean success = request.getDiagnosedLabelIndex() == generalMedicDiagnosticIndex;
+        requestDetailViewModel.diagnose(request,
+                generalMedicDiagnosticIndex,
+                result -> {
+                    onRequestUpdated.onRequestUpdated(result);
+                    setDiagnosticsValues();
+                    requestDetailViewModel.persistUserData();
+                    AlertDialog.Builder builder = new AlertDialog.Builder(RequestDetailActivity.this);
+                    builder.setTitle(success ? R.string.you_won : R.string.you_lost)
+                            .setMessage(getString(R.string.specialist_diagnostic_with_security, Math.round(request.getDiagnosticSecurity() * 100)))
+                            .setPositiveButton(R.string.next_request, listenerNextRequest)
+                            .setNegativeButton(R.string.cancel, null)
+                            .show();
+
+                });
     };
 
 

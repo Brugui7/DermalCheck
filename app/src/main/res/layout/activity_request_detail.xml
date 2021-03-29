@@ -5,7 +5,7 @@
     android:id="@+id/clContainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/secondary"
+    android:background="@color/background_accent"
     tools:context=".ui.request.detail.RequestDetailActivity">
 
     <ScrollView
@@ -82,349 +82,356 @@
                     tools:layout_editor_absoluteY="617dp" />
             </LinearLayout>
 
-
-            <TextView
-                android:id="@+id/textView3"
+            <NumberPicker
+                android:id="@+id/npDiagnostics"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="18dp"
-                android:text="@string/additional_data"
-                android:textAlignment="center"
-                android:textColor="@color/main"
-                android:textSize="18sp" />
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:visibility="gone"
+                android:entries="@array/labels_select"
+                android:padding="10dp"
+                android:spinnerMode="dialog"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:layout_editor_absoluteY="617dp" />
+
 
             <LinearLayout
+                android:id="@+id/llExtraData"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="vertical">
 
-                <com.google.android.material.textfield.TextInputLayout
+                <TextView
+                    android:id="@+id/textView3"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:padding="8dp">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etPatientId"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:backgroundTint="@android:color/transparent"
-                        android:hint="@string/patient_id"
-                        android:inputType="number"
-                        android:maxLength="10" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:padding="8dp">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etAge"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:backgroundTint="@android:color/transparent"
-                        android:hint="@string/age"
-                        android:inputType="number"
-                        android:maxLength="2" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:baselineAligned="false"
-                android:orientation="horizontal">
+                    android:layout_marginTop="18dp"
+                    android:text="@string/additional_data"
+                    android:textAlignment="center"
+                    android:textColor="@color/main"
+                    android:textSize="18sp" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:orientation="horizontal">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:padding="8dp"
-                        android:text="@string/phototype"
-                        android:textColor="@color/main"
-                        android:textSize="18sp" />
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/rvPhototype"
+                    <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:orientation="horizontal"
-                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                        tools:listitem="@layout/simple_selectable_list_item" />
+                        android:layout_weight="1"
+                        android:padding="8dp">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etPatientId"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:backgroundTint="@android:color/transparent"
+                            android:hint="@string/patient_id"
+                            android:inputType="number"
+                            android:maxLength="10" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:padding="8dp">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etAge"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:backgroundTint="@android:color/transparent"
+                            android:hint="@string/age"
+                            android:inputType="number"
+                            android:maxLength="2" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
+                    android:baselineAligned="false"
                     android:orientation="horizontal">
 
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:padding="8dp"
+                            android:text="@string/phototype"
+                            android:textColor="@color/main"
+                            android:textSize="18sp" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rvPhototype"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:orientation="horizontal"
+                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                            tools:listitem="@layout/simple_selectable_list_item" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/ivGenderMale"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:contentDescription="@string/male"
+                            app:srcCompat="@drawable/ic_baseline_male_24" />
+
+                        <ImageView
+                            android:id="@+id/ivGenderFemale"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:contentDescription="@string/female"
+                            app:srcCompat="@drawable/ic_baseline_female_24" />
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+
+                <!-- <CheckBox
+                    android:id="@+id/chFamiliarAntecedents"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:buttonTint="@color/accent"
+                    android:checked="false"
+                    android:padding="16dp"
+                    android:text="@string/familiar_antecedents"
+                    android:textSize="24sp" />
+
+                <CheckBox
+                    android:id="@+id/chPersonalAntecedents"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:buttonTint="@color/accent"
+                    android:padding="16dp"
+                    android:text="@string/personal_atecedents"
+                    android:textAllCaps="false"
+                    android:textSize="24sp" /> -->
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="0.7"
+                        android:padding="8dp"
+                        android:text="@string/antecedents"
+                        android:textColor="@color/main"
+                        android:textSize="18sp" />
+
                     <ImageView
-                        android:id="@+id/ivGenderMale"
+                        android:id="@+id/ivPersonalAntecedents"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:contentDescription="@string/male"
-                        app:srcCompat="@drawable/ic_baseline_male_24" />
+                        app:srcCompat="@drawable/ic_person"
+                        app:tint="@color/white" />
 
                     <ImageView
-                        android:id="@+id/ivGenderFemale"
+                        android:id="@+id/ivFamiliarAntecedents"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:contentDescription="@string/female"
-                        app:srcCompat="@drawable/ic_baseline_female_24" />
+                        app:srcCompat="@drawable/ic_baseline_family_restroom_24" />
+
                 </LinearLayout>
 
 
-            </LinearLayout>
-
-
-            <!-- <CheckBox
-                android:id="@+id/chFamiliarAntecedents"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:buttonTint="@color/accent"
-                android:checked="false"
-                android:padding="16dp"
-                android:text="@string/familiar_antecedents"
-                android:textSize="24sp" />
-
-            <CheckBox
-                android:id="@+id/chPersonalAntecedents"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:buttonTint="@color/accent"
-                android:padding="16dp"
-                android:text="@string/personal_atecedents"
-                android:textAllCaps="false"
-                android:textSize="24sp" /> -->
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
                 <TextView
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_weight="0.7"
-                    android:padding="8dp"
-                    android:text="@string/antecedents"
+                    android:padding="16dp"
+                    android:text="@string/stain_localization"
                     android:textColor="@color/main"
-                    android:textSize="18sp" />
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
 
-                <ImageView
-                    android:id="@+id/ivPersonalAntecedents"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/body_parts"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:id="@+id/imageView7"
+                        android:layout_width="191dp"
+                        android:layout_height="482dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/frente" />
+
+
+                    <ImageView
+                        android:id="@+id/ivNeck"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_marginEnd="86dp"
+                        app:layout_constraintBottom_toTopOf="@+id/imageView7"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:srcCompat="@drawable/neck" />
+
+                    <ImageView
+                        android:id="@+id/ivFace"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_marginStart="82dp"
+                        app:layout_constraintBottom_toTopOf="@+id/imageView7"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:srcCompat="@drawable/face" />
+
+                    <ImageView
+                        android:id="@+id/ivAbdomen"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_marginStart="30dp"
+                        app:layout_constraintEnd_toStartOf="@+id/imageView7"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/ivChest"
+                        app:srcCompat="@drawable/abdomen" />
+
+                    <ImageView
+                        android:id="@+id/ivBack"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_marginEnd="30dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/imageView7"
+                        app:layout_constraintTop_toBottomOf="@+id/ivUpperExtremity"
+                        app:srcCompat="@drawable/back" />
+
+                    <ImageView
+                        android:id="@+id/ivChest"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_marginStart="30dp"
+                        app:layout_constraintEnd_toStartOf="@+id/imageView7"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/ivEar"
+                        app:srcCompat="@drawable/chest" />
+
+                    <ImageView
+                        android:id="@+id/ivEar"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_marginStart="30dp"
+                        app:layout_constraintEnd_toStartOf="@+id/imageView7"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/ivFace"
+                        app:srcCompat="@drawable/ear" />
+
+                    <ImageView
+                        android:id="@+id/ivFoot"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_marginStart="165dp"
+                        android:layout_marginEnd="166dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/imageView7"
+                        app:srcCompat="@drawable/foot" />
+
+                    <ImageView
+                        android:id="@+id/ivGenitals"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_marginEnd="30dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/imageView7"
+                        app:layout_constraintTop_toBottomOf="@+id/ivBack"
+                        app:srcCompat="@drawable/genital" />
+
+                    <ImageView
+                        android:id="@+id/ivHand"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_marginStart="30dp"
+                        app:layout_constraintEnd_toStartOf="@+id/imageView7"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/ivAbdomen"
+                        app:srcCompat="@drawable/hand" />
+
+                    <ImageView
+                        android:id="@+id/ivLowerExtremity"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_marginEnd="30dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/imageView7"
+                        app:layout_constraintTop_toBottomOf="@+id/ivGenitals"
+                        app:srcCompat="@drawable/lower_extremity" />
+
+                    <ImageView
+                        android:id="@+id/ivScalp"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_marginStart="3dp"
+                        app:layout_constraintBottom_toTopOf="@+id/imageView7"
+                        app:layout_constraintEnd_toStartOf="@+id/ivNeck"
+                        app:layout_constraintStart_toEndOf="@+id/ivFace"
+                        app:srcCompat="@drawable/scalp" />
+
+                    <ImageView
+                        android:id="@+id/ivUpperExtremity"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        app:layout_constraintStart_toEndOf="@+id/imageView7"
+                        app:layout_constraintTop_toBottomOf="@+id/ivNeck"
+                        app:srcCompat="@drawable/upper_extremity" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:contentDescription="@string/male"
-                    app:srcCompat="@drawable/ic_person"
-                    app:tint="@color/white" />
+                    android:padding="8dp">
 
-                <ImageView
-                    android:id="@+id/ivFamiliarAntecedents"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:contentDescription="@string/female"
-                    app:srcCompat="@drawable/ic_baseline_family_restroom_24" />
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etNotes"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@android:color/transparent"
+                        android:hint="@string/notes"
+                        android:inputType="textMultiLine"
+                        android:lines="3" />
 
+                </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
-
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:padding="16dp"
-                android:text="@string/stain_localization"
-                android:textColor="@color/main"
-                android:textSize="24sp"
-                android:textStyle="bold" />
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/body_parts"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <ImageView
-                    android:id="@+id/imageView7"
-                    android:layout_width="191dp"
-                    android:layout_height="482dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/frente" />
-
-
-                <ImageView
-                    android:id="@+id/ivNeck"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:layout_marginEnd="86dp"
-                    app:layout_constraintBottom_toTopOf="@+id/imageView7"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:srcCompat="@drawable/neck" />
-
-                <ImageView
-                    android:id="@+id/ivFace"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:layout_marginStart="82dp"
-                    app:layout_constraintBottom_toTopOf="@+id/imageView7"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:srcCompat="@drawable/face" />
-
-                <ImageView
-                    android:id="@+id/ivAbdomen"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:layout_marginStart="30dp"
-                    app:layout_constraintEnd_toStartOf="@+id/imageView7"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/ivChest"
-                    app:srcCompat="@drawable/abdomen" />
-
-                <ImageView
-                    android:id="@+id/ivBack"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:layout_marginEnd="30dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/imageView7"
-                    app:layout_constraintTop_toBottomOf="@+id/ivUpperExtremity"
-                    app:srcCompat="@drawable/back" />
-
-                <ImageView
-                    android:id="@+id/ivChest"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:layout_marginStart="30dp"
-                    app:layout_constraintEnd_toStartOf="@+id/imageView7"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/ivEar"
-                    app:srcCompat="@drawable/chest" />
-
-                <ImageView
-                    android:id="@+id/ivEar"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:layout_marginStart="30dp"
-                    app:layout_constraintEnd_toStartOf="@+id/imageView7"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/ivFace"
-                    app:srcCompat="@drawable/ear" />
-
-                <ImageView
-                    android:id="@+id/ivFoot"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:layout_marginStart="165dp"
-                    android:layout_marginEnd="166dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/imageView7"
-                    app:srcCompat="@drawable/foot" />
-
-                <ImageView
-                    android:id="@+id/ivGenitals"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:layout_marginEnd="30dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/imageView7"
-                    app:layout_constraintTop_toBottomOf="@+id/ivBack"
-                    app:srcCompat="@drawable/genital" />
-
-                <ImageView
-                    android:id="@+id/ivHand"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:layout_marginStart="30dp"
-                    app:layout_constraintEnd_toStartOf="@+id/imageView7"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/ivAbdomen"
-                    app:srcCompat="@drawable/hand" />
-
-                <ImageView
-                    android:id="@+id/ivLowerExtremity"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:layout_marginEnd="30dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/imageView7"
-                    app:layout_constraintTop_toBottomOf="@+id/ivGenitals"
-                    app:srcCompat="@drawable/lower_extremity" />
-
-                <ImageView
-                    android:id="@+id/ivScalp"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:layout_marginStart="3dp"
-                    app:layout_constraintBottom_toTopOf="@+id/imageView7"
-                    app:layout_constraintEnd_toStartOf="@+id/ivNeck"
-                    app:layout_constraintStart_toEndOf="@+id/ivFace"
-                    app:srcCompat="@drawable/scalp" />
-
-                <ImageView
-                    android:id="@+id/ivUpperExtremity"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    app:layout_constraintStart_toEndOf="@+id/imageView7"
-                    app:layout_constraintTop_toBottomOf="@+id/ivNeck"
-                    app:srcCompat="@drawable/upper_extremity" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="8dp">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etNotes"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:backgroundTint="@android:color/transparent"
-                    android:hint="@string/notes"
-                    android:inputType="textMultiLine"
-                    android:lines="3" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
         </LinearLayout>
     </ScrollView>
-
-    <Spinner
-        android:id="@+id/spDiagnostics"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:entries="@array/labels_select"
-        android:spinnerMode="dialog"
-        android:visibility="invisible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteY="617dp" />
 
     <app.futured.donut.DonutProgressView
         android:id="@+id/dpvChart"
@@ -439,7 +446,7 @@
         app:donut_strokeWidth="14dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
     <TextView
         android:id="@+id/tvEstimatedProbability"
@@ -455,7 +462,7 @@
         app:layout_constraintEnd_toEndOf="@+id/dpvChart"
         app:layout_constraintStart_toStartOf="@+id/dpvChart"
         app:layout_constraintTop_toTopOf="@+id/dpvChart"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
     <Button
         android:id="@+id/btnDiagnose"
