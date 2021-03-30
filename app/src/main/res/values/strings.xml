@@ -20,6 +20,7 @@
     <string name="phototype">Fototipo</string>
     <string name="antecedents">Antecedentes</string>
     <string name="stain_localization">Localización de la mancha</string>
+    <string name="my_statistics">Mis estadísticas</string>
     <string name="personal_atecedents">Antecedentes personales</string>
     <string name="familiar_antecedents">Antecedentes familiares</string>
     <string name="send_request">Enviar consulta</string>
@@ -98,6 +99,10 @@
     <string name="male">Hombre</string>
     <string name="female">Mujer</string>
     <string name="diagnose">Diagnosticar</string>
+    <string name="diagnosed_requests">Consultas diagnosticadas</string>
+    <string name="placeholder_diagnosed_requests">Consultas diagnosticadas: %1$d</string>
+    <string name="placeholder_matching_diagnostics">Diagnósticos acertados: %1$d</string>
+    <string name="placeholder_failed_diagnostics">Diagnósticos fallidos: %1$d</string>
     <string name="update_data">Actualizar Datos</string>
     <string name="select_a_diagnostic">Seleccione el diagnóstico</string>
     <string name="specialist_diagnostic">Diagnóstico del especialista</string>

@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,11 +14,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 
 import com.brugui.dermalcheck.R;
 import com.brugui.dermalcheck.data.Result;
 import com.brugui.dermalcheck.data.SharedPreferencesRepository;
 import com.brugui.dermalcheck.data.model.LoggedInUser;
+import com.brugui.dermalcheck.data.model.Rol;
 import com.brugui.dermalcheck.ui.MainActivity;
 import com.brugui.dermalcheck.ui.components.snackbar.CustomSnackbar;
 import com.brugui.dermalcheck.ui.login.LoginActivity;
@@ -34,6 +37,7 @@ public class AccountFragment extends Fragment {
     private EditText etDisplayName;
     private ConstraintLayout clContainer;
     private AccountViewModel viewModel;
+    //private FrameLayout flStatisticsPlaceholder;
     private static final String TAG = "Logger AccFragment";
 
 
@@ -64,6 +68,13 @@ public class AccountFragment extends Fragment {
 
         viewModel.getUserData().observe(getViewLifecycleOwner(), loggedInUser -> {
             etDisplayName.setText(loggedInUser.getDisplayName());
+            if (loggedInUser.getRole().equalsIgnoreCase(Rol.GENERAL_ROL)) {
+                FragmentTransaction ft = getActivity()
+                        .getSupportFragmentManager()
+                        .beginTransaction();
+                ft.replace(R.id.flStatisticsPlaceholder, GeneralMedicStatisticsFragment.newInstance(loggedInUser));
+                ft.commit();
+            }
         });
         btnUpdateData.setOnClickListener(listenerBtnUpdateData);
         btnCloseSession.setOnClickListener(view1 -> {
