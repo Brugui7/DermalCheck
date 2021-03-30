@@ -34,7 +34,7 @@ import java.util.Objects;
  * create an instance of this fragment.
  */
 public class AccountFragment extends Fragment {
-    private EditText etDisplayName;
+    private EditText etDisplayName, etNick;
     private ConstraintLayout clContainer;
     private AccountViewModel viewModel;
     //private FrameLayout flStatisticsPlaceholder;
@@ -61,6 +61,7 @@ public class AccountFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_account, container, false);
         etDisplayName = view.findViewById(R.id.etDisplayName);
+        etNick = view.findViewById(R.id.etNick);
         clContainer = view.findViewById(R.id.clContainer);
         Button btnUpdateData = view.findViewById(R.id.btnUpdateData);
         Button btnCloseSession = view.findViewById(R.id.btnCloseSession);
@@ -68,6 +69,7 @@ public class AccountFragment extends Fragment {
 
         viewModel.getUserData().observe(getViewLifecycleOwner(), loggedInUser -> {
             etDisplayName.setText(loggedInUser.getDisplayName());
+            etNick.setText(loggedInUser.getNick());
             if (loggedInUser.getRole().equalsIgnoreCase(Rol.GENERAL_ROL)) {
                 FragmentTransaction ft = getActivity()
                         .getSupportFragmentManager()
@@ -96,6 +98,7 @@ public class AccountFragment extends Fragment {
         }
         Log.d(TAG, user.toString());
         user.setDisplayName(etDisplayName.getText().toString().trim());
+        user.setNick(etNick.getText().toString().trim());
         viewModel.updateUserData(user, result -> {
             if (result instanceof Result.Error) {
                 Objects.requireNonNull(CustomSnackbar.make(

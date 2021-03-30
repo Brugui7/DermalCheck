@@ -12,7 +12,7 @@ import java.util.Map;
 public class LoggedInUser implements Serializable {
 
     private String uid;
-    private String displayName, role, email, password;
+    private String displayName, role, email, password, nick;
     private int matchingRequestsDiagnosed, requestsDiagnosed;
 
     public LoggedInUser(String uid, String email) {
@@ -98,6 +98,15 @@ public class LoggedInUser implements Serializable {
     public Map<String, Object> toMap() {
         Map<String, Object> map = new HashMap<>();
         map.put("displayName", this.displayName);
+        map.put("nick", this.nick);
         return map;
+    }
+
+    public String getNick() {
+        return nick;
+    }
+
+    public void setNick(String nick) {
+        this.nick = nick;
     }
 }
