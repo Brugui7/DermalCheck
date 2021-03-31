@@ -33,8 +33,10 @@ import com.brugui.dermalcheck.ui.adapters.PhototypeAdapter;
 import com.brugui.dermalcheck.ui.components.ImageDetailActivity;
 import com.brugui.dermalcheck.ui.components.snackbar.CustomSnackbar;
 import com.brugui.dermalcheck.ui.login.LoginActivity;
+import com.brugui.dermalcheck.ui.request.creation.NewRequestActivity;
 import com.brugui.dermalcheck.utils.Classifier;
 import com.bumptech.glide.Glide;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 
 
@@ -295,7 +297,7 @@ public class RequestDetailActivity extends AppCompatActivity {
      * Search for a new request and opens it if there exist one
      * If not, it shows a message
      */
-    private final DialogInterface.OnClickListener listenerNextRequest = (dialogInterface, i1) -> {
+    private void goToNextRequest() {
 
         requestDetailViewModel.nextRequest.observe(RequestDetailActivity.this, requestResult -> {
             if (requestResult.getError() != null) {
@@ -318,7 +320,9 @@ public class RequestDetailActivity extends AppCompatActivity {
             startActivity(intent);
         });
         requestDetailViewModel.getNewRequest();
-    };
+    }
+
+    ;
 
     private final View.OnClickListener listenerBtnDiagnose = view -> {
         if (npDiagnostics.getValue() == 0) {
@@ -341,14 +345,21 @@ public class RequestDetailActivity extends AppCompatActivity {
                     onRequestUpdated.onRequestUpdated(result);
                     setDiagnosticsValues();
                     requestDetailViewModel.persistUserData();
-                    AlertDialog.Builder builder = new AlertDialog.Builder(RequestDetailActivity.this);
-                    builder.setTitle(success ? R.string.you_won : R.string.you_lost)
-                            .setMessage(getString(R.string.specialist_diagnostic_with_security, Math.round(request.getDiagnosticSecurity() * 100)))
-                            .setPositiveButton(R.string.next_request, listenerNextRequest)
-                            .setNegativeButton(R.string.cancel, null)
-                            .show();
-
-                });
+                    Objects.requireNonNull(CustomSnackbar.make(clContainer,
+                            getString(R.string.specialist_diagnostic_with_security, Math.round(request.getDiagnosticSecurity() * 100)),
+                            BaseTransientBottomBar.LENGTH_SHORT,
+                            null,
+                            success ? R.drawable.ic_check_circle_outline : R.drawable.ic_error_outline,
+                            null,
+                            success ? getColor(R.color.success) : getColor(R.color.accent)
+                    )).addCallback(new BaseTransientBottomBar.BaseCallback<CustomSnackbar>() {
+                        @Override
+                        public void onDismissed(CustomSnackbar transientBottomBar, int event) {
+                            goToNextRequest();
+                        }
+                    }).show();
+                }
+        );
     };
 
 
