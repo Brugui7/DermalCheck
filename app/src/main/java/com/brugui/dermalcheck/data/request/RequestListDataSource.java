@@ -71,13 +71,14 @@ public class RequestListDataSource {
      * @param loggedInUser the user logged, will be always a specialist
      * @param callback     OnDataFetched
      */
-    public void getNewRequest(LoggedInUser loggedInUser, String offsetId, OnDataFetched callback) {
+    public void getNewRequest(LoggedInUser loggedInUser, OnDataFetched callback) {
         try {
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             db.collection("requests")
                     .whereEqualTo("receiver", null)
-                    .orderBy("id")
-                    .startAfter(offsetId)
+                    .orderBy("random", Math.random() > 0.5 ? Query.Direction.DESCENDING : Query.Direction.ASCENDING)
+                    .orderBy("creationDate")
+                    .orderBy("diagnostics")
                     .limit(1)
                     .get()
                     .addOnSuccessListener(queryDocumentSnapshots -> {

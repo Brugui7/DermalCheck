@@ -63,7 +63,7 @@ public class RequestDetailViewModel extends AndroidViewModel {
 
     public void getNewRequest(){
         RequestListDataSource requestListDataSource = new RequestListDataSource();
-        requestListDataSource.getNewRequest(userLogged, "", result -> {
+        requestListDataSource.getNewRequest(userLogged, result -> {
             if (result instanceof Result.Success) {
                 Request data = ((Result.Success<Request>) result).getData();
                 nextRequest.setValue(new SingleRequestResult(data));
@@ -104,6 +104,7 @@ public class RequestDetailViewModel extends AndroidViewModel {
         }
         dataSource.updateUserData(userLogged);
         dataSource.updateRequest(request, onRequestUpdated);
+        dataSource.updateRequestsDiagnosedStatistic(request);
 
     }
 

@@ -64,6 +64,7 @@ public class NewRequestDataSource {
             request.setId(ref.getId());
             Map<String, Object> mapping = request.toMap();
             mapping.put("creationDate", FieldValue.serverTimestamp());
+            mapping.put("random", Math.random());
             Log.d(TAG, mapping.toString());
 
 

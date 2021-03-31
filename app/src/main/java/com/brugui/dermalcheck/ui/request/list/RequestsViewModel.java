@@ -44,7 +44,7 @@ public class RequestsViewModel  extends ViewModel {
 
 
     public void getNewRequest(OnDataFetched listener){
-        dataSource.getNewRequest(userLogged, "", listener);
+        dataSource.getNewRequest(userLogged, listener);
     }
 
     public MutableLiveData<List<Request>> getRequests() {

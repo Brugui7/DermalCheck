@@ -60,11 +60,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
+            android:gravity="start"
             android:drawablePadding="8dp"
             android:includeFontPadding="false"
             android:textColor="@color/black"
             android:textStyle="bold"
-            tools:text="@string/placeholder_matching_diagnostics"
             app:drawableStartCompat="@drawable/ic_dot_success" />
 
         <TextView
@@ -73,10 +73,10 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:drawablePadding="8dp"
+            android:gravity="start"
             android:includeFontPadding="false"
             android:textColor="@color/black"
             android:textStyle="bold"
-            tools:text="@string/placeholder_matching_diagnostics"
             app:drawableStartCompat="@drawable/ic_dot_accent" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

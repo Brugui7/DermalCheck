@@ -102,6 +102,7 @@ public class RequestDetailDataSource {
     public void updateRequest(Request request, OnRequestUpdated onRequestUpdated) {
         try {
             Map<String, Object> mapping = request.toMap();
+            mapping.put("random", Math.random());
             //Sends the request
             db.collection("requests")
                     .document(request.getId())
@@ -120,7 +121,7 @@ public class RequestDetailDataSource {
         }
     }
 
-    private void updateRequestsDiagnosedStatistic(Request request) {
+    public void updateRequestsDiagnosedStatistic(Request request) {
         FirebaseFirestore.getInstance()
                 .document("statistics/0")
                 .get()
@@ -137,9 +138,10 @@ public class RequestDetailDataSource {
                         requestsDiagnosed = (long) documentSnapshot.get("requestsDiagnosed");
                     }
                     requestsDiagnosed++;
+                    mapping.put("requestsDiagnosed", requestsDiagnosed);
 
                     //Matching diagnostics
-                    if (request.getDiagnosedLabelIndex() == request.getPathologistDiagnosticLabelIndex()) {
+                    /*if (request.getDiagnosedLabelIndex() == request.getPathologistDiagnosticLabelIndex()) {
                         long matchingDiagnostics = 0;
                         if (documentSnapshot.contains("matchingDiagnostics")) {
                             matchingDiagnostics = (long) documentSnapshot.get("matchingDiagnostics");
@@ -167,9 +169,9 @@ public class RequestDetailDataSource {
                     stdDiagnoseHours = getNewStd(hoursDiff, requestsDiagnosed, stdDiagnoseHours, oldAverageDiagnoseHours, averageDiagnoseHours);
 
 
-                    mapping.put("requestsDiagnosed", requestsDiagnosed);
+
                     mapping.put("averageDiagnoseHours", averageDiagnoseHours);
-                    mapping.put("stdDiagnoseHours", stdDiagnoseHours);
+                    mapping.put("stdDiagnoseHours", stdDiagnoseHours);*/
 
                     FirebaseFirestore.getInstance()
                             .document("statistics/0")
