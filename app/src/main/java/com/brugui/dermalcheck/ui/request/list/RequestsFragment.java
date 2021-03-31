@@ -44,6 +44,7 @@ public class RequestsFragment extends Fragment {
     private RequestAdapter adapter;
     private RequestsViewModel requestsViewModel;
     private SwipeRefreshLayout srLayout;
+    private boolean firstCheck = true;
     private static final String TAG = "Logger RequestList";
 
 
@@ -80,20 +81,16 @@ public class RequestsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_requests, container, false);
         FloatingActionButton fabNewRequest = view.findViewById(R.id.fabNewRequest);
-        FloatingActionButton fabGetRequest = view.findViewById(R.id.fabGetRequest);
         rvRequests = view.findViewById(R.id.rvRequests);
         clContainer = view.findViewById(R.id.clContainer);
         clEmptyList = view.findViewById(R.id.clEmptyList);
         srLayout = view.findViewById(R.id.srLayout);
         fabNewRequest.setOnClickListener(listenerFabNewRequest);
-        fabGetRequest.setOnClickListener(listenerFabGetRequest);
 
         LoggedInUser loggedInUser = requestsViewModel.getUserLogged();
         if (loggedInUser != null && loggedInUser.getRole() != null) {
             if (loggedInUser.getRole().equalsIgnoreCase(Rol.SPECIALIST_ROL)) {
                 fabNewRequest.setVisibility(View.VISIBLE);
-            } else if (loggedInUser.getRole().equalsIgnoreCase(Rol.GENERAL_ROL)) {
-                fabGetRequest.setVisibility(View.VISIBLE);
             }
         }
 
@@ -104,6 +101,10 @@ public class RequestsFragment extends Fragment {
             adapter.notifyDataSetChanged();
             showEmptyListMessage(fetchedRequests.size() == 0);
             srLayout.setRefreshing(false);
+            if (firstCheck && fetchedRequests.size() == 0){
+                firstCheck = false;
+                getNewRequest();
+            }
         });
 
         srLayout.setOnRefreshListener(() -> requestsViewModel.fetchRequests());
@@ -124,7 +125,7 @@ public class RequestsFragment extends Fragment {
         startActivity(intent);
     };
 
-    private final View.OnClickListener listenerFabGetRequest = view -> {
+    private void getNewRequest() {
         requestsViewModel.getNewRequest(result -> {
             if (result instanceof Result.Error) {
                 CustomSnackbar.make(
@@ -141,7 +142,8 @@ public class RequestsFragment extends Fragment {
             Log.d(TAG, "hay");
             requestsViewModel.fetchRequests();
         });
-    };
+    }
+
 
     private void showEmptyListMessage(boolean show) {
         clEmptyList.setVisibility(show ? View.VISIBLE : View.GONE);
