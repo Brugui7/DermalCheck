@@ -38,7 +38,7 @@ public class NewRequestDataSource {
 
     public void fetchRequestsNumber(OnDataFetched callback) {
         try {
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
+
 
             FirebaseFirestore.getInstance().document("statistics/0")
                     .get()

@@ -17,7 +17,7 @@
         app:layout_constraintBottom_toTopOf="@+id/btnUpdateData"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ivImage">
+        app:layout_constraintTop_toBottomOf="@+id/llImageContainer">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -446,7 +446,7 @@
         app:donut_strokeWidth="14dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="gone" />
+        tools:visibility="visible" />
 
     <TextView
         android:id="@+id/tvEstimatedProbability"
@@ -462,7 +462,7 @@
         app:layout_constraintEnd_toEndOf="@+id/dpvChart"
         app:layout_constraintStart_toStartOf="@+id/dpvChart"
         app:layout_constraintTop_toTopOf="@+id/dpvChart"
-        tools:visibility="gone" />
+        tools:visibility="visible" />
 
     <Button
         android:id="@+id/btnDiagnose"
@@ -493,15 +493,22 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <ImageView
-        android:id="@+id/ivImage"
+    <LinearLayout
+        android:id="@+id/llImageContainer"
         android:layout_width="0dp"
-        android:layout_height="150dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         app:layout_constraintEnd_toStartOf="@+id/dpvChart"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_baseline_camera" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/ivImage"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            app:srcCompat="@drawable/ic_baseline_camera" />
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

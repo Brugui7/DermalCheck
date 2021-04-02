@@ -45,6 +45,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 
 import app.futured.donut.DonutProgressView;
 import app.futured.donut.DonutSection;
@@ -144,6 +145,17 @@ public class RequestDetailActivity extends AppCompatActivity {
                 return;
             }
             Glide.with(this).load(imageUrls.get(0)).into(ivImage);
+            float rotation =  new Random().nextFloat();
+
+            // Pseudo random rotation
+            if (rotation < 0.3){
+                ivImage.setRotation(0f);
+            } else if (rotation < 0.7) {
+                ivImage.setRotation(90f);
+            } else {
+                ivImage.setRotation(180f);
+            }
+
             ivImage.setOnClickListener(listenerIvImageFromUrl);
         });
 
