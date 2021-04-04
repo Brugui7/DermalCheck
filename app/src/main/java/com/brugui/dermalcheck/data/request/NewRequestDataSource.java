@@ -60,7 +60,7 @@ public class NewRequestDataSource {
             DocumentReference ref = FirebaseFirestore.getInstance()
                     .collection("requests")
                     .document();
-            
+
             request.setId(ref.getId());
             Map<String, Object> mapping = request.toMap();
             mapping.put("creationDate", FieldValue.serverTimestamp());
@@ -79,7 +79,7 @@ public class NewRequestDataSource {
                         if (images != null) {
                             //this should always be true, but just to ensure
                             this.uploadImages(request, images);
-                            this.updateStatistics();
+                            this.updateStatistics(request);
                             Result result = new Result.Success(prepareNotification(request));
                             onRequestCreated.onRequestCreated(result);
                         }
@@ -97,7 +97,8 @@ public class NewRequestDataSource {
         }
     }
 
-    private void updateStatistics() {
+    private void updateStatistics(Request newRequest) {
+        // Updates the general statistics
         FirebaseFirestore.getInstance()
                 .document("statistics/0")
                 .get()
@@ -109,9 +110,36 @@ public class NewRequestDataSource {
 
                     Map<String, Object> mapping = new HashMap<>();
                     mapping.put("requestsCreated", ((long) documentSnapshot.get("requestsCreated")) + 1);
+                    if (newRequest.getDiagnosedLabelIndex() == newRequest.getLabelIndex()) {
+                        mapping.put("matchingDiagnostics", ((long) documentSnapshot.get("matchingDiagnostics")) + 1);
+                    }
 
                     FirebaseFirestore.getInstance()
                             .document("statistics/0")
+                            .update(mapping);
+
+                });
+
+        // Updates the aggregated statistics of amount of requests by diagnostics
+        FirebaseFirestore.getInstance()
+                .document("statistics/requestsByLabelIndex")
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (!documentSnapshot.exists()) {
+                        //this must never happen
+                        return;
+                    }
+
+                    Map<String, Object> mapping = new HashMap<>();
+                    String labelIndexString = String.valueOf(newRequest.getDiagnosedLabelIndex());
+                    if (!documentSnapshot.contains(labelIndexString)) {
+                        mapping.put(labelIndexString, 1);
+                    } else {
+                        mapping.put(labelIndexString, (long) documentSnapshot.get(labelIndexString) + 1);
+                    }
+
+                    FirebaseFirestore.getInstance()
+                            .document("statistics/requestsByLabelIndex")
                             .update(mapping);
 
                 });
@@ -183,7 +211,6 @@ public class NewRequestDataSource {
             }
         };
     }
-
 
 
 }
