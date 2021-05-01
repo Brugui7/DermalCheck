@@ -136,7 +136,6 @@ public class NewRequestActivity extends AppCompatActivity {
         builder.show();
     }
 
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -153,11 +152,11 @@ public class NewRequestActivity extends AppCompatActivity {
         }
 
         if (requestCode == REQUEST_IMAGE_CAPTURE) {
-            // Shows the thumbnail on ImageView
-            uri = currentPhotoUri;
-
+            File savedPhoto = Common.getLastModified(this);
+            uri = FileProvider.getUriForFile(this,
+                    BuildConfig.APPLICATION_ID + ".provider",
+                    savedPhoto);
             try {
-                // ScanFile so it will be appeared on Gallery
                 MediaScannerConnection.scanFile(NewRequestActivity.this,
                         new String[]{uri.getPath()}, null, null);
 
@@ -172,7 +171,6 @@ public class NewRequestActivity extends AppCompatActivity {
                         getColor(R.color.accent)
                 )).show();
             }
-
         }
 
         if (uri != null) {
@@ -207,8 +205,6 @@ public class NewRequestActivity extends AppCompatActivity {
             }
 
         }).start();
-
-
     }
 
 
@@ -241,15 +237,11 @@ public class NewRequestActivity extends AppCompatActivity {
             return;
         }
 
-
         if (Build.VERSION.SDK_INT >= 24) {
             Log.d(TAG, "SDK Version >= 24");
             currentPhotoUri = FileProvider.getUriForFile(this,
                     BuildConfig.APPLICATION_ID + ".provider",
                     photoFile);
-
-            Log.d(TAG, "Path currentPhoto: " + currentPhotoUri.getPath());
-            Log.d(TAG, "Uri currentPhoto: " + currentPhotoUri);
 
         } else {
             currentPhotoUri = Uri.fromFile(photoFile);

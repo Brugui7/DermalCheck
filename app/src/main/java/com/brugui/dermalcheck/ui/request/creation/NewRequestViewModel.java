@@ -13,7 +13,6 @@ import com.brugui.dermalcheck.data.request.NewRequestDataSource;
 import java.util.ArrayList;
 import java.util.List;
 
-//TODO implement
 public class NewRequestViewModel extends ViewModel {
     private static final String TAG = "Logger NewRequestVM";
     private MutableLiveData<Long> requestNumber = new MutableLiveData<>();

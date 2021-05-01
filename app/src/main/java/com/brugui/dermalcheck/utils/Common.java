@@ -8,7 +8,9 @@ import android.os.Environment;
 import android.util.Log;
 
 import androidx.core.app.ActivityCompat;
+
 import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -50,11 +52,28 @@ public class Common {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
         File storageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        Log.d(TAG, "Storage dir: " + storageDir.getPath());
-        if (!storageDir.exists()){
+        if (!storageDir.exists()) {
             storageDir.mkdir();
         }
         return File.createTempFile(imageFileName, ".jpg", storageDir);
+    }
+
+    public static File getLastModified(@NotNull Context context) {
+        File directory = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File[] files = directory.listFiles(File::isFile);
+        long lastModifiedTime = Long.MIN_VALUE;
+        File chosenFile = null;
+
+        if (files != null) {
+            for (File file : files) {
+                if (file.lastModified() > lastModifiedTime) {
+                    chosenFile = file;
+                    lastModifiedTime = file.lastModified();
+                }
+            }
+        }
+
+        return chosenFile;
     }
 
 }
