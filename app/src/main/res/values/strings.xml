@@ -40,6 +40,7 @@
     <string name="data_updated_successfully">Datos actualizados correctamente</string>
     <string name="error_updating_data">Ocurrió un error al actualizar la información. Por favor, inténtelo de nuevo más tarde</string>
     <string name="error_taking_photo">Ocurrió un error al intentar hacer la foto</string>
+    <string name="error_estimating_diagnostic">Error en la estimación del diagnóstico, intente seleccionar otra imagen.</string>
     <string name="estimated_probability">Probabilidad estimada</string>
 
     <string name="required_field">Este campo es obligatorio</string>

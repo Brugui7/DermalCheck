@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.widget.RatingBar;
 import android.widget.Spinner;
@@ -56,6 +57,7 @@ import java.util.Objects;
 import app.futured.donut.DonutProgressView;
 import app.futured.donut.DonutSection;
 
+import static android.content.Intent.FLAG_GRANT_WRITE_URI_PERMISSION;
 import static com.brugui.dermalcheck.ui.request.detail.RequestDetailActivity.IMAGES_ARRAY;
 import static com.brugui.dermalcheck.ui.request.detail.RequestDetailActivity.REQUEST;
 
@@ -72,6 +74,7 @@ public class NewRequestActivity extends AppCompatActivity {
     private TextView tvEstimatedProbability, tvLabel;
     private LoggedInUser userLogged;
     private ConstraintLayout clContainer;
+    private ProgressBar pbLoad;
     private Uri currentPhotoUri;
     private static final String TAG = "Logger NewRequestAc";
     private NewRequestViewModel newRequestViewModel;
@@ -90,6 +93,7 @@ public class NewRequestActivity extends AppCompatActivity {
         tvEstimatedProbability = findViewById(R.id.tvEstimatedProbability);
         tvLabel = findViewById(R.id.tvLabel);
         ivImage = findViewById(R.id.ivImage);
+        pbLoad = findViewById(R.id.pbLoad);
         etPatientId = findViewById(R.id.etPatientId);
         rbSecurity = findViewById(R.id.rbSecurity);
         spDiagnostics = findViewById(R.id.spDiagnostics);
@@ -143,8 +147,7 @@ public class NewRequestActivity extends AppCompatActivity {
 
         Uri uri = null;
         if (requestCode == REQUEST_IMAGE_PICK) {
-            if (data.getData() != null) {
-                //single img
+            if (data.getData() != null) { // single img
                 uri = data.getData();
             }
         }
@@ -153,12 +156,26 @@ public class NewRequestActivity extends AppCompatActivity {
             // Shows the thumbnail on ImageView
             uri = currentPhotoUri;
 
-            // ScanFile so it will be appeared on Gallery
-            MediaScannerConnection.scanFile(NewRequestActivity.this,
-                    new String[]{currentPhotoUri.getPath()}, null, null);
+            try {
+                // ScanFile so it will be appeared on Gallery
+                MediaScannerConnection.scanFile(NewRequestActivity.this,
+                        new String[]{uri.getPath()}, null, null);
+
+            } catch (NullPointerException e) {
+                Log.e(TAG, e.getMessage(), e);
+                Objects.requireNonNull(CustomSnackbar.make(clContainer,
+                        getString(R.string.error_taking_photo),
+                        BaseTransientBottomBar.LENGTH_SHORT,
+                        null,
+                        R.drawable.ic_error_outline,
+                        null,
+                        getColor(R.color.accent)
+                )).show();
+            }
+
         }
 
-        if (uri != null){
+        if (uri != null) {
             showPredictions(uri);
         }
     }
@@ -167,7 +184,7 @@ public class NewRequestActivity extends AppCompatActivity {
      * @param imageUri Uri image
      */
     private void showPredictions(Uri imageUri) {
-        //TODO: load spinner
+        pbLoad.setVisibility(View.VISIBLE);
         new Thread(() -> {
             try {
                 imageProbability = Classifier.getImageProbabilityPrediction(NewRequestActivity.this, imageUri);
@@ -177,8 +194,18 @@ public class NewRequestActivity extends AppCompatActivity {
                     setChartValues(imageProbability);
                 });
             } catch (IOException exception) {
-                //todo show error snackbar
+                Objects.requireNonNull(CustomSnackbar.make(clContainer,
+                        getString(R.string.error_estimating_diagnostic),
+                        BaseTransientBottomBar.LENGTH_SHORT,
+                        null,
+                        R.drawable.ic_error_outline,
+                        null,
+                        getColor(R.color.accent)
+                )).show();
+            } finally {
+                runOnUiThread(() -> pbLoad.setVisibility(View.GONE));
             }
+
         }).start();
 
 
@@ -187,43 +214,53 @@ public class NewRequestActivity extends AppCompatActivity {
 
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
         // Ensures that there's a camera activity to handle the intent
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            // Creates the File where the photo should go
-            File photoFile = null;
-            try {
-                photoFile = Common.createNewImageFile(NewRequestActivity.this);
-            } catch (IOException e) {
-                Log.e(TAG, e.getMessage(), e);
-            }
-
-            // Continue only if the File was successfully created
-            if (photoFile != null) {
-                currentPhotoUri = Uri.fromFile(photoFile);
-
-                if (Build.VERSION.SDK_INT >= 24) {
-                    currentPhotoUri = FileProvider.getUriForFile(this,
-                            BuildConfig.APPLICATION_ID + ".provider",
-                            photoFile);
-                }
-
-                if (currentPhotoUri != null) {
-                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, currentPhotoUri);
-                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-                    return;
-                }
-
-                Objects.requireNonNull(CustomSnackbar.make(clContainer,
-                        getString(R.string.error_taking_photo),
-                        BaseTransientBottomBar.LENGTH_SHORT,
-                        null,
-                        R.drawable.ic_error_outline,
-                        null,
-                        getColor(R.color.accent)
-                )).show();
-
-            }
+        if (takePictureIntent.resolveActivity(getPackageManager()) == null) {
+            return;
         }
+
+        // Creates the File where the photo should go
+        File photoFile = null;
+        try {
+            photoFile = Common.createNewImageFile(NewRequestActivity.this);
+        } catch (IOException e) {
+            Log.e(TAG, e.getMessage(), e);
+        }
+
+        // Continue only if the File was successfully created
+        if (photoFile == null) {
+            Objects.requireNonNull(CustomSnackbar.make(clContainer,
+                    getString(R.string.error_taking_photo),
+                    BaseTransientBottomBar.LENGTH_SHORT,
+                    null,
+                    R.drawable.ic_error_outline,
+                    null,
+                    getColor(R.color.accent)
+            )).show();
+            return;
+        }
+
+
+        if (Build.VERSION.SDK_INT >= 24) {
+            Log.d(TAG, "SDK Version >= 24");
+            currentPhotoUri = FileProvider.getUriForFile(this,
+                    BuildConfig.APPLICATION_ID + ".provider",
+                    photoFile);
+
+            Log.d(TAG, "Path currentPhoto: " + currentPhotoUri.getPath());
+            Log.d(TAG, "Uri currentPhoto: " + currentPhotoUri);
+
+        } else {
+            currentPhotoUri = Uri.fromFile(photoFile);
+        }
+
+        if (currentPhotoUri != null) {
+            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, currentPhotoUri);
+            takePictureIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+        }
+
     }
 
     //########## LISTENERS ##########
@@ -249,7 +286,7 @@ public class NewRequestActivity extends AppCompatActivity {
             return false;
         }
 
-        if (rbSecurity.getRating() == 0){
+        if (rbSecurity.getRating() == 0) {
             CustomSnackbar.Companion.make(clContainer, getString(R.string.error_no_stars),
                     Snackbar.LENGTH_SHORT,
                     null,
@@ -260,7 +297,7 @@ public class NewRequestActivity extends AppCompatActivity {
             return false;
         }
 
-        if (spDiagnostics.getSelectedItemPosition() == 0){
+        if (spDiagnostics.getSelectedItemPosition() == 0) {
             CustomSnackbar.Companion.make(clContainer, getString(R.string.error_no_diagnostic),
                     Snackbar.LENGTH_SHORT,
                     null,
@@ -281,7 +318,6 @@ public class NewRequestActivity extends AppCompatActivity {
     }
 
     /**
-     *
      * @param image ImageProbability
      */
     private void setChartValues(ImageProbability image) {

@@ -39,7 +39,6 @@ public class RequestListDataSource {
             if (loggedInUser.getRole().equalsIgnoreCase(Rol.SPECIALIST_ROL)) {
                 query = query.whereEqualTo("sender", loggedInUser.getUid());
             } else {
-                // TODO
                 query = query.whereEqualTo("receiver", loggedInUser.getUid());
             }
 
