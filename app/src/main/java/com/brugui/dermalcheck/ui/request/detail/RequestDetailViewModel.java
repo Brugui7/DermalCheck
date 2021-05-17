@@ -21,7 +21,6 @@ import com.google.firebase.auth.FirebaseUser;
 import java.util.ArrayList;
 import java.util.List;
 
-//TODO implement
 public class RequestDetailViewModel extends AndroidViewModel {
     private static final String TAG = "Logger RequestDetVM";
     private LoggedInUser userLogged;
@@ -33,7 +32,6 @@ public class RequestDetailViewModel extends AndroidViewModel {
     public RequestDetailViewModel(Application application) {
         super(application);
         FirebaseUser userTmp = FirebaseAuth.getInstance().getCurrentUser();
-        //Todo if null al login
         if (userTmp != null) {
             userLogged = new LoggedInUser(userTmp.getUid(), userTmp.getEmail());
         }

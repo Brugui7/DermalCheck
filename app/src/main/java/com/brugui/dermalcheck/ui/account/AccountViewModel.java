@@ -29,7 +29,6 @@ public class AccountViewModel extends ViewModel {
 
     public AccountViewModel() {
         FirebaseUser userTmp = FirebaseAuth.getInstance().getCurrentUser();
-        //Todo if null al login
         if (userTmp != null){
             userLogged = new LoggedInUser(userTmp.getUid(), userTmp.getEmail());
         }

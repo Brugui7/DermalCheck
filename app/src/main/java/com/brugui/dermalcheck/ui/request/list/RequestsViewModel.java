@@ -26,7 +26,6 @@ public class RequestsViewModel  extends ViewModel {
 
     public RequestsViewModel() {
         FirebaseUser userTmp = FirebaseAuth.getInstance().getCurrentUser();
-        //Todo if null al login
         if (userTmp != null){
             userLogged = new LoggedInUser(userTmp.getUid(), userTmp.getEmail());
         }
