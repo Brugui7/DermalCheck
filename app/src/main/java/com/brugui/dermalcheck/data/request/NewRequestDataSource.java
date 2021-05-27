@@ -135,7 +135,7 @@ public class NewRequestDataSource {
                     if (!documentSnapshot.contains(labelIndexString)) {
                         mapping.put(labelIndexString, 1);
                     } else {
-                        mapping.put(labelIndexString, (long) documentSnapshot.get(labelIndexString) + 1);
+                        mapping.put(labelIndexString, (long) Integer.parseInt(String.valueOf(documentSnapshot.get(labelIndexString))) + 1);
                     }
 
                     FirebaseFirestore.getInstance()

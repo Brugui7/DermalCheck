@@ -76,8 +76,8 @@ public class RequestListDataSource {
             db.collection("requests")
                     .whereEqualTo("receiver", null)
                     .orderBy("random", Math.random() > 0.5 ? Query.Direction.DESCENDING : Query.Direction.ASCENDING)
-                    .orderBy("creationDate")
                     .orderBy("diagnostics")
+                    .orderBy("creationDate")
                     .limit(1)
                     .get()
                     .addOnSuccessListener(queryDocumentSnapshots -> {
