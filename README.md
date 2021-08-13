@@ -1,4 +1,4 @@
 # DermalCheck
-My final degree project on early lesions detection with Android (Java) and TFLite.
+My final degree project on early skin lesions detection with Android (Java) and TFLite.
 
 
