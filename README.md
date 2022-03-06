@@ -1,5 +1,11 @@
-# DermalCheck
-My final degree project on early skin lesions detection with Android (Java) and TFLite.
+<h1 align="center">DermalCheck</h1>
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/18025825/156939152-fabfc0bb-ecf2-4cb7-9d7d-4033ce269932.png" alt="dermalcheck-logo" width="120px" height="120px"/>
+  <br>
+  <i>An Android (Java) app part of my final degree project on early skin lesions detection.<br>Uses TFLite and it's integrated with Firebase.</i>
+  <br>
+</p>
+<hr>
 
 ## Screenshots
 
